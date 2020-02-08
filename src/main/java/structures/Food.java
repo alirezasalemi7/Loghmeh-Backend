@@ -94,6 +94,15 @@ public class Food {
     }
 
     public static Food deserializeFromJson(String jsonData) throws InvalidJsonInputException{
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(jsonData, Food.class);
+        }
+        catch (JsonMappingException e){
+            throw new InvalidJsonInputException();
+        }
+        catch (IOException e){
+            throw new InvalidJsonInputException();
+        }
     }
 }
