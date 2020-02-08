@@ -25,7 +25,9 @@ public class User {
     }
 
     public String finalizeOrder() throws InvalidToJsonException {
-        return null;
+        String json = _cart.toJson();
+        _cart.clearCart();
+        return json;
     }
 
 }
