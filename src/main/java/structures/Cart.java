@@ -34,6 +34,7 @@ public class Cart {
     }
 
     public void clearCart() {
-
+        _orders.clear();
+        _restaurantName = null;
     }
 }
