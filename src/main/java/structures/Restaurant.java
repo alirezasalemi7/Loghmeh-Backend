@@ -72,8 +72,40 @@ public class Restaurant {
         return _menu.get(name);
     }
 
+    private class RestaurantSerializer extends StdSerializer<Restaurant>{
+
+        protected RestaurantSerializer(Class<Restaurant> t) {
+            super(t);
+        }
+
+        @Override
+        public void serialize(Restaurant restaurant, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+            ArrayList<Food> foodList = new ArrayList<Food>(_menu.values());
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("name", _name);
+            jsonGenerator.writeStringField("description",_description);
+            jsonGenerator.writeObjectField("location", _location);
+            jsonGenerator.writeArrayFieldStart("menu");
+            for(Food food : foodList){
+                jsonGenerator.writeObject(food);
+            }
+            jsonGenerator.writeEndArray();
+            jsonGenerator.writeEndObject();
+        }
+    }
+
+
     public String toJson() throws InvalidToJsonException {
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(Restaurant.class,new RestaurantSerializer(Restaurant.class));
+        mapper.registerModule(module);
+        try {
+            return mapper.writeValueAsString(this);
+        }
+        catch (JsonProcessingException e){
+            throw new InvalidToJsonException();
+        }
     }
 
     public static Restaurant deserializeFromJson(String jsonData) throws InvalidJsonInputException{
