@@ -13,12 +13,19 @@ import exceptions.InvalidToJsonException;
 
 import java.io.IOException;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY , getterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonPropertyOrder({"name","description","popularity","price"})
 public class Food {
 
+    @JsonProperty("name")
     private String _name;
+    @JsonProperty("description")
     private String _description;
+    @JsonProperty("popularity")
     private double _popularity;
+    @JsonProperty("price")
     private double _price;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String _restaurantName;
 
     public Food() {}
@@ -77,7 +84,13 @@ public class Food {
     }
 
     public String toJson() throws InvalidToJsonException{
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        }
+        catch (JsonProcessingException e){
+            throw new InvalidToJsonException();
+        }
     }
 
     public static Food deserializeFromJson(String jsonData) throws InvalidJsonInputException{
