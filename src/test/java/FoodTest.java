@@ -27,7 +27,7 @@ public class FoodTest {
         }
         String content = "";
         try {
-            content = new String(Files.readAllBytes(Paths.get("./src/test/java/com/food/resources/foodTest1.json")));
+            content = new String(Files.readAllBytes(Paths.get("./src/test/java/org/kharchal/co/resources/foodTest1.json")));
             food = Food.deserializeFromJson(content);
         } catch (InvalidJsonInputException e) {
             System.err.println(e.getMessage());

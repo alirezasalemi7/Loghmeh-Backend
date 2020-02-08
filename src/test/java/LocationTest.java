@@ -1,12 +1,8 @@
-package com.food.app;
-
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import structures.Location;
-import org.junit.Before;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LocationTest {
     Location location, test1, test2, test3
