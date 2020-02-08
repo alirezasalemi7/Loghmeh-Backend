@@ -24,7 +24,7 @@ public class Location {
     public Location(){}
 
     public double getDistance(Location location){
-        return -1;
+        return Math.sqrt(Math.pow(_x-location._x,2)+Math.pow(_y-location._y,2));
     }
 }
 
