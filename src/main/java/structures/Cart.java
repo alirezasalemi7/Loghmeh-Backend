@@ -26,7 +26,17 @@ public class Cart {
     }
 
     public void addOrder(String foodName, String restaurantName) throws UnregisteredOrderException {
-
+        if (this._restaurantName == null) {
+            this._restaurantName = restaurantName;
+            this._orders.put(foodName, new OrderItem(foodName,1));
+        } else if (!this._restaurantName.equals(restaurantName)) {
+            throw new UnregisteredOrderException("You have some orders from " +  this._restaurantName + "in your cart.");
+        } else {
+            if(_orders.containsKey(foodName)){
+                _orders.get(foodName).setCount(_orders.get(foodName).getCount()+1);
+            }
+            else _orders.put(foodName, new OrderItem(foodName, 1));
+        }
     }
 
     public String toJson() throws InvalidToJsonException {
