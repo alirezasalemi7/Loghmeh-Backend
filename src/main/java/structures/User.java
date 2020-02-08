@@ -13,7 +13,7 @@ public class User {
     }
 
     public void addToCart(String foodName, String restaurantName) throws UnregisteredOrderException {
-
+        _cart.addOrder(foodName ,restaurantName);
     }
 
     public Cart getCart() {
