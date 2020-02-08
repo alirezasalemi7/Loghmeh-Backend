@@ -1,0 +1,17 @@
+{"name":"iranberger","description":"awsome!","location":{"x":12.0,"y":13.0},
+  "menu":
+  [
+    {
+      "name":"kebab",
+      "description":"tasty!",
+      "popularity":0.3,
+      "price":215000.0
+    },
+    {
+      "name":"bandari",
+      "description":"hoooot!",
+      "popularity":0.8,
+      "price":25000.0
+    }
+  ]
+}

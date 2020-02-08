@@ -1,0 +1,30 @@
+{
+  "name":"myberger",
+  "description":"awful!",
+  "location":
+  {
+    "x":1.0,
+    "y":3.0
+  },
+  "menu":
+  [
+    {
+      "name":"joj",
+      "description":"not as good as others",
+      "popularity":0.2,
+      "price":20000.0
+    },
+    {
+      "name":"ghafghazi",
+      "description":"excellent!",
+      "popularity":0.7,
+      "price":75000.0
+    },
+    {
+      "name":"bonab",
+      "description":"the same as others",
+      "popularity":0.5,
+      "price":25000.0
+    }
+  ]
+}
