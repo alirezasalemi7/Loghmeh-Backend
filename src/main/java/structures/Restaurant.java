@@ -57,7 +57,12 @@ public class Restaurant {
     }
 
     public void addFood(Food food) throws FoodIsRegisteredException {
-
+        if (this._menu.containsKey(food.getName())) {
+            throw new FoodIsRegisteredException(food.getName() + " is already registered in " + this.getName());
+        }
+        int numberOfFoods = this._menu.size();
+        this.setAveragePopularity((this._averagePopularity * numberOfFoods + food.getPopularity()) / (numberOfFoods + 1));
+        this._menu.put(food.getName(), food);
     }
 
     public Food getFoodByName(String name) throws FoodDoesntExistException {
