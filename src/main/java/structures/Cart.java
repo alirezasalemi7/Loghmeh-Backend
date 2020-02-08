@@ -40,7 +40,23 @@ public class Cart {
     }
 
     public String toJson() throws InvalidToJsonException {
-        return null;
+        JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
+        ObjectNode root = jsonNodeFactory.objectNode();
+        ArrayNode arrayNode = jsonNodeFactory.arrayNode();
+        for(Map.Entry<String,OrderItem> entry : _orders.entrySet()){
+            ObjectNode food = jsonNodeFactory.objectNode();
+            food.put("foodName", entry.getKey());
+            food.put("count", entry.getValue().getCount());
+            arrayNode.add(food);
+        }
+        root.set("foods", arrayNode);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(root);
+        }
+        catch (JsonProcessingException e){
+            throw new InvalidToJsonException();
+        }
     }
 
     public void clearCart() {
