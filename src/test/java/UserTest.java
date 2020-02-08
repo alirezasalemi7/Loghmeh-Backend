@@ -27,9 +27,9 @@ public class UserTest {
     public void testAddToCart() throws UnregisteredOrderException {
         Cart cart = _user.getCart();
         assertEquals(3, cart.getOrders().size(), 0.0);
-        assertEquals(3, cart.getOrders().get("joje"), 0.0);
-        assertEquals(2, cart.getOrders().get("kebab"), 0.0);
-        assertEquals(1, cart.getOrders().get("falafel"), 0.0);
+        assertEquals(3, cart.getOrders().get("joje").getCount(), 0.0);
+        assertEquals(2, cart.getOrders().get("kebab").getCount(), 0.0);
+        assertEquals(1, cart.getOrders().get("falafel").getCount(), 0.0);
         _user.addToCart("joje", "moslem");
     }
 
