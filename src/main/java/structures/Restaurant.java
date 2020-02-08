@@ -66,7 +66,10 @@ public class Restaurant {
     }
 
     public Food getFoodByName(String name) throws FoodDoesntExistException {
-        return null;
+        if (!_menu.containsKey(name)) {
+            throw new FoodDoesntExistException(name + "Doesn't exist in the menu of " + this.getName() + " restaurant");
+        }
+        return _menu.get(name);
     }
 
     public String toJson() throws InvalidToJsonException {
