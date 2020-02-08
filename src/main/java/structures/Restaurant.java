@@ -108,7 +108,57 @@ public class Restaurant {
         }
     }
 
+    private static class RestaurantDeserializer extends StdDeserializer<Restaurant>{
+
+        protected RestaurantDeserializer(Class<?> vc) {
+            super(vc);
+        }
+
+        @Override
+        public Restaurant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+            try {
+                ObjectCodec codec = jsonParser.getCodec();
+                JsonNode root = codec.readTree(jsonParser);
+                String name = root.get("name").asText();
+                String description = root.get("description").asText();
+                JsonNode locationNode = root.get("location");
+                ObjectMapper mapper = new ObjectMapper();
+                Location location = mapper.readValue(locationNode.toString(), Location.class);
+                JsonNode menuNode = root.get("menu");
+                Restaurant restaurant = new Restaurant(name,description,location);
+                if(menuNode.isArray()){
+                    for(JsonNode node : menuNode){
+                        Food food = mapper.readValue(node.toString(), Food.class);
+                        food.setRestaurantName(name);
+                        try {
+                            restaurant.addFood(food);
+                        } catch (FoodIsRegisteredException e) {
+                            throw new JsonParseException(jsonParser, e.getMessage());
+                        }
+                    }
+                }
+                else throw new JsonParseException(jsonParser, "invalid menu");
+                return restaurant;
+            }
+            catch (NullPointerException e){
+                throw new JsonParseException(jsonParser, "invalid");
+            }
+        }
+    }
+
     public static Restaurant deserializeFromJson(String jsonData) throws InvalidJsonInputException{
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Restaurant.class, new RestaurantDeserializer(Restaurant.class));
+        mapper.registerModule(module);
+        try {
+            return mapper.readValue(jsonData, Restaurant.class);
+        }
+        catch (JsonMappingException e){
+            throw new InvalidJsonInputException();
+        }
+        catch (IOException e){
+            throw new InvalidJsonInputException();
+        }
     }
 }
