@@ -24,5 +24,11 @@ public class SystemManager {
         }
         return _instance;
     }
-
+    public void addRestaurant(Restaurant restaurant) throws RestaurantIsRegisteredException {
+        if (_dataHandler.getAllRestaurant().containsKey(restaurant.getName())) {
+            throw new RestaurantIsRegisteredException("Restaurant " + restaurant.getName() + " is already registered.");
+        } else {
+            _dataHandler.getAllRestaurant().put(restaurant.getName(), restaurant);
+        }
+    }
 }
