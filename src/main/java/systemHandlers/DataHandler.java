@@ -1,5 +1,6 @@
 package systemHandlers;
 
+import exceptions.RestaurantDoesntExistException;
 import structures.Location;
 import structures.Restaurant;
 import structures.User;
@@ -24,6 +25,13 @@ public class DataHandler {
     public User getUser(){return _user;}
 
     public HashMap<String, Restaurant> getAllRestaurant(){ return _restaurants;}
+
+    public Restaurant getRestaurantByName(String name) throws RestaurantDoesntExistException {
+        if (!_restaurants.containsKey(name)) {
+            throw new RestaurantDoesntExistException("Restaurant" + name + "doesn't exist.");
+        }
+        return _restaurants.get(name);
+    }
 
 
 }
