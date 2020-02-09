@@ -39,4 +39,7 @@ public class SystemManager {
         restaurant.addFood(food);
     }
 
+    public ArrayList getAllRestaurants() {
+        return new ArrayList(_dataHandler.getAllRestaurant().keySet());
+    }
 }
