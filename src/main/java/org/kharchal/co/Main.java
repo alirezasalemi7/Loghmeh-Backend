@@ -54,4 +54,11 @@ public class Main {
         System.out.println(food.toJson());
     }
 
+    private static void getRecommendedRestaurants(){
+        ArrayList<Restaurant> restaurants = _systemManager.getRecommendedRestaurants(_systemManager.getUser());
+        for(Restaurant restaurant : restaurants){
+            System.out.println(restaurant.getName());
+        }
+    }
+
 }

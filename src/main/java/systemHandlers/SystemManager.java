@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.*;
 
+import org.graalvm.compiler.lir.LIRInstruction;
 import org.javatuples.Pair;
 import structures.Food;
 import structures.Restaurant;
@@ -35,6 +36,10 @@ public class SystemManager {
         } else {
             _dataHandler.getAllRestaurant().put(restaurant.getName(), restaurant);
         }
+    }
+
+    public User getUser() {
+        return _dataHandler.getUser();
     }
 
 
