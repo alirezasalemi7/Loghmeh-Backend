@@ -2,6 +2,7 @@ package org.kharchal.co;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.FoodDoesntExistException;
 import exceptions.InvalidInputInstructionException;
 import exceptions.InvalidToJsonException;
 import exceptions.RestaurantDoesntExistException;
@@ -43,6 +44,14 @@ public class Main {
         String name = node.get("name").asText().trim();
         Restaurant restaurant = _systemManager.getRestaurantByName(name);
         System.out.println(restaurant.toJson());
+    }
+
+    private static void getFood(String jsonData) throws IOException, InvalidToJsonException, RestaurantDoesntExistException, FoodDoesntExistException {
+        JsonNode node = (new ObjectMapper()).readTree(jsonData);
+        String foodName = node.get("foodName").asText().trim();
+        String restaurantName = node.get("restaurantName").asText().trim();
+        Food food = _systemManager.getFood(restaurantName, foodName);
+        System.out.println(food.toJson());
     }
 
 }
