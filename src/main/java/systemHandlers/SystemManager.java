@@ -89,10 +89,15 @@ public class SystemManager {
         return recommended;
     }
 
-    public void addToCart(String jsonData) throws IOException, UnregisteredOrderException {
+    public void addToCart(String jsonData) throws IOException, UnregisteredOrderException, RestaurantDoesntExistException, FoodDoesntExistException {
         JsonNode node = (new ObjectMapper()).readTree(jsonData);
         String foodName = node.get("foodName").asText().trim();
         String restaurantName = node.get("restaurantName").asText().trim();
+        if (!_dataHandler.getAllRestaurant().containsKey(restaurantName)) {
+            throw new RestaurantDoesntExistException(restaurantName + "doesn't exist in the list of restaurants");
+        } else if (!_dataHandler.getAllRestaurant().get(restaurantName).getFoodByName(foodName).equals(foodName)) {
+            throw new FoodDoesntExistException(foodName + "doesn't registered in " + restaurantName);
+        }
         _dataHandler.getUser().addToCart(foodName, restaurantName);
     }
 
