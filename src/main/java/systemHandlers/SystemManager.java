@@ -1,15 +1,15 @@
 package systemHandlers;
 
-import exceptions.FoodDoesntExistException;
-import exceptions.FoodIsRegisteredException;
-import exceptions.RestaurantDoesntExistException;
-import exceptions.RestaurantIsRegisteredException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.*;
 
 import org.javatuples.Pair;
 import structures.Food;
 import structures.Restaurant;
 import structures.User;
 
+import java.io.IOException;
 import java.util.*;
 
 public class SystemManager {
@@ -78,5 +78,12 @@ public class SystemManager {
             }
         }
         return recommended;
+    }
+
+    public void addToCart(String jsonData) throws IOException, UnregisteredOrderException {
+        JsonNode node = (new ObjectMapper()).readTree(jsonData);
+        String foodName = node.get("foodName").asText().trim();
+        String restaurantName = node.get("restaurantName").asText().trim();
+        _dataHandler.getUser().addToCart(foodName, restaurantName);
     }
 }
