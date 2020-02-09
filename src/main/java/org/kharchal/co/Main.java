@@ -19,7 +19,11 @@ public class Main {
     static SystemManager _systemManager = SystemManager.getInstance();
 
     public static void main( String[] args ) {
-
+        Scanner scanner = new Scanner(System.in);
+        do {
+            String instruction = scanner.nextLine();
+            parseInstruction(instruction.trim());
+        } while ((scanner.hasNext()));
     }
 
     private static void addRestaurant(String jsonData) throws Exception{
