@@ -1,5 +1,6 @@
 package systemHandlers;
 
+import exceptions.FoodDoesntExistException;
 import exceptions.FoodIsRegisteredException;
 import exceptions.RestaurantDoesntExistException;
 import exceptions.RestaurantIsRegisteredException;
@@ -41,5 +42,11 @@ public class SystemManager {
 
     public ArrayList getAllRestaurants() {
         return new ArrayList(_dataHandler.getAllRestaurant().keySet());
+    }
+
+    public Food getFood(String restaurantName, String foodName)
+            throws RestaurantDoesntExistException, FoodDoesntExistException {
+        Restaurant restaurant = _dataHandler.getRestaurantByName(restaurantName);
+        return restaurant.getFoodByName(foodName);
     }
 }
