@@ -86,4 +86,13 @@ public class SystemManager {
         String restaurantName = node.get("restaurantName").asText().trim();
         _dataHandler.getUser().addToCart(foodName, restaurantName);
     }
+
+    public void getCart() throws InvalidToJsonException{
+        System.out.println(_dataHandler.getUser().getCart().toJson());
+    }
+
+    public void finalizeOrder() throws InvalidToJsonException{
+        System.out.println(_dataHandler.getUser().finalizeOrder());
+        System.out.println("order finalized.");
+    }
 }
