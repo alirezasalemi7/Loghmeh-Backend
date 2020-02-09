@@ -5,6 +5,7 @@ import structures.Food;
 import structures.Restaurant;
 import systemHandlers.SystemManager;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -23,6 +24,13 @@ public class Main {
     private static void addFood(String jsonData) throws Exception{
         Food food = Food.deserializeFromJson(jsonData);
         _systemManager.addFood(food);
+    }
+
+    private static void getRestaurants(){
+        ArrayList<String> names = _systemManager.getAllRestaurants();
+        for (String name : names){
+            System.out.println(name);
+        }
     }
 
 }
