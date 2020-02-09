@@ -61,4 +61,45 @@ public class Main {
         }
     }
 
+    private static void parseInstruction(String inst){
+        int indexOfData = inst.indexOf(" ");
+        indexOfData = (indexOfData == -1) ? inst.length() : indexOfData;
+        String instruction = inst.substring(0, indexOfData);
+        try {
+            switch (instruction){
+                case "addRestaurant" : {
+                    addRestaurant(inst.substring(indexOfData).trim());
+                };break;
+                case "addFood" : {
+                    addFood(inst.substring(indexOfData).trim());
+                };break;
+                case "getRestaurants" : {
+                    getRestaurants();
+                };break;
+                case "getRestaurant" : {
+                    getRestaurant(inst.substring(indexOfData).trim());
+                };break;
+                case "getFood" : {
+                    getFood(inst.substring(indexOfData).trim());
+                };break;
+                case "addToCart" : {
+                    _systemManager.addToCart(inst.substring(indexOfData).trim());
+                };break;
+                case "getCart" : {
+                    _systemManager.getCart();
+                };break;
+                case "finalizeOrder" : {
+                    _systemManager.finalizeOrder();
+                };break;
+                case "getRecommendedRestaurants" : {
+                    getRecommendedRestaurants();
+                };break;
+                default: throw new InvalidInputInstructionException();
+            }
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
 }
