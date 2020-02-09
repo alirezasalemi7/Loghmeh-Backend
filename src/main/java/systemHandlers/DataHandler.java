@@ -11,11 +11,11 @@ public class DataHandler {
 
     private User _user = new User(new Location(0,0));
     private HashMap<String, Restaurant> _restaurants;
-    private DataHandler _instance;
+    private static DataHandler _instance;
 
     private DataHandler(){}
 
-    public DataHandler getInstance(){
+    public static DataHandler getInstance(){
         if(_instance==null){
             _instance = new DataHandler();
         }
