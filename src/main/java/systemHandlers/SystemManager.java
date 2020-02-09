@@ -47,6 +47,10 @@ public class SystemManager {
         return new ArrayList(_dataHandler.getAllRestaurant().keySet());
     }
 
+    public Restaurant getRestaurantByName(String name) throws RestaurantDoesntExistException {
+        return _dataHandler.getRestaurantByName(name);
+    }
+
     public Food getFood(String restaurantName, String foodName)
             throws RestaurantDoesntExistException, FoodDoesntExistException {
         Restaurant restaurant = _dataHandler.getRestaurantByName(restaurantName);

@@ -9,11 +9,14 @@ import java.util.HashMap;
 
 public class DataHandler {
 
-    private User _user = new User(new Location(0,0));
+    private User _user;
     private HashMap<String, Restaurant> _restaurants;
     private static DataHandler _instance;
 
-    private DataHandler(){}
+    private DataHandler(){
+        _restaurants = new HashMap<>();
+        _user = new User(new Location(0, 0));
+    }
 
     public static DataHandler getInstance(){
         if(_instance==null){
