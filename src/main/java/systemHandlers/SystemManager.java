@@ -62,6 +62,13 @@ public class SystemManager {
         return nearbyRestaurants;
     }
 
+    public void increaseCredit(User user, Double chargeAmount) throws NegativeChargeAmountException {
+        if (chargeAmount <= 0) {
+            throw new NegativeChargeAmountException("Your charge amount must be positive.");
+        }
+        user.setCredit(user.getCredit() + chargeAmount);
+    }
+
     public Restaurant getUserNearbyRestaurants(User user, String restaurantId) throws RestaurantDoesntExistException, OutOfRangeException {
         if (isRestaurantInRange(user, restaurantId)) {
             return _dataHandler.getRestaurantById(restaurantId);
