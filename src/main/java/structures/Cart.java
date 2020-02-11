@@ -16,10 +16,16 @@ public class Cart {
 
     private HashMap<String, OrderItem> _orders;
     private String _restaurantId;
+    private Double _sumOfPrices;
 
     public Cart() {
         this._orders = new HashMap<>();
         this._restaurantId = null;
+        this._sumOfPrices = 0.0;
+    }
+
+    Double getSumOfPrices() {
+        return _sumOfPrices;
     }
 
     public ArrayList<OrderItem> getOrders() {
@@ -31,12 +37,16 @@ public class Cart {
         if (this._restaurantId == null) {
             this._restaurantId = restaurantId;
             this._orders.put(foodName, new OrderItem(food, 1));
+            this._sumOfPrices += food.getPrice();
         } else if (!this._restaurantId.equals(restaurantId)) {
             throw new UnregisteredOrderException("You have some orders from " + this._restaurantId + "in your cart.");
         } else {
             if (_orders.containsKey(foodName)) {
                 _orders.get(foodName).setCount(_orders.get(foodName).getCount() + 1);
-            } else _orders.put(foodName, new OrderItem(food, 1));
+            } else {
+                _orders.put(foodName, new OrderItem(food, 1));
+            }
+            _sumOfPrices += food.getPrice();
         }
     }
 

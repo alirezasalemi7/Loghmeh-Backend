@@ -1,7 +1,10 @@
 package structures;
 
-import exceptions.InvalidToJsonException;
+import exceptions.CartIsEmptyException;
+import exceptions.CreditIsNotEnoughException;
 import exceptions.UnregisteredOrderException;
+
+import java.util.ArrayList;
 
 public class User {
     private Cart _cart;
@@ -74,10 +77,16 @@ public class User {
         return _location;
     }
 
-    public String finalizeOrder() throws InvalidToJsonException {
-        String json = _cart.toJson();
+    public ArrayList<OrderItem> finalizeOrder() throws CartIsEmptyException, CreditIsNotEnoughException {
+        if (_cart.getOrders().size() == 0) {
+            throw new CartIsEmptyException("There isn't any order in your Cart.");
+        } else if (_cart.getSumOfPrices() > _credit) {
+            throw new CreditIsNotEnoughException("Your credit is not enough.");
+        }
+        _credit -= _cart.getSumOfPrices();
+        ArrayList<OrderItem> orders = _cart.getOrders();
         _cart.clearCart();
-        return json;
+        return orders;
     }
 
 }
