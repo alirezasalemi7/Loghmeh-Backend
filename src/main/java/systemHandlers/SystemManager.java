@@ -30,10 +30,10 @@ public class SystemManager {
     }
 
     public void addRestaurant(Restaurant restaurant) throws RestaurantIsRegisteredException {
-        if (_dataHandler.getAllRestaurant().containsKey(restaurant.getName())) {
-            throw new RestaurantIsRegisteredException("Restaurant " + restaurant.getName() + " is already registered.");
+        if (_dataHandler.getAllRestaurant().containsKey(restaurant.getId())) {
+            throw new RestaurantIsRegisteredException("Restaurant " + restaurant.getId() + " is already registered.");
         } else {
-            _dataHandler.getAllRestaurant().put(restaurant.getName(), restaurant);
+            _dataHandler.getAllRestaurant().put(restaurant.getId(), restaurant);
         }
     }
 
@@ -43,7 +43,7 @@ public class SystemManager {
 
 
     public void addFood(Food food) throws RestaurantDoesntExistException, FoodIsRegisteredException {
-        Restaurant restaurant = _dataHandler.getRestaurantByName(food.getRestaurantName());
+        Restaurant restaurant = _dataHandler.getRestaurantById(food.getRestaurantId());
         restaurant.addFood(food);
     }
 
@@ -51,13 +51,13 @@ public class SystemManager {
         return new ArrayList(_dataHandler.getAllRestaurant().keySet());
     }
 
-    public Restaurant getRestaurantByName(String name) throws RestaurantDoesntExistException {
-        return _dataHandler.getRestaurantByName(name);
+    public Restaurant getRestaurantById(String id) throws RestaurantDoesntExistException {
+        return _dataHandler.getRestaurantById(id);
     }
 
-    public Food getFood(String restaurantName, String foodName)
+    public Food getFood(String restaurantId, String foodName)
             throws RestaurantDoesntExistException, FoodDoesntExistException {
-        Restaurant restaurant = _dataHandler.getRestaurantByName(restaurantName);
+        Restaurant restaurant = _dataHandler.getRestaurantById(restaurantId);
         return restaurant.getFoodByName(foodName);
     }
 
@@ -91,13 +91,13 @@ public class SystemManager {
     public void addToCart(String jsonData) throws IOException, UnregisteredOrderException, RestaurantDoesntExistException, FoodDoesntExistException {
         JsonNode node = (new ObjectMapper()).readTree(jsonData);
         String foodName = node.get("foodName").asText().trim();
-        String restaurantName = node.get("restaurantName").asText().trim();
-        if (!_dataHandler.getAllRestaurant().containsKey(restaurantName)) {
-            throw new RestaurantDoesntExistException(restaurantName + " doesn't exist in the list of restaurants");
-        } else if (_dataHandler.getAllRestaurant().get(restaurantName).getFoodByName(foodName)==null) {
-            throw new FoodDoesntExistException(foodName + " doesn't registered in " + restaurantName);
+        String restaurantId = node.get("id").asText().trim();
+        if (!_dataHandler.getAllRestaurant().containsKey(restaurantId)) {
+            throw new RestaurantDoesntExistException(restaurantId + " doesn't exist in the list of restaurants");
+        } else if (_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName)==null) {
+            throw new FoodDoesntExistException(foodName + " doesn't registered in " + restaurantId);
         }
-        _dataHandler.getUser().addToCart(foodName, restaurantName);
+        _dataHandler.getUser().addToCart(foodName, restaurantId);
     }
 
     public void getCart() throws InvalidToJsonException{

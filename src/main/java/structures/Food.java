@@ -26,11 +26,11 @@ public class Food {
     @JsonProperty("price")
     private double _price;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String _restaurantName;
+    private String _restaurantId;
 
     public Food() {}
 
-    public Food(String name, String description, double popularity, double price, String restaurantName)
+    public Food(String name, String description, double popularity, double price, String restaurantId)
             throws InvalidPopularityException, InvalidPriceException {
         if (price < 0)
             throw new InvalidPriceException("Invalid price. Price is negative.");
@@ -40,7 +40,7 @@ public class Food {
         this._description = description;
         this._popularity = popularity;
         this._price = price;
-        this._restaurantName = restaurantName;
+        this._restaurantId = restaurantId;
     }
 
     public String getName() {
@@ -59,8 +59,8 @@ public class Food {
         return _price;
     }
 
-    public String getRestaurantName() {
-        return _restaurantName;
+    public String getRestaurantId() {
+        return _restaurantId;
     }
 
     public void setName(String name) {
@@ -79,8 +79,8 @@ public class Food {
         this._price = price;
     }
 
-    public void setRestaurantName(String restaurantName) {
-        this._restaurantName = restaurantName;
+    public void setRestaurantId(String restaurantId) {
+        this._restaurantId = restaurantId;
     }
 
     public String toJson() throws InvalidToJsonException{

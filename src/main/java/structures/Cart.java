@@ -14,23 +14,23 @@ import java.util.Map;
 public class Cart {
 
     private HashMap<String, OrderItem> _orders;
-    private String _restaurantName;
+    private String _restaurantId;
 
     public Cart() {
         this._orders = new HashMap<>();
-        this._restaurantName = null;
+        this._restaurantId = null;
     }
 
     public HashMap<String, OrderItem> getOrders() {
         return _orders;
     }
 
-    public void addOrder(String foodName, String restaurantName) throws UnregisteredOrderException {
-        if (this._restaurantName == null) {
-            this._restaurantName = restaurantName;
+    public void addOrder(String foodName, String restaurantId) throws UnregisteredOrderException {
+        if (this._restaurantId == null) {
+            this._restaurantId = restaurantId;
             this._orders.put(foodName, new OrderItem(foodName,1));
-        } else if (!this._restaurantName.equals(restaurantName)) {
-            throw new UnregisteredOrderException("You have some orders from " +  this._restaurantName + "in your cart.");
+        } else if (!this._restaurantId.equals(restaurantId)) {
+            throw new UnregisteredOrderException("You have some orders from " +  this._restaurantId + "in your cart.");
         } else {
             if(_orders.containsKey(foodName)){
                 _orders.get(foodName).setCount(_orders.get(foodName).getCount()+1);
@@ -61,6 +61,6 @@ public class Cart {
 
     public void clearCart() {
         _orders.clear();
-        _restaurantName = null;
+        _restaurantId = null;
     }
 }

@@ -4,6 +4,7 @@ import exceptions.RestaurantDoesntExistException;
 import structures.Location;
 import structures.Restaurant;
 import structures.User;
+import sun.jvm.hotspot.ui.tree.SimpleTreeGroupNode;
 
 import java.util.HashMap;
 
@@ -29,12 +30,10 @@ public class DataHandler {
 
     public HashMap<String, Restaurant> getAllRestaurant(){ return _restaurants;}
 
-    public Restaurant getRestaurantByName(String name) throws RestaurantDoesntExistException {
-        if (!_restaurants.containsKey(name)) {
-            throw new RestaurantDoesntExistException("Restaurant" + name + "doesn't exist.");
+    public Restaurant getRestaurantById(String id) throws RestaurantDoesntExistException {
+        if (!_restaurants.containsKey(id)) {
+            throw new RestaurantDoesntExistException("Restaurant" + id + "doesn't exist.");
         }
-        return _restaurants.get(name);
+        return _restaurants.get(id);
     }
-
-
 }

@@ -45,8 +45,8 @@ public class Main {
 
     private static void getRestaurant(String jsonData) throws IOException, RestaurantDoesntExistException, InvalidToJsonException {
         JsonNode node = (new ObjectMapper()).readTree(jsonData);
-        String name = node.get("name").asText().trim();
-        Restaurant restaurant = _systemManager.getRestaurantByName(name);
+        String name = node.get("id").asText().trim();
+        Restaurant restaurant = _systemManager.getRestaurantById(name);
         System.out.println(restaurant.toJson());
     }
 

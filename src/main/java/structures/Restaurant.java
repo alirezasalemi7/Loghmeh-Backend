@@ -157,7 +157,7 @@ public class Restaurant {
                 if(menuNode.isArray()){
                     for(JsonNode node : menuNode){
                         Food food = mapper.readValue(node.toString(), Food.class);
-                        food.setRestaurantName(name);
+                        food.setRestaurantId(id);
                         try {
                             restaurant.addFood(food);
                         } catch (FoodIsRegisteredException e) {
