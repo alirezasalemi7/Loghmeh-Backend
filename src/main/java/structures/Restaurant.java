@@ -21,6 +21,12 @@ public class Restaurant {
     private String _logoAddress;
     private Location _location;
     private String _id;
+    private HashMap<String, Food> _menu = new HashMap<>();
+    private double _averagePopularity = 0;
+
+    public ArrayList<Food> getMenu() {
+        return new ArrayList<Food>(this._menu.values());
+    }
 
     public String getId() {
         return _id;
@@ -29,9 +35,6 @@ public class Restaurant {
     public void setId(String id) {
         this._id = id;
     }
-
-    private HashMap<String, Food> _menu = new HashMap<>();
-    private double _averagePopularity = 0;
 
     public Restaurant(String name, String id, String logoAddress, String description,Location location){
         this._name = name;
