@@ -23,11 +23,11 @@ public class SystemManagerTest {
 
     @BeforeClass
     public static void setup(){
-        r1 = new Restaurant("naz", "heaven taste!!", new Location(54,87));
-        r2 = new Restaurant("naminoland", "cheap", new Location(154,457));
-        r3 = new Restaurant("rafael", "Lux", new Location(20,20));
-        r4 = new Restaurant("jenis", "the same!", new Location(210,920));
-        r5 = new Restaurant("ayda", "duplex!", new Location(789,20));
+        r1 = new Restaurant("naz","1","logo1", "heaven taste!!", new Location(54,87));
+        r2 = new Restaurant("naminoland","2","logo2", "cheap", new Location(154,457));
+        r3 = new Restaurant("rafael","3","logo3", "Lux", new Location(20,20));
+        r4 = new Restaurant("jenis","4","logo4", "the same!", new Location(210,920));
+        r5 = new Restaurant("ayda","5","logo5", "duplex!", new Location(789,20));
         try {
             f1 = new Food("bandari", "inspiring!", 0.99, 12000, "naz");
             f2 = new Food("felafel", "awful but cheap", 0.51, 7000, "naz");
