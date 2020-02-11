@@ -2,17 +2,19 @@ package structures;
 
 public class OrderItem {
 
-    private String _foodName;
+    private Food _food;
     private int _count;
 
-    OrderItem(String foodName,int count){
+    OrderItem(Food food,int count){
         this._count = count;
-        this._foodName = foodName;
+        this._food = food;
     }
 
     public int getCount(){return _count;}
 
-    public String getFoodName(){return _foodName;}
+    public String getFoodName(){return _food.getName();}
+
+    public Food getFood() { return _food;}
 
     public void setCount(int count){
         _count = count;

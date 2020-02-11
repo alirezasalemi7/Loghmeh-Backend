@@ -12,8 +12,8 @@ public class User {
         this._location = location;
     }
 
-    public void addToCart(String foodName, String restaurantName) throws UnregisteredOrderException {
-        _cart.addOrder(foodName ,restaurantName);
+    public void addToCart(Food food, String restaurantName) throws UnregisteredOrderException {
+        _cart.addOrder(food ,restaurantName);
     }
 
     public Cart getCart() {

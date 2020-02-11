@@ -97,7 +97,7 @@ public class SystemManager {
         } else if (_dataHandler.getAllRestaurant().get(restaurantName).getFoodByName(foodName)==null) {
             throw new FoodDoesntExistException(foodName + " doesn't registered in " + restaurantName);
         }
-        _dataHandler.getUser().addToCart(foodName, restaurantName);
+        _dataHandler.getUser().addToCart(_dataHandler.getAllRestaurant().get(restaurantName).getFoodByName(foodName), restaurantName);
     }
 
     public void getCart() throws InvalidToJsonException{
