@@ -14,7 +14,7 @@ import exceptions.InvalidToJsonException;
 import java.io.IOException;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY , getterVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonPropertyOrder({"name","description","popularity","price"})
+@JsonPropertyOrder({"name","description","popularity","price","image"})
 public class Food {
 
     @JsonProperty("name")
@@ -25,12 +25,15 @@ public class Food {
     private double _popularity;
     @JsonProperty("price")
     private double _price;
+
+    @JsonProperty("image")
+    private String _imageAddress;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String _restaurantName;
-
     public Food() {}
 
-    public Food(String name, String description, double popularity, double price, String restaurantName)
+    public Food(String name, String description, double popularity, double price, String imageAddress, String restaurantName)
             throws InvalidPopularityException, InvalidPriceException {
         if (price < 0)
             throw new InvalidPriceException("Invalid price. Price is negative.");
@@ -40,7 +43,12 @@ public class Food {
         this._description = description;
         this._popularity = popularity;
         this._price = price;
+        this._imageAddress = imageAddress;
         this._restaurantName = restaurantName;
+    }
+
+    public String getImageAddress() {
+        return _imageAddress;
     }
 
     public String getName() {
@@ -77,6 +85,10 @@ public class Food {
 
     public void setPrice(double price) {
         this._price = price;
+    }
+
+    public void setImageAddress(String _imageAddress) {
+        this._imageAddress = _imageAddress;
     }
 
     public void setRestaurantName(String restaurantName) {
