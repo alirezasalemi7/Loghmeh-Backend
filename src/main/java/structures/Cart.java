@@ -25,17 +25,17 @@ public class Cart {
         return _orders;
     }
 
-    public void addOrder(String foodName, String restaurantId) throws UnregisteredOrderException {
+    public void addOrder(Food food, String restaurantId) throws UnregisteredOrderException {
+        String foodName = food.getName();
         if (this._restaurantId == null) {
             this._restaurantId = restaurantId;
-            this._orders.put(foodName, new OrderItem(foodName,1));
+            this._orders.put(foodName, new OrderItem(food, 1));
         } else if (!this._restaurantId.equals(restaurantId)) {
-            throw new UnregisteredOrderException("You have some orders from " +  this._restaurantId + "in your cart.");
+            throw new UnregisteredOrderException("You have some orders from " + this._restaurantId + "in your cart.");
         } else {
-            if(_orders.containsKey(foodName)){
-                _orders.get(foodName).setCount(_orders.get(foodName).getCount()+1);
-            }
-            else _orders.put(foodName, new OrderItem(foodName, 1));
+            if (_orders.containsKey(foodName)) {
+                _orders.get(foodName).setCount(_orders.get(foodName).getCount() + 1);
+            } else _orders.put(foodName, new OrderItem(food, 1));
         }
     }
 
