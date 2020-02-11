@@ -18,14 +18,35 @@ public class Restaurant {
 
     private String _name;
     private String _description;
+    private String _logoAddress;
     private Location _location;
+    private String _id;
+
+    public String getId() {
+        return _id;
+    }
+
+    public void setId(String id) {
+        this._id = id;
+    }
+
     private HashMap<String, Food> _menu = new HashMap<>();
     private double _averagePopularity = 0;
 
-    public Restaurant(String name,String description,Location location){
+    public Restaurant(String name, String id, String logoAddress, String description,Location location){
         this._name = name;
+        this._id = id;
+        this._logoAddress = logoAddress;
         this._description = description;
         this._location = location;
+    }
+
+    public String getLogoAddress() {
+        return _logoAddress;
+    }
+
+    public void setLogoAddress(String logoAddress) {
+        this._logoAddress = logoAddress;
     }
 
     public Location getLocation(){
@@ -83,6 +104,8 @@ public class Restaurant {
             ArrayList<Food> foodList = new ArrayList<Food>(_menu.values());
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField("name", _name);
+            jsonGenerator.writeObjectField("id", _id);
+            jsonGenerator.writeObjectField("logo", _logoAddress);
             jsonGenerator.writeStringField("description",_description);
             jsonGenerator.writeObjectField("location", _location);
             jsonGenerator.writeArrayFieldStart("menu");
@@ -120,12 +143,14 @@ public class Restaurant {
                 ObjectCodec codec = jsonParser.getCodec();
                 JsonNode root = codec.readTree(jsonParser);
                 String name = root.get("name").asText();
+                String id = root.get("id").asText();
+                String logo = root.get("logo").asText();
                 String description = root.get("description").asText();
                 JsonNode locationNode = root.get("location");
                 ObjectMapper mapper = new ObjectMapper();
                 Location location = mapper.readValue(locationNode.toString(), Location.class);
                 JsonNode menuNode = root.get("menu");
-                Restaurant restaurant = new Restaurant(name,description,location);
+                Restaurant restaurant = new Restaurant(name, id, logo, description,location);
                 if(menuNode.isArray()){
                     for(JsonNode node : menuNode){
                         Food food = mapper.readValue(node.toString(), Food.class);
