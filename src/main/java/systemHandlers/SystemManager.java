@@ -2,6 +2,7 @@ package systemHandlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.bcel.internal.generic.RET;
 import exceptions.*;
 
 import org.javatuples.Pair;
@@ -107,5 +108,15 @@ public class SystemManager {
     public void finalizeOrder() throws InvalidToJsonException{
         System.out.println(_dataHandler.getUser().finalizeOrder());
         System.out.println("order finalized.");
+    }
+
+    ArrayList<Restaurant> getInRangeRestaurants(User user) {
+        ArrayList<Restaurant> nearbyRestaurants = new ArrayList<>();
+        for (HashMap.Entry<String, Restaurant> entry : _dataHandler.getAllRestaurant().entrySet()) {
+            if (user.getLocation().getDistance(entry.getValue().getLocation()) < 170) {
+                nearbyRestaurants.add(entry.getValue());
+            }
+        }
+        return nearbyRestaurants;
     }
 }
