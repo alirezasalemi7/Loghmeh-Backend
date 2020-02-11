@@ -105,7 +105,7 @@ public class SystemManager {
         System.out.println(_dataHandler.getUser().getCart().toJson());
     }
 
-    public void finalizeOrder() throws InvalidToJsonException{
+    public void finalizeOrder() throws CartIsEmptyException, CreditIsNotEnoughException {
         System.out.println(_dataHandler.getUser().finalizeOrder());
         System.out.println("order finalized.");
     }
