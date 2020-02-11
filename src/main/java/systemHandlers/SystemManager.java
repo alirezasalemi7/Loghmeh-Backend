@@ -52,14 +52,25 @@ public class SystemManager {
         return new ArrayList(_dataHandler.getAllRestaurant().keySet());
     }
 
-    public Restaurant getRestaurantById(String id) throws RestaurantDoesntExistException {
-        return _dataHandler.getRestaurantById(id);
+    ArrayList<Restaurant> getInRangeRestaurants(User user) {
+        ArrayList<Restaurant> nearbyRestaurants = new ArrayList<>();
+        for (HashMap.Entry<String, Restaurant> entry : _dataHandler.getAllRestaurant().entrySet()) {
+            if (user.getLocation().getDistance(entry.getValue().getLocation()) <= 170) {
+                nearbyRestaurants.add(entry.getValue());
+            }
+        }
+        return nearbyRestaurants;
     }
 
-    public Food getFood(String restaurantId, String foodName)
-            throws RestaurantDoesntExistException, FoodDoesntExistException {
-        Restaurant restaurant = _dataHandler.getRestaurantById(restaurantId);
-        return restaurant.getFoodByName(foodName);
+    public Restaurant getUserNearbyRestaurants(User user, String restaurantId) throws RestaurantDoesntExistException, OutOfRangeException {
+        if (isRestaurantInRange(user, restaurantId)) {
+            return _dataHandler.getRestaurantById(restaurantId);
+        }
+        else throw new OutOfRangeException("The restaurant is not in your region.");
+    }
+
+    public Restaurant getRestaurantById(String id) throws RestaurantDoesntExistException {
+        return _dataHandler.getRestaurantById(id);
     }
 
     public ArrayList<Restaurant> getRecommendedRestaurants(User user){
@@ -89,6 +100,12 @@ public class SystemManager {
         return recommended;
     }
 
+    public Food getFood(String restaurantId, String foodName)
+            throws RestaurantDoesntExistException, FoodDoesntExistException {
+        Restaurant restaurant = _dataHandler.getRestaurantById(restaurantId);
+        return restaurant.getFoodByName(foodName);
+    }
+
     public void addToCart(String jsonData) throws IOException, UnregisteredOrderException, RestaurantDoesntExistException, FoodDoesntExistException {
         JsonNode node = (new ObjectMapper()).readTree(jsonData);
         String foodName = node.get("foodName").asText().trim();
@@ -108,16 +125,6 @@ public class SystemManager {
     public void finalizeOrder() throws CartIsEmptyException, CreditIsNotEnoughException {
         System.out.println(_dataHandler.getUser().finalizeOrder());
         System.out.println("order finalized.");
-    }
-
-    ArrayList<Restaurant> getInRangeRestaurants(User user) {
-        ArrayList<Restaurant> nearbyRestaurants = new ArrayList<>();
-        for (HashMap.Entry<String, Restaurant> entry : _dataHandler.getAllRestaurant().entrySet()) {
-            if (user.getLocation().getDistance(entry.getValue().getLocation()) <= 170) {
-                nearbyRestaurants.add(entry.getValue());
-            }
-        }
-        return nearbyRestaurants;
     }
 
     Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {
