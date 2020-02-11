@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.InvalidToJsonException;
 import exceptions.UnregisteredOrderException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +22,8 @@ public class Cart {
         this._restaurantId = null;
     }
 
-    public HashMap<String, OrderItem> getOrders() {
-        return _orders;
+    public ArrayList<OrderItem> getOrders() {
+        return new ArrayList<>(_orders.values());
     }
 
     public void addOrder(Food food, String restaurantId) throws UnregisteredOrderException {
