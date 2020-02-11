@@ -16,10 +16,10 @@ public class DataHandler {
 
     private DataHandler(){
         _restaurants = new HashMap<>();
-        _user = new User(new Location(0, 0), "ali", "mammadi",  "09196055428", "egjkfds@fjs.com", 1000.0);
+        _user = new User(new Location(0, 0), "ali", "mammadi",  "09196055428", "am@gmail.com", 1000.0);
     }
 
-    public static DataHandler getInstance(){
+    public static DataHandler getInstance() {
         if(_instance==null){
             _instance = new DataHandler();
         }
