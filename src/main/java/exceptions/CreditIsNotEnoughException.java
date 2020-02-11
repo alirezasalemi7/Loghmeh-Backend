@@ -1,8 +1,8 @@
 package exceptions;
 
-public class CartIsEmptyException extends Exception {
+public class CreditIsNotEnoughException extends Exception {
     String _message;
-    public CartIsEmptyException(String message) {
+    public CreditIsNotEnoughException(String message) {
         super(message);
         this._message = message;
     }
