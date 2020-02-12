@@ -7,6 +7,7 @@ import exceptions.*;
 
 import org.javatuples.Pair;
 import structures.Food;
+import structures.OrderItem;
 import structures.Restaurant;
 import structures.User;
 
@@ -101,13 +102,8 @@ public class SystemManager {
         _dataHandler.getUser().addToCart(_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName), restaurantId);
     }
 
-    public void getCart() throws InvalidToJsonException{
-        System.out.println(_dataHandler.getUser().getCart().toJson());
-    }
-
-    public void finalizeOrder() throws CartIsEmptyException, CreditIsNotEnoughException {
-        System.out.println(_dataHandler.getUser().finalizeOrder());
-        System.out.println("order finalized.");
+    public ArrayList<OrderItem> finalizeOrder(User user) throws CartIsEmptyException, CreditIsNotEnoughException {
+        return user.finalizeOrder();
     }
 
     ArrayList<Restaurant> getInRangeRestaurants(User user) {
