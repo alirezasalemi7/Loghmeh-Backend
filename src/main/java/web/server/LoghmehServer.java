@@ -7,13 +7,13 @@ import exceptions.RestaurantIsRegisteredException;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import io.javalin.http.HandlerType;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jetbrains.annotations.NotNull;
 import structures.Restaurant;
+import systemHandlers.DataHandler;
 import systemHandlers.SystemManager;
 import web.html.HtmlPageMaker;
 
@@ -115,14 +115,17 @@ public class LoghmehServer {
         _server.post("/profile/addcredit", addUserCredit());
         _server.post("/profile/addtocart", addFoodToCart());
         _server.get("/profile/cart", getCart());
-        _server.get("/profile/finilize", finalizeOrder());
+        _server.get("/profile/finalize", finalizeOrder());
     }
 
     private Handler getAllRestaurantsInRange(){
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-
+                ArrayList<Restaurant> restaurants = _system.getInRangeRestaurants(DataHandler.getInstance().getUser());
+                String html = _pageMaker.makeAllRestaurantsPage(restaurants);
+                context.status(200);
+                context.html(html);
             }
         };
     }
