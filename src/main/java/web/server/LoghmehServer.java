@@ -13,6 +13,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.jetbrains.annotations.NotNull;
 import structures.OrderItem;
 import structures.Restaurant;
+import structures.User;
 import systemHandlers.DataHandler;
 import systemHandlers.SystemManager;
 import web.html.HtmlPageMaker;
@@ -162,7 +163,7 @@ public class LoghmehServer {
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-                String html = _pageMaker.makeProfilePage(DataHandler.getInstance().getUser());
+                String html = _pageMaker.makeProfilePage(DataHandler.getInstance().getUser(),false,false);
                 context.status(200);
                 context.html(html);
             }
@@ -173,9 +174,26 @@ public class LoghmehServer {
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-                int credit = Integer.parseInt(context.formParam("Credit"));
-                // con.
-                context.redirect("/profile");
+                String creditString = context.formParam("Credit");
+                if(creditString==null){
+                    context.status(400);
+                    context.html(_pageMaker.makeInvalidRequestPage("/profile/addcredit"));
+                    return;
+                }
+                try {
+                    double credit = Double.parseDouble(creditString);
+                    _system.increaseCredit(DataHandler.getInstance().getUser(), credit);
+                    context.status(200);
+                    context.html(_pageMaker.makeProfilePage(DataHandler.getInstance().getUser(), false, true));
+                }
+                catch (NumberFormatException e){
+                    context.status(400);
+                    context.html(_pageMaker.makeInvalidRequestPage("/profile/addcredit"));
+                }
+                catch (NegativeChargeAmountException e){
+                    context.status(400);
+                    context.html(_pageMaker.makeProfilePage(DataHandler.getInstance().getUser(), true,false));
+                }
             }
         };
     }
@@ -210,8 +228,9 @@ public class LoghmehServer {
                 String html;
                 try {
                     ArrayList<OrderItem> orderItems = _system.finalizeOrder(DataHandler.getInstance().getUser());
+                    html = _pageMaker.makeOrderFinalizedPage(orderItems, DataHandler.getInstance().getUser());
                     context.status(200);
-                    context.redirect("/profile");
+                    context.html(html);
                 }
                 catch (CartIsEmptyException e){
                     html = _pageMaker.makeCartEmptyErrorPage();

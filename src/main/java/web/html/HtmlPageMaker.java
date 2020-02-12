@@ -17,7 +17,7 @@ public class HtmlPageMaker {
         return null;
     }
 
-    public String makeProfilePage(User user){
+    public String makeProfilePage(User user,boolean negCredit,boolean successFullAddCredit){
         return null;
     }
 
@@ -44,5 +44,9 @@ public class HtmlPageMaker {
     public String makeMultipleRestaurantAddToCartErrorPage(User user){
         return null;
     }
+
+    public String makeInvalidRequestPage(String address){return null;}
+
+    public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems,User user){return null;}
 
 }
