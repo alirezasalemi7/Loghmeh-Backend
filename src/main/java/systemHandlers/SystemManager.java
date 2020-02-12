@@ -1,16 +1,13 @@
 package systemHandlers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.bcel.internal.generic.RET;
 import exceptions.*;
 
 import org.javatuples.Pair;
 import structures.Food;
+import structures.OrderItem;
 import structures.Restaurant;
 import structures.User;
 
-import java.io.IOException;
 import java.util.*;
 
 public class SystemManager {
@@ -113,25 +110,17 @@ public class SystemManager {
         return restaurant.getFoodByName(foodName);
     }
 
-    public void addToCart(String jsonData) throws IOException, UnregisteredOrderException, RestaurantDoesntExistException, FoodDoesntExistException {
-        JsonNode node = (new ObjectMapper()).readTree(jsonData);
-        String foodName = node.get("foodName").asText().trim();
-        String restaurantId = node.get("id").asText().trim();
+    public void addToCart(Food food, User user) throws UnregisteredOrderException, RestaurantDoesntExistException, FoodDoesntExistException {
+        String restaurantId = food.getRestaurantId();
+        String foodName = food.getName();
         if (!_dataHandler.getAllRestaurant().containsKey(restaurantId)) {
             throw new RestaurantDoesntExistException(restaurantId + " doesn't exist in the list of restaurants");
-        } else if (_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName)==null) {
-            throw new FoodDoesntExistException(foodName + " doesn't registered in " + restaurantId);
         }
-        _dataHandler.getUser().addToCart(_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName), restaurantId);
+        user.addToCart(_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName), restaurantId);
     }
 
-    public void getCart() throws InvalidToJsonException{
-        System.out.println(_dataHandler.getUser().getCart().toJson());
-    }
-
-    public void finalizeOrder() throws CartIsEmptyException, CreditIsNotEnoughException {
-        System.out.println(_dataHandler.getUser().finalizeOrder());
-        System.out.println("order finalized.");
+    public ArrayList<OrderItem> finalizeOrder(User user) throws CartIsEmptyException, CreditIsNotEnoughException {
+        return user.finalizeOrder();
     }
 
     Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {
