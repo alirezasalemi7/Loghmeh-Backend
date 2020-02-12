@@ -148,12 +148,12 @@ public class Restaurant {
                 String name = root.get("name").asText();
                 String id = root.get("id").asText();
                 String logo = root.get("logo").asText();
-                String description = root.get("description").asText();
+//                String description = root.get("description").asText();
                 JsonNode locationNode = root.get("location");
                 ObjectMapper mapper = new ObjectMapper();
                 Location location = mapper.readValue(locationNode.toString(), Location.class);
                 JsonNode menuNode = root.get("menu");
-                Restaurant restaurant = new Restaurant(name, id, logo, description,location);
+                Restaurant restaurant = new Restaurant(name, id, logo, "",location);
                 if(menuNode.isArray()){
                     for(JsonNode node : menuNode){
                         Food food = mapper.readValue(node.toString(), Food.class);

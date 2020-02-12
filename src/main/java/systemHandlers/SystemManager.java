@@ -48,7 +48,7 @@ public class SystemManager {
         return new ArrayList(_dataHandler.getAllRestaurant().keySet());
     }
 
-    ArrayList<Restaurant> getInRangeRestaurants(User user) {
+    public ArrayList<Restaurant> getInRangeRestaurants(User user) {
         ArrayList<Restaurant> nearbyRestaurants = new ArrayList<>();
         for (HashMap.Entry<String, Restaurant> entry : _dataHandler.getAllRestaurant().entrySet()) {
             if (user.getLocation().getDistance(entry.getValue().getLocation()) <= 170) {
@@ -115,7 +115,6 @@ public class SystemManager {
         if (!_dataHandler.getAllRestaurant().containsKey(restaurantId)) {
             throw new RestaurantDoesntExistException(restaurantId + " doesn't exist in the list of restaurants");
         }
-//<<<<<<< HEAD
         user.addToCart(_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName), restaurantId);
     }
 
