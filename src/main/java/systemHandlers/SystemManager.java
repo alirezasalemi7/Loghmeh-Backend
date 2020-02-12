@@ -12,7 +12,6 @@ import java.util.*;
 
 public class SystemManager {
 
-
     private static SystemManager _instance;
     private DataHandler _dataHandler;
 
@@ -116,6 +115,7 @@ public class SystemManager {
         if (!_dataHandler.getAllRestaurant().containsKey(restaurantId)) {
             throw new RestaurantDoesntExistException(restaurantId + " doesn't exist in the list of restaurants");
         }
+//<<<<<<< HEAD
         user.addToCart(_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName), restaurantId);
     }
 
@@ -123,7 +123,7 @@ public class SystemManager {
         return user.finalizeOrder();
     }
 
-    Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {
+    public Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {
         Restaurant targetRestaurant = _dataHandler.getRestaurantById(restaurantId);
         return (user.getLocation().getDistance(targetRestaurant.getLocation()) <= 170);
     }
