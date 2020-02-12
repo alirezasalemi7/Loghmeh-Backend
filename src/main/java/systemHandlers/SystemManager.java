@@ -106,7 +106,7 @@ public class SystemManager {
         return user.finalizeOrder();
     }
 
-    ArrayList<Restaurant> getInRangeRestaurants(User user) {
+    public ArrayList<Restaurant> getInRangeRestaurants(User user) {
         ArrayList<Restaurant> nearbyRestaurants = new ArrayList<>();
         for (HashMap.Entry<String, Restaurant> entry : _dataHandler.getAllRestaurant().entrySet()) {
             if (user.getLocation().getDistance(entry.getValue().getLocation()) <= 170) {
@@ -116,7 +116,7 @@ public class SystemManager {
         return nearbyRestaurants;
     }
 
-    Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {
+    public Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {
         Restaurant targetRestaurant = _dataHandler.getRestaurantById(restaurantId);
         return (user.getLocation().getDistance(targetRestaurant.getLocation()) <= 170);
     }
