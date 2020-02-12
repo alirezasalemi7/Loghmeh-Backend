@@ -33,7 +33,7 @@ public class HtmlPageMaker {
         return null;
     }
 
-    public String makeNotEnoughProfitPage(User user){
+    public String makeNotEnoughCreditPage(User user){
         return null;
     }
 

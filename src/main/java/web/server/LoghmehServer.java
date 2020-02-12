@@ -2,9 +2,7 @@ package web.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.InvalidJsonInputException;
-import exceptions.RestaurantDoesntExistException;
-import exceptions.RestaurantIsRegisteredException;
+import exceptions.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -13,6 +11,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jetbrains.annotations.NotNull;
+import structures.OrderItem;
 import structures.Restaurant;
 import systemHandlers.DataHandler;
 import systemHandlers.SystemManager;
@@ -208,7 +207,22 @@ public class LoghmehServer {
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-
+                String html;
+                try {
+                    ArrayList<OrderItem> orderItems = _system.finalizeOrder(DataHandler.getInstance().getUser());
+                    context.status(200);
+                    context.redirect("/profile");
+                }
+                catch (CartIsEmptyException e){
+                    html = _pageMaker.makeCartEmptyErrorPage();
+                    context.status(400);
+                    context.html(html);
+                }
+                catch (CreditIsNotEnoughException e){
+                    html = _pageMaker.makeNotEnoughCreditPage(DataHandler.getInstance().getUser());
+                    context.status(400);
+                    context.html(html);
+                }
             }
         };
     }
