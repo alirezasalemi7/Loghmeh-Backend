@@ -3,6 +3,7 @@ package web.server;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.InvalidJsonInputException;
+import exceptions.RestaurantDoesntExistException;
 import exceptions.RestaurantIsRegisteredException;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -135,7 +136,25 @@ public class LoghmehServer {
             @Override
             public void handle(@NotNull Context context) throws Exception {
                 String restaurantId = context.pathParam("id");
-
+                try {
+                    boolean isInRange = _system.isRestaurantInRange(DataHandler.getInstance().getUser(), restaurantId);
+                    if(isInRange){
+                        Restaurant restaurant = _system.getRestaurantById(restaurantId);
+                        String html = _pageMaker.makeRestaurantPage(restaurant);
+                        context.status(200);
+                        context.html(html);
+                    }
+                    else{
+                        String html = _pageMaker.makeInvalidRestaurantAccessPage(restaurantId);
+                        context.status(403);
+                        context.html(html);
+                    }
+                }
+                catch (RestaurantDoesntExistException e){
+                    String html = _pageMaker.makeRestaurantNotFoundPage(restaurantId);
+                    context.status(404);
+                    context.html(html);
+                }
             }
         };
     }

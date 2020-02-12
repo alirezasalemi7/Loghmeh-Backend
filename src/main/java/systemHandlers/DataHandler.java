@@ -4,7 +4,6 @@ import exceptions.RestaurantDoesntExistException;
 import structures.Location;
 import structures.Restaurant;
 import structures.User;
-import sun.jvm.hotspot.ui.tree.SimpleTreeGroupNode;
 
 import java.util.HashMap;
 
