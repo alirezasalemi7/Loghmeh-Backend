@@ -163,7 +163,9 @@ public class LoghmehServer {
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-
+                String html = _pageMaker.makeProfilePage(DataHandler.getInstance().getUser());
+                context.status(200);
+                context.html(html);
             }
         };
     }
