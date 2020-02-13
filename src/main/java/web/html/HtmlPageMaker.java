@@ -101,11 +101,11 @@ public class HtmlPageMaker {
     }
 
     public String makeInvalidRestaurantAccessPage(String restaurantId){
-        return createErrorPage("Access to this restaurant is not allowed.", "403", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage("Access to " + restaurantId + " is not allowed.", "403", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
     public String makeNotEnoughCreditPage(User user){
-        return createErrorPage("Your credit is not enough.", "400", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage("Your credit(" + user.getCredit() + ") is not enough.", "400", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
     public String makeCartEmptyErrorPage(){

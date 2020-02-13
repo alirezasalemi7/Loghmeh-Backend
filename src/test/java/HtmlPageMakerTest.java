@@ -53,6 +53,15 @@ public class HtmlPageMakerTest {
         System.out.println(pageMaker.makeCartPage(user));
     }
 
+    @Test
+    public void testErrorPages() {
+        System.out.println(pageMaker.makeCartEmptyErrorPage());
+        System.out.println(pageMaker.makeInvalidRestaurantAccessPage("123"));
+        System.out.println(pageMaker.makeRestaurantNotFoundPage("123"));
+        System.out.println(pageMaker.makeMultipleRestaurantAddToCartErrorPage(user));
+        System.out.println(pageMaker.makeNotEnoughCreditPage(user));
+    }
+
     @AfterClass
     public static void teardown() {
         user = null;
