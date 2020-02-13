@@ -11,6 +11,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jetbrains.annotations.NotNull;
+import structures.Food;
 import structures.OrderItem;
 import structures.Restaurant;
 import structures.User;
@@ -204,8 +205,36 @@ public class LoghmehServer {
             public void handle(@NotNull Context context) throws Exception {
                 String foodName = context.formParam("foodName");
                 String restaurantId = context.formParam("restaurantId");
-                // con.
-                context.redirect("/restaurants/"+restaurantId);
+                String restaurantName = "";
+                if(foodName == null || restaurantId == null){
+                    context.status(400);
+                    context.html(_pageMaker.makeInvalidRequestPage("/profile/addtocart"));
+                    return;
+                }
+                try {
+                    if(!_system.isRestaurantInRange(DataHandler.getInstance().getUser(), restaurantId)){
+                        String html = _pageMaker.makeInvalidRestaurantAccessPage(restaurantId);
+                        context.status(403);
+                        context.html(html);
+                        return;
+                    }
+                    Restaurant restaurant = _system.getRestaurantById(restaurantId);
+                    restaurantName = restaurant.getName();
+                    Food food = restaurant.getFoodByName(foodName);
+                    _system.addToCart(food, DataHandler.getInstance().getUser());
+                    context.status(200);
+                    context.redirect("/restaurants/"+restaurantId);
+                }
+                catch (RestaurantDoesntExistException e){
+                    String html = _pageMaker.makeRestaurantNotFoundPage(restaurantId);
+                    context.status(404);
+                    context.html(html);
+                }
+                catch (FoodDoesntExistException e){
+                    String html = _pageMaker.makeFoodNotFoundPage(foodName, restaurantName,restaurantId);
+                    context.status(404);
+                    context.html(html);
+                }
             }
         };
     }

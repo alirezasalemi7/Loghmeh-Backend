@@ -49,4 +49,6 @@ public class HtmlPageMaker {
 
     public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems,User user){return null;}
 
+    public String makeFoodNotFoundPage(String foodName,String restaurantName,String restaurantId){return null;}
+
 }

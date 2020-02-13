@@ -17,8 +17,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    static SystemManager _systemManager = SystemManager.getInstance();
-
     public static void main( String[] args ) {
         LoghmehServer server = new LoghmehServer();
         server.startServer();
