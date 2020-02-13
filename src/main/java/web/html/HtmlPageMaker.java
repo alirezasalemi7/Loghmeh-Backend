@@ -28,8 +28,8 @@ public class HtmlPageMaker {
         return pageContent;
     }
 
-    private String makeMenuContents(String pageContent, ArrayList<Food> foods) {
-        String foodInfoContent = null;
+    private String makeMenuContents(String content, ArrayList<Food> foods) {
+        String foodInfoContent = null, pageContent = content;
         try {
             foodInfoContent = new String(Files.readAllBytes(Paths.get("src/main/resources/RestaurantPage/foodInfo.txt")));
         } catch (IOException e) {
@@ -37,8 +37,8 @@ public class HtmlPageMaker {
         }
         for (int i = 0; i < foods.size(); i++) {
             pageContent = pageContent.replace("FoodInfo", foodInfoContent.replace("FoodImage", foods.get(i).getImageAddress())
-                    .replace("FoodName", foods.get(i).getName()).replace("FoodPrice", foods.get(i).getPrice() + "")
-                    + (((i < (foods.size() - 1)) ? "FoodInfo" : "")));
+                    .replace("FoodName", foods.get(i).getName()).replace("FoodPrice", foods.get(i).getPrice() + "").replace("RestaurantId", foods.get(i).getRestaurantId())
+                    + ((i < (foods.size() - 1)) ? "FoodInfo" : ""));
         }
         return pageContent;
     }
@@ -57,11 +57,21 @@ public class HtmlPageMaker {
     }
 
     public String makeProfilePage(User user){
-        return null;
+        String pageContent = null;
+        try {
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/userPage.txt")));
+            pageContent = pageContent.replace("FirstName", user.getName()).replace("LastName", user.getFamily()).replace("PhoneNumber", user.getPhoneNumber())
+                            .replace("EmailAddress", user.getEmail()).replace("Credit", user.getCredit() + "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return pageContent;
     }
 
     public String makeCartPage(User user){
-        return null;
+        String pageContent = null;
+
+        return pageContent;
     }
 
     public String makeRestaurantNotFoundPage(String restaurantId){
