@@ -1,6 +1,7 @@
 package web.html;
 
 import models.Food;
+import models.OrderItem;
 import models.Restaurant;
 import models.User;
 
@@ -14,8 +15,8 @@ public class HtmlPageMaker {
     public String makeAllRestaurantsPage(ArrayList<Restaurant> restaurants) {
         String pageContent = null, tableRowContent = null;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/allRestaurantsPage/allRestaurants.txt")));
-            tableRowContent = new String(Files.readAllBytes(Paths.get("src/main/resources/allRestaurantsPage/tableRow.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/AllRestaurantsPage/allRestaurants.txt")));
+            tableRowContent = new String(Files.readAllBytes(Paths.get("src/main/resources/AllRestaurantsPage/tableRow.txt")));
             for (int i = 0; i < restaurants.size(); i++) {
                 pageContent = pageContent.replace("TableRows", tableRowContent.replace("RestaurantId", restaurants.get(i).getId())
                                 .replace("ImageSource", restaurants.get(i).getLogoAddress())
@@ -69,8 +70,18 @@ public class HtmlPageMaker {
     }
 
     public String makeCartPage(User user){
-        String pageContent = null;
-
+        String pageContent = null, orderContent = null;
+        try {
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
+            orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
+            ArrayList<OrderItem> orders = user.getCart().getOrders();
+            for (int i = 0; i < orders.size(); i++) {
+                pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
+                                .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return pageContent;
     }
 
