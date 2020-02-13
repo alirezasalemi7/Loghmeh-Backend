@@ -2,4 +2,9 @@
     <td>RestaurantId</td>
     <td><img class="logo" src="ImageSource" alt="logo"></td>
     <td>RestaurantName</td>
+    <td>
+        <form action="RestaurantAddress">
+            <input type="submit" value="Resaturant Page" />
+        </form>
+    </td>
 </tr>

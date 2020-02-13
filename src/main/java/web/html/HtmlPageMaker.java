@@ -19,7 +19,8 @@ public class HtmlPageMaker {
                 pageContent = pageContent.replace("TableRows"
                                 , tableRowContent.replace("RestaurantId", restaurants.get(i).getId())
                                     .replace("ImageSource", restaurants.get(i).getLogoAddress())
-                                        .replace("RestaurantName", restaurants.get(i).getName()) + ((i < (restaurants.size() - 1)) ? "TableRows" : ""));
+                                        .replace("RestaurantName", restaurants.get(i).getName())
+                                            .replace("RestaurantAddress", "/restaurants/" + restaurants.get(i).getId()) + ((i < (restaurants.size() - 1)) ? "TableRows" : ""));
             }
         } catch (IOException e) {
             e.printStackTrace();
