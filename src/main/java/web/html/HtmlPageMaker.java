@@ -7,6 +7,7 @@ import models.User;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -85,24 +86,34 @@ public class HtmlPageMaker {
         return pageContent;
     }
 
+    private String createErrorPage(String message, String errorCode, String filePath) {
+        String pageContent = null;
+        try {
+            pageContent = new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return pageContent.replace("ErrorCode", errorCode).replace("Message", message);
+    }
+
     public String makeRestaurantNotFoundPage(String restaurantId){
-        return null;
+        return createErrorPage("Restaurant not found.", "404", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
     public String makeInvalidRestaurantAccessPage(String restaurantId){
-        return null;
+        return createErrorPage("Access to this restaurant is not allowed.", "403", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
-    public String makeNotEnoughProfitPage(User user){
-        return null;
+    public String makeNotEnoughCreditPage(User user){
+        return createErrorPage("Your credit is not enough.", "400", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
     public String makeCartEmptyErrorPage(){
-        return null;
+        return createErrorPage("Your cart empty.", "400", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
     public String makeMultipleRestaurantAddToCartErrorPage(User user){
-        return null;
+        return createErrorPage("You should order from only one restaurant.", "400", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
 }
