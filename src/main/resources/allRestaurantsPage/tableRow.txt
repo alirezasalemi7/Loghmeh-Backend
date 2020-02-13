@@ -1,0 +1,5 @@
+<tr>
+    <td>RestaurantId</td>
+    <td><img class="logo" src="ImageSource" alt="logo"></td>
+    <td>RestaurantName</td>
+</tr>
