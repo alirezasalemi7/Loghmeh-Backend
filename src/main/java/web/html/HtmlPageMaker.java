@@ -1,16 +1,30 @@
 package web.html;
 
-import structures.OrderItem;
-import structures.Restaurant;
-import structures.User;
+import models.Restaurant;
+import models.User;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 
 public class HtmlPageMaker {
 
-    public String makeAllRestaurantsPage(ArrayList<Restaurant> restaurants){
-        return null;
+    public String makeAllRestaurantsPage(ArrayList<Restaurant> restaurants) {
+        String pageContent = null, tableRowContent = null;
+        try {
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/allRestaurantsPage/allRestaurants.txt")));
+            tableRowContent = new String(Files.readAllBytes(Paths.get("src/main/resources/allRestaurantsPage/tableRow.txt")));
+            for (int i = 0; i < restaurants.size(); i++) {
+                pageContent = pageContent.replace("TableRows"
+                                , tableRowContent.replace("RestaurantId", restaurants.get(i).getId())
+                                    .replace("ImageSource", restaurants.get(i).getLogoAddress())
+                                        .replace("RestaurantName", restaurants.get(i).getName()) + ((i < (restaurants.size() - 1)) ? "TableRows" : ""));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return pageContent;
     }
 
     public String makeRestaurantPage(Restaurant restaurant){
