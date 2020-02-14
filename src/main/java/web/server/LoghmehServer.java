@@ -235,6 +235,11 @@ public class LoghmehServer {
                     context.status(404);
                     context.html(html);
                 }
+                catch (UnregisteredOrderException e){
+                    String html = _pageMaker.makeMultipleRestaurantAddToCartErrorPage(DataHandler.getInstance().getUser());
+                    context.status(400);
+                    context.html(html);
+                }
             }
         };
     }
