@@ -1,0 +1,8 @@
+<li>
+    <img src="FoodImage" alt="logo">
+    <div>FoodName</div>
+    <div>FoodPrice Toman</div>
+    <form action="/profile/addtocart?foodName=FoodName&restaurantId=RestaurantId" method="POST">
+        <button type="submit">addToCart</button>
+    </form>
+</li>

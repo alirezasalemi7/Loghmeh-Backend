@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+    <style>
+        li, div, form {
+        	padding: 5px
+        }
+    </style>
+</head>
+<body>
+    <div>restaurant name</div>
+    <ul>
+        OrderItem
+    </ul>
+    <form action="/profile/finilize" method="POST">
+        <button type="submit">finalize</button>
+    </form>
+</body>
+</html>

@@ -1,9 +1,9 @@
 package systemHandlers;
 
 import exceptions.RestaurantDoesntExistException;
-import structures.Location;
-import structures.Restaurant;
-import structures.User;
+import models.Location;
+import models.Restaurant;
+import models.User;
 
 import java.util.HashMap;
 

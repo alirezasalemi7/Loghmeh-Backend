@@ -1,4 +1,4 @@
-package structures;
+package models;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;

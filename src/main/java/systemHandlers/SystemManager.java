@@ -3,10 +3,10 @@ package systemHandlers;
 import exceptions.*;
 
 import org.javatuples.Pair;
-import structures.Food;
-import structures.OrderItem;
-import structures.Restaurant;
-import structures.User;
+import models.Food;
+import models.OrderItem;
+import models.Restaurant;
+import models.User;
 
 import java.util.*;
 

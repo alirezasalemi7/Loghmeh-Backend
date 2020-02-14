@@ -1,4 +1,4 @@
-package structures;
+package models;
 
 import exceptions.CartIsEmptyException;
 import exceptions.CreditIsNotEnoughException;
@@ -14,6 +14,7 @@ public class User {
     private String _phoneNumber;
     private String _email;
     private Double _credit;
+    private String _id;
 
     public String getName() {
         return _name;
