@@ -70,7 +70,7 @@ public class HtmlPageMaker {
     }
 
     public String makeCartPage(User user){
-        String pageContent = null, orderContent = null;
+        String pageContent = null, orderContent;
         try {
             pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
@@ -115,10 +115,14 @@ public class HtmlPageMaker {
         return createErrorPage("You should order from only one restaurant.", "400", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
-    public String makeInvalidRequestPage(String address){return null;}
+    public String makeInvalidRequestPage(String address){
+        return createErrorPage(address + "not found.", "404", "src/main/resources/ErrorPages/errorPage.txt");
+    }
 
     public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems,User user){return null;}
 
-    public String makeFoodNotFoundPage(String foodName,String restaurantName,String restaurantId){return null;}
+    public String makeFoodNotFoundPage(String foodName,String restaurantName,String restaurantId){
+        return createErrorPage(foodName + " is not found in " + restaurantName, "404", "src/main/resources/ErrorPages/errorPage.txt");
+    }
 
 }
