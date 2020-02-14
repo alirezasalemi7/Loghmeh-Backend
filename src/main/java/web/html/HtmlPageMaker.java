@@ -57,7 +57,7 @@ public class HtmlPageMaker {
         return makeMenuContents(pageContent, restaurant.getMenu());
     }
 
-    public String makeProfilePage(User user){
+    public String makeProfilePage(User user,boolean negCredit,boolean successFullAddCredit){
         String pageContent = null;
         try {
             pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/userPage.txt")));
