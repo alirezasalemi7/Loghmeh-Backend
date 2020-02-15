@@ -109,7 +109,7 @@ public class Restaurant {
             jsonGenerator.writeStringField("name", _name);
             jsonGenerator.writeObjectField("id", _id);
             jsonGenerator.writeObjectField("logo", _logoAddress);
-            jsonGenerator.writeStringField("description",_description);
+//            jsonGenerator.writeStringField("description",_description);
             jsonGenerator.writeObjectField("location", _location);
             jsonGenerator.writeArrayFieldStart("menu");
             for(Food food : foodList){
