@@ -92,14 +92,20 @@ public class HtmlPageMaker {
         return pageContent;
     }
 
-    private String createErrorPage(String message, String errorCode, String filePath) {
-        String pageContent = null;
+    public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user) {
+        String pageContent = null, orderContent;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get(filePath)));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
+            orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
+            ArrayList<OrderItem> orders = user.getCart().getOrders();
+            for (int i = 0; i < orders.size(); i++) {
+                pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
+                        .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return pageContent.replace("ErrorCode", errorCode).replace("Message", message);
+        return pageContent.replace("FinalPrice", user.getCart().getSumOfPrices() + "");
     }
 
     public String makeRestaurantNotFoundPage(String restaurantId){
@@ -126,27 +132,19 @@ public class HtmlPageMaker {
         return createErrorPage(address + "not found.", "404", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
-    public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user) {
-        double finalPrice = 0.0;
-        String pageContent = null, orderContent;
-        for (OrderItem item : orderItems)
-            finalPrice += item.getCount() * item.getFood().getPrice();
-        try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
-            orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
-            ArrayList<OrderItem> orders = user.getCart().getOrders();
-            for (int i = 0; i < orders.size(); i++) {
-                pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
-                        .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return pageContent.replace("FinalPrice", finalPrice + "");
-    }
-
     public String makeFoodNotFoundPage(String foodName,String restaurantName,String restaurantId){
         return createErrorPage(foodName + " is not found in " + restaurantName, "404", "src/main/resources/ErrorPages/errorPage.txt");
+    }
+
+    private String createErrorPage(String message, String errorCode, String filePath) {
+        String pageContent = null;
+        try {
+            pageContent = new String(Files.readAllBytes(Paths.get(filePath)));
+            return pageContent.replace("ErrorCode", errorCode).replace("Message", message);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

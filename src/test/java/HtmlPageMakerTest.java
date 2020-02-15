@@ -9,14 +9,20 @@ import models.User;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 import web.html.HtmlPageMaker;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class HtmlPageMakerTest {
+
     static ArrayList<Restaurant> restaurants;
     static HtmlPageMaker pageMaker;
     static User user;
+
     @BeforeClass
     public static void setup() {
         Restaurant restaurant = new Restaurant("naminoland", "1", "https://picsum.photos/536/354", "good!", new Location(0, 0));
@@ -34,32 +40,39 @@ public class HtmlPageMakerTest {
     }
 
     @Test
-    public void testMakeAllRestaurantsPage() {
-        System.out.println(pageMaker.makeAllRestaurantsPage(restaurants));
+    public void testMakeAllRestaurantsPage() throws IOException {
+        String content = new String(Files.readAllBytes(Paths.get("src/test/resources/htmlResources/allRestaurants.html")));
+        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeAllRestaurantsPage(restaurants).replaceAll("[\t\n ]", ""));
     }
 
     @Test
-    public void testMakeRestaurantPage() {
-        System.out.println(pageMaker.makeRestaurantPage(restaurants.get(0)));
+    public void testMakeRestaurantPage() throws IOException {
+        String content = new String(Files.readAllBytes(Paths.get("src/test/resources/htmlResources/restaurantPage.html")));
+        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeRestaurantPage(restaurants.get(0)).replaceAll("[\t\n ]", ""));
     }
 
     @Test
-    public void testMakeProfilePage() {
-        System.out.println(pageMaker.makeProfilePage(user));
+    public void testMakeProfilePage() throws IOException {
+        String content = new String(Files.readAllBytes(Paths.get("src/test/resources/htmlResources/profilePage.html")));
+        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeProfilePage(user, false, true).replaceAll("[\t\n ]", ""));
     }
 
     @Test
-    public void testmakeCartPage() {
-        System.out.println(pageMaker.makeCartPage(user));
+    public void testMakeCartPage() throws IOException {
+        String content = new String(Files.readAllBytes(Paths.get("src/test/resources/htmlResources/cartPage.html")));
+        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeCartPage(user).replaceAll("[\t\n ]", ""));
     }
 
     @Test
-    public void testErrorPages() {
-        System.out.println(pageMaker.makeCartEmptyErrorPage());
-        System.out.println(pageMaker.makeInvalidRestaurantAccessPage("123"));
-        System.out.println(pageMaker.makeRestaurantNotFoundPage("123"));
-        System.out.println(pageMaker.makeMultipleRestaurantAddToCartErrorPage(user));
-        System.out.println(pageMaker.makeNotEnoughCreditPage(user));
+    public void testMakeOrderFinalizedPage() throws IOException {
+        String content = new String(Files.readAllBytes(Paths.get("src/test/resources/htmlResources/finalizeOrderPage.html")));
+        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeOrderFinalizedPage(user.getCart().getOrders(), user).replaceAll("[\t\n ]", ""));
+    }
+
+    @Test
+    public void testErrorPages() throws IOException {
+        String content = new String(Files.readAllBytes(Paths.get("src/test/resources/htmlResources/errorPage.html")));
+        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeNotEnoughCreditPage(user).replaceAll("[\t\n ]", ""));
     }
 
     @AfterClass

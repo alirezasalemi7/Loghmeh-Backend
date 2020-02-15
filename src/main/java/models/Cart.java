@@ -16,7 +16,7 @@ public class Cart {
 
     private HashMap<String, OrderItem> _orders;
     private String _restaurantId;
-    private Double _sumOfPrices;
+    private double _sumOfPrices;
 
     public Cart() {
         this._orders = new HashMap<>();
@@ -24,7 +24,7 @@ public class Cart {
         this._sumOfPrices = 0.0;
     }
 
-    Double getSumOfPrices() {
+    public double getSumOfPrices() {
         return _sumOfPrices;
     }
 
