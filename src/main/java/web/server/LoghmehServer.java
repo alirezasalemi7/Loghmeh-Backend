@@ -247,7 +247,18 @@ public class LoghmehServer {
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-                String html = _pageMaker.makeCartPage(DataHandler.getInstance().getUser());
+                String restaurantId;
+                String restaurantName = null;
+                try {
+                    restaurantId = DataHandler.getInstance().getUser().getCart().getRestaurantId();
+                    if(restaurantId!=null){
+                        restaurantName = _system.getRestaurantById(restaurantId).getName();
+                    }
+                }
+                catch (RestaurantDoesntExistException e){
+                    // never reach there
+                }
+                String html = _pageMaker.makeCartPage(DataHandler.getInstance().getUser(),restaurantName);
                 context.status(200);
                 context.html(html);
             }

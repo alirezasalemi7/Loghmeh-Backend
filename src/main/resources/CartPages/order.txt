@@ -1,1 +1,1 @@
-<li>food FoodName:‌ FoodCount</li>
+<li>FoodName:‌ FoodCount</li>

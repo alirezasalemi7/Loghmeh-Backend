@@ -76,9 +76,12 @@ public class HtmlPageMaker {
         return pageContent;
     }
 
-    public String makeCartPage(User user){
+    public String makeCartPage(User user, String restaurantName){
         String pageContent = null, orderContent;
         try {
+            if (restaurantName == null || user.getCart().getOrders().size() == 0) {
+                return new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/emptyCartPage.txt"))).replace("Message", "Your cart is empty.");
+            }
             pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
             ArrayList<OrderItem> orders = user.getCart().getOrders();
@@ -86,6 +89,7 @@ public class HtmlPageMaker {
                 pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
                                 .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
             }
+            pageContent = pageContent.replace("RestauratnName", restaurantName);
         } catch (IOException e) {
             e.printStackTrace();
         }
