@@ -1,6 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
-import structures.Location;
+import models.Location;
 
 import static org.junit.Assert.assertEquals;
 
