@@ -63,6 +63,13 @@ public class HtmlPageMaker {
             pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/userPage.txt")));
             pageContent = pageContent.replace("FirstName", user.getName()).replace("LastName", user.getFamily()).replace("PhoneNumber", user.getPhoneNumber())
                             .replace("EmailAddress", user.getEmail()).replace("Credit", user.getCredit() + "");
+            if (negCredit) {
+                pageContent = pageContent.replace("ErrorMessage", "<p>" + "You enterd a wrong credit" + "</p>");
+            } else if (successFullAddCredit) {
+                pageContent = pageContent.replace("ErrorMessage", "<p>" + "Increasing credit was successful" + "</p>");
+            } else {
+                pageContent = pageContent.replace("ErrorMessage", "");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

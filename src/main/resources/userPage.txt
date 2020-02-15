@@ -19,6 +19,7 @@
             <button type="submit">increase</button>
             <input type="number" name="credit" value="" />
         </form>
+        ErrorMessage
     </ul>
 </body>
 </html>
