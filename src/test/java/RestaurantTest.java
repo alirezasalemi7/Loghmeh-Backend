@@ -2,12 +2,10 @@ import exceptions.FoodDoesntExistException;
 import exceptions.FoodIsRegisteredException;
 import exceptions.InvalidJsonInputException;
 import exceptions.InvalidToJsonException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import structures.Food;
-import structures.Location;
-import structures.Restaurant;
+import org.junit.*;
+import models.Food;
+import models.Location;
+import models.Restaurant;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,11 +23,10 @@ public class RestaurantTest {
         return Restaurant.deserializeFromJson(content);
     }
 
-    @BeforeClass
-    public static void setup(){
-        String content1, content2, content3;
+    @Before
+    public void setup(){
         try {
-            testRestaurant = getRestaurantFromJson("src/test/java/org/kharchal/co/resources/restaurantTest1.json");
+            testRestaurant = getRestaurantFromJson("src/test/resources/restaurantTest1.json");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidJsonInputException e) {
@@ -41,16 +38,16 @@ public class RestaurantTest {
     public void testDeserializeFromJson() {
         testGetLocation(testRestaurant, 12, 13);
         assertEquals("iranberger", testRestaurant.getName());
-        assertEquals("awsome!", testRestaurant.getDescription());
-        assertEquals(0.633, testRestaurant.getAveragePopularity(), 0.001);
-        assertEquals("1", testRestaurant.getId());
-        assertEquals("my logo", testRestaurant.getLogoAddress());
+        assertEquals("123", testRestaurant.getId());
+        assertEquals("logoAddress", testRestaurant.getLogoAddress());
+        assertEquals(0.55, testRestaurant.getAveragePopularity(), 0.001);
+        assertEquals("image2", testRestaurant.getMenu().get(0).getImageAddress());
     }
 
     @Test
     public void testToJson(){
         try {
-            String content = "{\"name\":\"iranberger\",\"id\":\"1\",\"logo\":\"my logo\",\"description\":\"awsome!\",\"location\":{\"x\":12.0,\"y\":13.0},\"menu\":[{\"name\":\"gheime\",\"description\":\"yummy!\",\"popularity\":0.8,\"price\":20000.0},{\"name\":\"bandari\",\"description\":\"hoooot!\",\"popularity\":0.8,\"price\":25000.0},{\"name\":\"kebab\",\"description\":\"tasty!\",\"popularity\":0.3,\"price\":215000.0}]}";
+            String content = "{\"name\":\"iranberger\",\"id\":\"123\",\"logo\":\"logoAddress\",\"location\":{\"x\":12.0,\"y\":13.0},\"menu\":[{\"name\":\"bandari\",\"description\":\"hoooot!\",\"popularity\":0.8,\"price\":25000.0,\"image\":\"image2\"},{\"name\":\"kebab\",\"description\":\"tasty!\",\"popularity\":0.3,\"price\":215000.0,\"image\":\"image1\"}]}";
             assertEquals(content, testRestaurant.toJson());
         } catch (InvalidToJsonException e) {
             assertEquals("invalid object. cannot convert to json.", e.getMessage());
@@ -67,7 +64,7 @@ public class RestaurantTest {
     public void testAddFood() {
         Food food = new Food();
         try {
-            String content = new String(Files.readAllBytes(Paths.get("./src/test/java/org/kharchal/co/resources/foodTest1.json")));
+            String content = new String(Files.readAllBytes(Paths.get("src/test/resources/foodTest1.json")));
             food = Food.deserializeFromJson(content);
             testRestaurant.addFood(food);
             assertEquals(0.633, testRestaurant.getAveragePopularity(), 0.01);
@@ -84,12 +81,8 @@ public class RestaurantTest {
         assertEquals(expectedY, location1.getY(), 0.0);
     }
 
-    @Test
-    public void convertFromJsonTest(){
-    }
-
-    @AfterClass
-    public static void teardown(){
+    @After
+    public void teardown(){
         testRestaurant = null;
     }
 }

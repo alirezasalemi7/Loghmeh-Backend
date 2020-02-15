@@ -23,7 +23,7 @@ public class LocationTest {
         assertEquals(2 * Math.sqrt(2), location.getDistance(test1), 0.001);
         assertEquals(Math.sqrt(52), location.getDistance(test2), 0.001);
         assertEquals(3, location.getDistance(test3), 0.001);
-        assertEquals(Math.sqrt(6.25), location.getDistance(test4), 0.001);
+        assertEquals(2.5, location.getDistance(test4), 0.001);
         assertEquals(0, location.getDistance(test5), 0.001);
     }
 }
