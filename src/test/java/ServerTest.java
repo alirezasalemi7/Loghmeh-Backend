@@ -1,5 +1,4 @@
-package org.kharchal.co.resources;
-
+import models.Restaurant;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -7,24 +6,25 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import structures.Restaurant;
 import systemHandlers.DataHandler;
 import systemHandlers.SystemManager;
 import web.html.HtmlPageMaker;
 import web.server.LoghmehServer;
 import static org.junit.Assert.*;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class ServerTest {
 
-    private LoghmehServer server;
+    private static LoghmehServer server;
     private String restaurantId1,restaurantId2;
     private Restaurant restaurant1,restaurant2;
 
     @BeforeClass
-    public void initial(){
+    public static void initial(){
         server = new LoghmehServer();
         server.startServer();
     }
@@ -42,19 +42,19 @@ public class ServerTest {
     @Test
     public void restaurantInfoTest(){
         HttpClient client = HttpClientBuilder.create().build();
-        HttpGet httpGet = new HttpGet("127.0.0.1:8080/restaurants/"+restaurantId1);
+        HttpGet httpGet = new HttpGet("http://127.0.0.1:8080/restaurants/"+restaurantId1);
         try {
             HttpResponse response = client.execute(httpGet);
-            InputStreamReader reader = new InputStreamReader(response.getEntity().getContent());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             StringBuilder builder = new StringBuilder();
-            char[] temp = new char[1024];
-            while (reader.read(temp)!=-1){
+            String temp = null;
+            while ((temp = reader.readLine())!=null){
                 builder.append(temp);
             }
             String html = builder.toString().trim();
             HtmlPageMaker pageMaker = new HtmlPageMaker();
             String expectedPage = pageMaker.makeRestaurantPage(restaurant1);
-            assertEquals(expectedPage.trim(), html);
+            assertEquals(expectedPage.replaceAll("[ \t\n]", ""), html.replaceAll("[ \t\n]", ""));
         }
         catch (IOException e){
             assertTrue(false);

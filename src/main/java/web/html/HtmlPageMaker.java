@@ -15,7 +15,7 @@ public class HtmlPageMaker {
     public String makeAllRestaurantsPage(ArrayList<Restaurant> restaurants) {
         String pageContent = null, tableRowContent = null;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/AllRestaurantsPage/allRestaurants.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/AllRestaurantsPage/allRestaurants.html")));
             tableRowContent = new String(Files.readAllBytes(Paths.get("src/main/resources/AllRestaurantsPage/tableRow.txt")));
             for (int i = 0; i < restaurants.size(); i++) {
                 pageContent = pageContent.replace("TableRows", tableRowContent.replace("RestaurantId", restaurants.get(i).getId())
@@ -47,7 +47,7 @@ public class HtmlPageMaker {
     public String makeRestaurantPage(Restaurant restaurant){
         String pageContent = null;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/RestaurantPage/restaurantInfo.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/RestaurantPage/restaurantInfo.html")));
             pageContent = pageContent.replace("RestauratnId", restaurant.getId()).replace("RestaurantName", restaurant.getName())
                             .replace("xLocation", restaurant.getLocation().getX() + "").replace("yLocation", restaurant.getLocation().getY() + "")
                                 .replace("RestaurantImage", restaurant.getLogoAddress());
@@ -60,7 +60,7 @@ public class HtmlPageMaker {
     public String makeProfilePage(User user,boolean negCredit,boolean successFullAddCredit){
         String pageContent = null;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/userPage.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/userPage.html")));
             pageContent = pageContent.replace("FirstName", user.getName()).replace("LastName", user.getFamily()).replace("PhoneNumber", user.getPhoneNumber())
                             .replace("EmailAddress", user.getEmail()).replace("Credit", user.getCredit() + "");
             if (negCredit) {
@@ -80,9 +80,9 @@ public class HtmlPageMaker {
         String pageContent = null, orderContent;
         try {
             if (restaurantName == null || user.getCart().getOrders().size() == 0) {
-                return new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/emptyCartPage.txt"))).replace("Message", "Your cart is empty.");
+                return new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/emptyCartPage.html"))).replace("Message", "Your cart is empty.");
             }
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.html")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
             ArrayList<OrderItem> orders = user.getCart().getOrders();
             for (int i = 0; i < orders.size(); i++) {
@@ -136,9 +136,8 @@ public class HtmlPageMaker {
         for (OrderItem item : orderItems)
             finalPrice += item.getCount() * item.getFood().getPrice();
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/finalOrderPage.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/finalOrderPage.html")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
-            System.err.println(orderContent + " " + orderItems.size());
             for (int i = 0; i < orderItems.size(); i++) {
                 pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orderItems.get(i).getFoodName())
                         .replace("FoodCount", orderItems.get(i).getCount() + "") + ((i < (orderItems.size() - 1)) ? "OrderItem" : ""));
