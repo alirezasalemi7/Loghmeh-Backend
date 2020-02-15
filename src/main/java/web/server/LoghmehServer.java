@@ -174,9 +174,10 @@ public class LoghmehServer {
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-                String creditString = context.formParam("Credit");
+                String creditString = context.formParam("credit");
                 if(creditString==null){
                     context.status(400);
+                    System.err.println(context.formParamMap());
                     context.html(_pageMaker.makeInvalidRequestPage("/profile/addcredit"));
                     return;
                 }
@@ -247,7 +248,18 @@ public class LoghmehServer {
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-                String html = _pageMaker.makeCartPage(DataHandler.getInstance().getUser());
+                String restaurantId;
+                String restaurantName = null;
+                try {
+                    restaurantId = DataHandler.getInstance().getUser().getCart().getRestaurantId();
+                    if(restaurantId!=null){
+                        restaurantName = _system.getRestaurantById(restaurantId).getName();
+                    }
+                }
+                catch (RestaurantDoesntExistException e){
+                    // never reach there
+                }
+                String html = _pageMaker.makeCartPage(DataHandler.getInstance().getUser(),restaurantName);
                 context.status(200);
                 context.html(html);
             }
@@ -259,9 +271,21 @@ public class LoghmehServer {
             @Override
             public void handle(@NotNull Context context) throws Exception {
                 String html;
+                String restaurantId;
+                String restaurantName = null;
                 try {
+                    restaurantId = DataHandler.getInstance().getUser().getCart().getRestaurantId();
+                    if(restaurantId!=null){
+                        restaurantName = _system.getRestaurantById(restaurantId).getName();
+                    }
+                }
+                catch (RestaurantDoesntExistException e){
+                    // never reach there
+                }
+                try {
+
                     ArrayList<OrderItem> orderItems = _system.finalizeOrder(DataHandler.getInstance().getUser());
-                    html = _pageMaker.makeOrderFinalizedPage(orderItems, DataHandler.getInstance().getUser());
+                    html = _pageMaker.makeOrderFinalizedPage(orderItems, DataHandler.getInstance().getUser(),restaurantName);
                     context.status(200);
                     context.html(html);
                 }

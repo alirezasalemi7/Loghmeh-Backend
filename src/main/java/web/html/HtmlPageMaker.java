@@ -15,7 +15,7 @@ public class HtmlPageMaker {
     public String makeAllRestaurantsPage(ArrayList<Restaurant> restaurants) {
         String pageContent = null, tableRowContent = null;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/AllRestaurantsPage/allRestaurants.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/AllRestaurantsPage/allRestaurants.html")));
             tableRowContent = new String(Files.readAllBytes(Paths.get("src/main/resources/AllRestaurantsPage/tableRow.txt")));
             for (int i = 0; i < restaurants.size(); i++) {
                 pageContent = pageContent.replace("TableRows", tableRowContent.replace("RestaurantId", restaurants.get(i).getId())
@@ -47,7 +47,7 @@ public class HtmlPageMaker {
     public String makeRestaurantPage(Restaurant restaurant){
         String pageContent = null;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/RestaurantPage/restaurantInfo.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/RestaurantPage/restaurantInfo.html")));
             pageContent = pageContent.replace("RestauratnId", restaurant.getId()).replace("RestaurantName", restaurant.getName())
                             .replace("xLocation", restaurant.getLocation().getX() + "").replace("yLocation", restaurant.getLocation().getY() + "")
                                 .replace("RestaurantImage", restaurant.getLogoAddress());
@@ -60,7 +60,7 @@ public class HtmlPageMaker {
     public String makeProfilePage(User user,boolean negCredit,boolean successFullAddCredit){
         String pageContent = null;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/userPage.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/userPage.html")));
             pageContent = pageContent.replace("FirstName", user.getName()).replace("LastName", user.getFamily()).replace("PhoneNumber", user.getPhoneNumber())
                             .replace("EmailAddress", user.getEmail()).replace("Credit", user.getCredit() + "");
             if (negCredit) {
@@ -76,16 +76,20 @@ public class HtmlPageMaker {
         return pageContent;
     }
 
-    public String makeCartPage(User user){
+    public String makeCartPage(User user, String restaurantName){
         String pageContent = null, orderContent;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
+            if (restaurantName == null || user.getCart().getOrders().size() == 0) {
+                return new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/emptyCartPage.html"))).replace("Message", "Your cart is empty.");
+            }
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.html")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
             ArrayList<OrderItem> orders = user.getCart().getOrders();
             for (int i = 0; i < orders.size(); i++) {
                 pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
                                 .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
             }
+            pageContent = pageContent.replace("RestaurantName", restaurantName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -98,10 +102,9 @@ public class HtmlPageMaker {
             pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
             ArrayList<OrderItem> orders = user.getCart().getOrders();
-            for (int i = 0; i < orders.size(); i++) {
+            for (int i = 0; i < orders.size(); i++)
                 pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
                         .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -129,7 +132,7 @@ public class HtmlPageMaker {
     }
 
     public String makeInvalidRequestPage(String address){
-        return createErrorPage(address + "not found.", "404", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage(address + " not found.", "400", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
     public String makeFoodNotFoundPage(String foodName,String restaurantName,String restaurantId){
