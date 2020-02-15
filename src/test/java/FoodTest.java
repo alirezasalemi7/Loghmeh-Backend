@@ -5,7 +5,7 @@ import exceptions.InvalidToJsonException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import structures.Food;
+import models.Food;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,13 +21,13 @@ public class FoodTest {
     @Before
     public void setup() {
         try {
-            expectedFood1 = new Food("gheime", "yummy!", 0.8, 20000, "iranberger");
+            expectedFood1 = new Food("gheime", "yummy!", 0.8, 20000, "image1", "123");
         } catch (InvalidPopularityException | InvalidPriceException e) {
             e.printStackTrace();
         }
         String content = "";
         try {
-            content = new String(Files.readAllBytes(Paths.get("./src/test/java/org/kharchal/co/resources/foodTest1.json")));
+            content = new String(Files.readAllBytes(Paths.get("./src/test/resources/foodTest1.json")));
             food = Food.deserializeFromJson(content);
         } catch (InvalidJsonInputException e) {
             System.err.println(e.getMessage());
@@ -45,13 +45,12 @@ public class FoodTest {
         assertEquals(expectedFood1.getDescription(), food.getDescription());
         assertEquals(expectedFood1.getPopularity(), food.getPopularity(), 0.000001);
         assertEquals(expectedFood1.getPrice(), food.getPrice(), 0.000001);
-        assertEquals(expectedFood1.getRestaurantName(), food.getRestaurantName());
     }
 
     @Test
     public void testToJson() {
         try {
-            String content = "{\"name\":\"gheime\",\"description\":\"yummy!\",\"popularity\":0.8,\"price\":20000.0}";
+            String content = "{\"name\":\"gheime\",\"description\":\"yummy!\",\"popularity\":0.8,\"price\":20000.0,\"image\":\"image3\"}";
             assertEquals(content, food.toJson());
         } catch (InvalidToJsonException e) {
             assertEquals("invalid object. cannot convert to json.", e.getMessage());
@@ -60,7 +59,7 @@ public class FoodTest {
 
     @Test
     public void testSetters() {
-        food.setRestaurantName("Restoran");
+        food.setRestaurantId("1234");
         food.setPrice(10000);
         food.setPopularity(0.9);
         food.setName("ghieme sib zamini");
@@ -69,7 +68,7 @@ public class FoodTest {
         assertEquals("yummi", food.getDescription());
         assertEquals(0.9, food.getPopularity(), 0.000001);
         assertEquals(10000, food.getPrice(), 0.000001);
-        assertEquals("Restoran", food.getRestaurantName());
+        assertEquals("1234", food.getRestaurantId());
     }
 
     @After
