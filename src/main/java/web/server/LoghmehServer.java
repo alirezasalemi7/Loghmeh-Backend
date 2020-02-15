@@ -271,9 +271,21 @@ public class LoghmehServer {
             @Override
             public void handle(@NotNull Context context) throws Exception {
                 String html;
+                String restaurantId;
+                String restaurantName = null;
                 try {
+                    restaurantId = DataHandler.getInstance().getUser().getCart().getRestaurantId();
+                    if(restaurantId!=null){
+                        restaurantName = _system.getRestaurantById(restaurantId).getName();
+                    }
+                }
+                catch (RestaurantDoesntExistException e){
+                    // never reach there
+                }
+                try {
+
                     ArrayList<OrderItem> orderItems = _system.finalizeOrder(DataHandler.getInstance().getUser());
-                    html = _pageMaker.makeOrderFinalizedPage(orderItems, DataHandler.getInstance().getUser());
+                    html = _pageMaker.makeOrderFinalizedPage(orderItems, DataHandler.getInstance().getUser(),restaurantName);
                     context.status(200);
                     context.html(html);
                 }

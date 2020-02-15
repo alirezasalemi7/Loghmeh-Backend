@@ -89,7 +89,7 @@ public class HtmlPageMaker {
                 pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
                                 .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
             }
-            pageContent = pageContent.replace("RestauratnName", restaurantName);
+            pageContent = pageContent.replace("RestaurantName", restaurantName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -130,19 +130,20 @@ public class HtmlPageMaker {
         return createErrorPage(address + " not found.", "400", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
-    public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user) {
+    public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user, String restaurantName) {
         double finalPrice = 0.0;
         String pageContent = null, orderContent;
         for (OrderItem item : orderItems)
             finalPrice += item.getCount() * item.getFood().getPrice();
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/finalOrderPage.txt")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
-            ArrayList<OrderItem> orders = user.getCart().getOrders();
-            for (int i = 0; i < orders.size(); i++) {
-                pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
-                        .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
+            System.err.println(orderContent + " " + orderItems.size());
+            for (int i = 0; i < orderItems.size(); i++) {
+                pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orderItems.get(i).getFoodName())
+                        .replace("FoodCount", orderItems.get(i).getCount() + "") + ((i < (orderItems.size() - 1)) ? "OrderItem" : ""));
             }
+            pageContent = pageContent.replace("RestaurantName", restaurantName);
         } catch (IOException e) {
             e.printStackTrace();
         }

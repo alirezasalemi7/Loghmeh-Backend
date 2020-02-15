@@ -24,6 +24,10 @@ public class Cart {
         this._sumOfPrices = 0.0;
     }
 
+    public String getRestaurantId() {
+        return _restaurantId;
+    }
+
     Double getSumOfPrices() {
         return _sumOfPrices;
     }

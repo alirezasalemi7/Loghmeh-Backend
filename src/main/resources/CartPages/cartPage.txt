@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-    <div>RestauratnName</div>
+    <div>RestaurantName</div>
     <ul>
         OrderItem
     </ul>
