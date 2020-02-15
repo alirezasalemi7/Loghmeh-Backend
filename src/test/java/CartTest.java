@@ -1,18 +1,15 @@
-import exceptions.InvalidJsonInputException;
-import exceptions.InvalidToJsonException;
-import exceptions.UnregisteredOrderException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import exceptions.*;
+import models.Food;
+import org.junit.*;
 import org.junit.runners.MethodSorters;
-import structures.Cart;
-import structures.OrderItem;
-import structures.Restaurant;
+import models.Cart;
+import models.OrderItem;
+import models.Restaurant;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -27,39 +24,47 @@ public class CartTest {
         return Restaurant.deserializeFromJson(content);
     }
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void setup() {
         _cart = new Cart();
+        try {
+            Food food1 = new Food("gheime", "yummy1", 0.45, 1000.0, "image1", "123");
+            _cart.addOrder(food1, "123");
+            _cart.addOrder(new Food("ghorme", "yummy2", 0.55, 2000.0, "image2", "123"), "123");
+            _cart.addOrder(food1, "123");
+        } catch (InvalidPopularityException | InvalidPriceException | UnregisteredOrderException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test(expected = UnregisteredOrderException.class)
     public void testAddOrder() throws UnregisteredOrderException {
-        _cart.addOrder("joj", "bahar");
-        _cart.addOrder("ghafghazi", "bahar");
-        _cart.addOrder("joj", "bahar");
-        _cart.addOrder("bandari", "hiroon");
+        try {
+            _cart.addOrder(new Food("ghorme2", "yummy2", 0.55, 2000.0, "image2", "124"), "124");
+        } catch (InvalidPopularityException | InvalidPriceException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testGetOrder() {
-        HashMap<String, OrderItem> orders = _cart.getOrders();
+        ArrayList<OrderItem> orders = _cart.getOrders();
         assertEquals(2, orders.size());
-        assertEquals(orders.get("joj").getCount(), 2, 0.0);
-        assertEquals(orders.get("ghafghazi").getCount(), 1, 0.0);
-        assertNull(orders.get("bandari"));
+        assertEquals(orders.get(0).getCount(), 2, 0.0);
+        assertEquals(orders.get(1).getCount(), 1, 0.0);
     }
 
     @Test
     public void testToJson() {
         try {
-            assertEquals("{\"foods\":[{\"foodName\":\"ghafghazi\",\"count\":1},{\"foodName\":\"joj\",\"count\":2}]}", _cart.toJson());
+            assertEquals("{\"foods\":[{\"foodName\":\"gheime\",\"count\":2},{\"foodName\":\"ghorme\",\"count\":1}]}", _cart.toJson());
         } catch (InvalidToJsonException e) {
             e.printStackTrace();
         }
     }
 
-    @AfterClass
-    public static void teardown() {
+    @After
+    public void teardown() {
         _cart = null;
     }
 
