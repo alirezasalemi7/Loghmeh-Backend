@@ -127,7 +127,7 @@ public class HtmlPageMaker {
     }
 
     public String makeInvalidRequestPage(String address){
-        return createErrorPage(address + "not found.", "404", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage(address + " not found.", "400", "src/main/resources/ErrorPages/errorPage.txt");
     }
 
     public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user) {

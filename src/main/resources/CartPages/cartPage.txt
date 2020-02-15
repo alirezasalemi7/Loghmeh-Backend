@@ -14,7 +14,7 @@
     <ul>
         OrderItem
     </ul>
-    <form action="/profile/finilize" method="POST">
+    <form action="/profile/finalize" method="GET">
         <button type="submit">finalize</button>
     </form>
 </body>

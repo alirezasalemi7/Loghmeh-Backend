@@ -174,9 +174,10 @@ public class LoghmehServer {
         return new Handler() {
             @Override
             public void handle(@NotNull Context context) throws Exception {
-                String creditString = context.formParam("Credit");
+                String creditString = context.formParam("credit");
                 if(creditString==null){
                     context.status(400);
+                    System.err.println(context.formParamMap());
                     context.html(_pageMaker.makeInvalidRequestPage("/profile/addcredit"));
                     return;
                 }

@@ -17,7 +17,7 @@
         <li>credit: Credit Toman</li>
         <form action="/profile/addcredit" method="POST">
             <button type="submit">increase</button>
-            <input type="number" name="credit" value="" />
+            <input type="number" name="credit"/>
         </form>
         ErrorMessage
     </ul>
