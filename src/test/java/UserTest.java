@@ -1,57 +1,75 @@
-import exceptions.InvalidToJsonException;
-import exceptions.UnregisteredOrderException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import exceptions.*;
+import models.*;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import structures.Cart;
-import structures.Location;
-import structures.User;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
 public class UserTest {
     static User _user;
 
-    @BeforeClass
-    public static void setup() throws UnregisteredOrderException {
-        _user = new User(new Location(4, 5));
-        _user.addToCart("joje","iranberger");
-        _user.addToCart("kebab","iranberger");
-        _user.addToCart("joje","iranberger");
-        _user.addToCart("falafel","iranberger");
-        _user.addToCart("joje","iranberger");
-        _user.addToCart("kebab","iranberger");
+    @Before
+    public void setup() throws UnregisteredOrderException {
+        _user = new User(new Location(4, 5), "mammad", "mammadi", "09101010102", "mmmd@gmail.com", 12000.0);
+        try {
+            Food food1 = new Food("gheime", "yummy1", 0.45, 1000.0, "image1", "123");
+            Food food2 = new Food("kabab", "yummy2", 0.45, 1000.0, "image2", "123");
+            Food food3 = new Food("falafel", "yummy2", 0.45, 1000.0, "image3", "123");
+            _user.addToCart(food1,"123");
+            _user.addToCart(food2,"123");
+            _user.addToCart(food1,"123");
+            _user.addToCart(food3,"123");
+            _user.addToCart(food1,"123");
+            _user.addToCart(food2,"123");
+        } catch (InvalidPopularityException | InvalidPriceException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test(expected = UnregisteredOrderException.class)
-    public void testAddToCart() throws UnregisteredOrderException {
+    public void testAddToCart() throws UnregisteredOrderException, InvalidPopularityException, InvalidPriceException {
         Cart cart = _user.getCart();
+        Food food1 = new Food("gheime", "yummy1", 0.45, 1000.0, "image1", "123");
         assertEquals(3, cart.getOrders().size(), 0.0);
-        assertEquals(3, cart.getOrders().get("joje").getCount(), 0.0);
-        assertEquals(2, cart.getOrders().get("kebab").getCount(), 0.0);
-        assertEquals(1, cart.getOrders().get("falafel").getCount(), 0.0);
-        _user.addToCart("joje", "moslem");
+        assertEquals(3, cart.getOrders().get(0).getCount(), 0.0);
+        assertEquals(2, cart.getOrders().get(1).getCount(), 0.0);
+        assertEquals(1, cart.getOrders().get(2).getCount(), 0.0);
+        _user.addToCart(food1, "124");
     }
 
     @Test
-    public void testGetLocation() {
-        assertEquals(4, _user.getLocation().getX(), 0.0);
-        assertEquals(5, _user.getLocation().getY(), 0.0);
+    public void testGetters() {
+        assertEquals(_user.getLocation().getX(), 4, 0.0);
+        assertEquals(_user.getCredit(), 12000.0, 0.0);
+        assertEquals(_user.getEmail(), "mmmd@gmail.com");
+        assertEquals(_user.getName(), "mammad");
+        assertEquals(_user.getFamily(), "mammadi");
+        assertEquals(_user.getPhoneNumber(), "09101010102");
     }
 
     @Test
-    public void testFinalizeOrder() {
-        String output = null;
-        try {
-            output = _user.finalizeOrder();
-        } catch (InvalidToJsonException e) {
-            assertEquals("invalid object. cannot convert to json.", e.getMessage());
-        }
-        assertEquals("{\"foods\":[{\"foodName\":\"joje\",\"count\":3},{\"foodName\":\"kebab\",\"count\":2},{\"foodName\":\"falafel\",\"count\":1}]}", output);
+    public void testFinalizeOrder() throws CartIsEmptyException, CreditIsNotEnoughException {
+        ArrayList<OrderItem> orders = _user.finalizeOrder();
+        assertEquals(3, orders.size(), 0.0);
     }
 
-    @AfterClass
-    public static void teardown() {
+    @Test(expected = CreditIsNotEnoughException.class)
+    public void testFinalizeOrderCartIsEmptyException() throws CartIsEmptyException, CreditIsNotEnoughException {
+        _user.setCredit(0.0);
+        ArrayList<OrderItem> orders = _user.finalizeOrder();
+    }
+
+    @Test(expected = CartIsEmptyException.class)
+    public void testFinalizeOrderCreditIsNotEnoughException() throws CartIsEmptyException, CreditIsNotEnoughException {
+        _user.finalizeOrder();
+        ArrayList<OrderItem> orders = _user.finalizeOrder();
+    }
+
+    @After
+    public void teardown() {
         _user = null;
     }
 
