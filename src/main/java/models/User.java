@@ -84,7 +84,7 @@ public class User {
         } else if (_cart.getSumOfPrices() > _credit) {
             throw new CreditIsNotEnoughException("Your credit is not enough.");
         }
-        _credit -= _cart.getSumOfPrices();
+        this._credit -= _cart.getSumOfPrices();
         ArrayList<OrderItem> orders = _cart.getOrders();
         _cart.clearCart();
         return orders;

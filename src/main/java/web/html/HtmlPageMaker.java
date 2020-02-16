@@ -99,12 +99,11 @@ public class HtmlPageMaker {
     public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user, String restaurantName) {
         String pageContent = null, orderContent;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.html")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/finalOrderPage.html")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
-            ArrayList<OrderItem> orders = user.getCart().getOrders();
-            for (int i = 0; i < orders.size(); i++)
-                pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orders.get(i).getFoodName())
-                        .replace("FoodCount", orders.get(i).getCount() + "") + ((i < (orders.size() - 1)) ? "OrderItem" : ""));
+            for (int i = 0; i < orderItems.size(); i++)
+                pageContent = pageContent.replace("OrderItem", orderContent.replace("FoodName", orderItems.get(i).getFoodName())
+                        .replace("FoodCount", orderItems.get(i).getCount() + "") + ((i < (orderItems.size() - 1)) ? "OrderItem" : ""));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +132,7 @@ public class HtmlPageMaker {
     }
 
     public String makeInvalidRequestPage(String address){
-        return createErrorPage(address + " not found.", "400", "src/main/resources/ErrorPages/errorPage.html");
+        return createErrorPage(address + " Badd request", "400", "src/main/resources/ErrorPages/errorPage.html");
     }
 
     public String makeFoodNotFoundPage(String foodName,String restaurantName,String restaurantId){
