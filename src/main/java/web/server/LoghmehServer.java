@@ -285,7 +285,7 @@ public class LoghmehServer {
                 try {
 
                     ArrayList<OrderItem> orderItems = _system.finalizeOrder(DataHandler.getInstance().getUser());
-                    html = _pageMaker.makeOrderFinalizedPage(orderItems, DataHandler.getInstance().getUser(),restaurantName);
+                    html = _pageMaker.makeOrderFinalizedPage(orderItems, DataHandler.getInstance().getUser(), restaurantName);
                     context.status(200);
                     context.html(html);
                 }

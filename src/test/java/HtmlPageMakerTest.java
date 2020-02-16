@@ -60,13 +60,13 @@ public class HtmlPageMakerTest {
     @Test
     public void testMakeCartPage() throws IOException {
         String content = new String(Files.readAllBytes(Paths.get("src/test/resources/htmlResources/cartPage.html")));
-        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeCartPage(user).replaceAll("[\t\n ]", ""));
+        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeCartPage(user, "TestRestaurant").replaceAll("[\t\n ]", ""));
     }
 
     @Test
     public void testMakeOrderFinalizedPage() throws IOException {
         String content = new String(Files.readAllBytes(Paths.get("src/test/resources/htmlResources/finalizeOrderPage.html")));
-        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeOrderFinalizedPage(user.getCart().getOrders(), user).replaceAll("[\t\n ]", ""));
+        assertEquals(content.replaceAll("[\t\n ]", ""), pageMaker.makeOrderFinalizedPage(user.getCart().getOrders(), user, "TestRestaurant").replaceAll("[\t\n ]", ""));
     }
 
     @Test

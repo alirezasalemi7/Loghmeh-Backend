@@ -48,7 +48,7 @@ public class HtmlPageMaker {
         String pageContent = null;
         try {
             pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/RestaurantPage/restaurantInfo.html")));
-            pageContent = pageContent.replace("RestauratnId", restaurant.getId()).replace("RestaurantName", restaurant.getName())
+            pageContent = pageContent.replace("RestaurantId", restaurant.getId()).replace("RestaurantName", restaurant.getName())
                             .replace("xLocation", restaurant.getLocation().getX() + "").replace("yLocation", restaurant.getLocation().getY() + "")
                                 .replace("RestaurantImage", restaurant.getLogoAddress());
         } catch (IOException e) {
@@ -96,7 +96,7 @@ public class HtmlPageMaker {
         return pageContent;
     }
 
-    public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user) {
+    public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user, String restaurantName) {
         String pageContent = null, orderContent;
         try {
             pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
@@ -108,35 +108,36 @@ public class HtmlPageMaker {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        pageContent = pageContent.replace("RestaurantName", restaurantName);
         return pageContent.replace("FinalPrice", user.getCart().getSumOfPrices() + "");
     }
 
     public String makeRestaurantNotFoundPage(String restaurantId){
-        return createErrorPage("Restaurant not found.", "404", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage("Restaurant not found.", "404", "src/main/resources/ErrorPages/errorPage.html");
     }
 
     public String makeInvalidRestaurantAccessPage(String restaurantId){
-        return createErrorPage("Access to " + restaurantId + " is not allowed.", "403", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage("Access to " + restaurantId + " is not allowed.", "403", "src/main/resources/ErrorPages/errorPage.html");
     }
 
     public String makeNotEnoughCreditPage(User user){
-        return createErrorPage("Your credit(" + user.getCredit() + ") is not enough.", "400", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage("Your credit(" + user.getCredit() + ") is not enough.", "400", "src/main/resources/ErrorPages/errorPage.html");
     }
 
     public String makeCartEmptyErrorPage(){
-        return createErrorPage("Your cart empty.", "400", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage("Your cart empty.", "400", "src/main/resources/ErrorPages/errorPage.html");
     }
 
     public String makeMultipleRestaurantAddToCartErrorPage(User user){
-        return createErrorPage("You should order from only one restaurant.", "400", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage("You should order from only one restaurant.", "400", "src/main/resources/ErrorPages/errorPage.html");
     }
 
     public String makeInvalidRequestPage(String address){
-        return createErrorPage(address + " not found.", "400", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage(address + " not found.", "400", "src/main/resources/ErrorPages/errorPage.html");
     }
 
     public String makeFoodNotFoundPage(String foodName,String restaurantName,String restaurantId){
-        return createErrorPage(foodName + " is not found in " + restaurantName, "404", "src/main/resources/ErrorPages/errorPage.txt");
+        return createErrorPage(foodName + " is not found in " + restaurantName, "404", "src/main/resources/ErrorPages/errorPage.html");
     }
 
     private String createErrorPage(String message, String errorCode, String filePath) {
