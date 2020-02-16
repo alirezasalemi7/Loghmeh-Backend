@@ -1,4 +1,5 @@
 import exceptions.*;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -11,15 +12,17 @@ import systemHandlers.SystemManager;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SystemManagerTest {
 
     static SystemManager systemManager = SystemManager.getInstance();
-    User user = new User(new Location(0, 0), "aUser", "anonymous", "09100000000", "aa@gmail.com", 1000.0);
-    static Restaurant restaurant1,restaurant2,restaurant3,restaurant4,restaurant5;
-    static Food food1,food2,food3,food4,food5,food6,food7,food8,food9,food10;
+    static User user = new User(new Location(0, 0), "aUser", "anonymous", "09100000000", "aa@gmail.com", 1000.0);
+    static Restaurant restaurant1, restaurant2, restaurant3, restaurant4, restaurant5;
+    static Food food1, food2, food3, food4, food5, food6, food7, food8, food9, food10;
+
+    double cost = 0;
 
     @BeforeClass
     public static void setup(){
@@ -62,7 +65,7 @@ public class SystemManagerTest {
     }
 
     @Test
-    public void test1AddAndGetRestaurantWithoutException(){
+    public void test01AddAndGetRestaurantWithoutException(){
         try {
             systemManager.addRestaurant(restaurant1);
             systemManager.addRestaurant(restaurant2);
@@ -84,22 +87,22 @@ public class SystemManagerTest {
     }
 
     @Test(expected = RestaurantIsRegisteredException.class)
-    public void test2AddRestaurantWithException() throws RestaurantIsRegisteredException{
+    public void test02AddRestaurantWithException() throws RestaurantIsRegisteredException{
         systemManager.addRestaurant(restaurant2);
     }
 
     @Test(expected = RestaurantDoesntExistException.class)
-    public void test3GetRestaurantWithException() throws RestaurantDoesntExistException{
+    public void test03GetRestaurantWithException() throws RestaurantDoesntExistException{
         systemManager.getRestaurantById("12");
     }
 
     @Test
-    public void test4GetAllRestaurants(){
+    public void test04GetAllRestaurants(){
         assertEquals(5, systemManager.getAllRestaurants().size(), 0.0);
     }
 
     @Test
-    public void test5GetFoodWithoutException() throws FoodDoesntExistException,RestaurantDoesntExistException {
+    public void test05GetFoodWithoutException() throws FoodDoesntExistException,RestaurantDoesntExistException {
         assertEquals(food1, systemManager.getFood(food1.getRestaurantId(),food1.getName()));
         assertEquals(food2, systemManager.getFood(food2.getRestaurantId(),food2.getName()));
         assertEquals(food3, systemManager.getFood(food3.getRestaurantId(),food3.getName()));
@@ -113,16 +116,74 @@ public class SystemManagerTest {
     }
 
     @Test(expected = RestaurantDoesntExistException.class)
-    public void test6GetFoodWithException() throws FoodDoesntExistException,RestaurantDoesntExistException{
+    public void test06GetFoodWithException() throws FoodDoesntExistException,RestaurantDoesntExistException{
         systemManager.getFood("7", "balal");
     }
 
     @Test
-    public void test7GetRecommendedRestaurants(){
+    public void test07GetRecommendedRestaurants(){
         ArrayList<Restaurant> restaurants = systemManager.getRecommendedRestaurants(user);
         assertEquals(restaurant3.getName(), restaurants.get(0).getName());
         assertEquals(restaurant1.getName(), restaurants.get(1).getName());
         assertEquals(restaurant2.getName(), restaurants.get(2).getName());
+    }
+
+
+    @Test
+    public void test09GetAllRestaurantsInRange(){
+        ArrayList<Restaurant> restaurantsInRange = systemManager.getInRangeRestaurants(user);
+        assertTrue(restaurantsInRange.contains(restaurant1));
+        assertTrue(restaurantsInRange.contains(restaurant3));
+        assertFalse(restaurantsInRange.contains(restaurant4));
+    }
+
+    @Test
+    public void test10GetRestaurantInRange() throws RestaurantDoesntExistException {
+        assertTrue(systemManager.isRestaurantInRange(user, restaurant1.getId()));
+        assertFalse(systemManager.isRestaurantInRange(user, restaurant2.getId()));
+    }
+
+    @Test
+    public void test11AddCreditWithoutException() throws NegativeChargeAmountException{
+        systemManager.increaseCredit(user,20000.0);
+        assertEquals(21000.0,user.getCredit(),0);
+    }
+
+    @Test(expected = NegativeChargeAmountException.class)
+    public void test12AddCreditWithException() throws NegativeChargeAmountException{
+        systemManager.increaseCredit(user,-20000.0);
+    }
+
+    @Test
+    public void test13AddToCartForUser() throws FoodDoesntExistException,UnregisteredOrderException,RestaurantDoesntExistException{
+        systemManager.addToCart(restaurant1.getFoodByName(food1.getName()),user);
+        systemManager.addToCart(restaurant1.getFoodByName(food2.getName()),user);
+        cost+=food1.getPrice();
+        cost+=food2.getPrice();
+        assertEquals(user.getCart().getOrders().size(),2);
+    }
+
+    @Test(expected = UnregisteredOrderException.class)
+    public void test14AddToCartForUserWithException() throws FoodDoesntExistException,UnregisteredOrderException,RestaurantDoesntExistException{
+        systemManager.addToCart(restaurant2.getFoodByName(food3.getName()),user);
+    }
+
+    @Test
+    public void test15FinalizeOrder() throws CartIsEmptyException,CreditIsNotEnoughException{
+        systemManager.finalizeOrder(user);
+        assertEquals(21000.0 - 19000.0, user.getCredit(),0);
+    }
+
+    @Test(expected = CartIsEmptyException.class)
+    public void test16FinalizeOrderWithCartEmptyException() throws CartIsEmptyException, CreditIsNotEnoughException {
+        systemManager.finalizeOrder(user);
+    }
+
+    @Test(expected = CreditIsNotEnoughException.class)
+    public void test17FinalizeOrderWithCreditIsNotEnoughException() throws FoodDoesntExistException, UnregisteredOrderException, RestaurantDoesntExistException, CartIsEmptyException, CreditIsNotEnoughException {
+        systemManager.addToCart(restaurant1.getFoodByName(food1.getName()), user);
+        systemManager.addToCart(restaurant1.getFoodByName(food2.getName()), user);
+        systemManager.finalizeOrder(user);
     }
 
 }
