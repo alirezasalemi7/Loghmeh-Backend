@@ -99,7 +99,7 @@ public class HtmlPageMaker {
     public String makeOrderFinalizedPage(ArrayList<OrderItem> orderItems, User user, String restaurantName) {
         String pageContent = null, orderContent;
         try {
-            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.txt")));
+            pageContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/cartPage.html")));
             orderContent = new String(Files.readAllBytes(Paths.get("src/main/resources/CartPages/order.txt")));
             ArrayList<OrderItem> orders = user.getCart().getOrders();
             for (int i = 0; i < orders.size(); i++)

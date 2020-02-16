@@ -20,7 +20,7 @@
 </head>
 <body>
 <ul>
-    <li>id: RestaurantId</li>
+    <li>id: 1</li>
     <li>name: naminoland</li>
     <li>location: (0.0, 0.0)</li>
     <li>logo: <img src="https://picsum.photos/536/354" alt="logo"></li>
@@ -30,7 +30,9 @@
                 <img src="https://picsum.photos/536/354" alt="logo">
                 <div>gheime</div>
                 <div>13000.0 Toman</div>
-                <form action="/profile/addtocart?foodName=gheime&restaurantId=1" method="POST">
+                <form action="/profile/addtocart" method="POST">
+                    <input type="hidden" name="foodName" value="gheime">
+                    <input type="hidden" name="restaurantId" value="1">
                     <button type="submit">addToCart</button>
                 </form>
             </li>
