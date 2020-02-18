@@ -1,6 +1,6 @@
 package org.kharchal.co;
 
-import web.server.LoghmehServer;
+import old.web.server.LoghmehServer;
 
 
 public class Main {

@@ -10,7 +10,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import web.html.HtmlPageMaker;
+import old.web.html.HtmlPageMaker;
 
 import java.io.IOException;
 import java.nio.file.Files;

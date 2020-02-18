@@ -15,8 +15,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import systemHandlers.DataHandler;
 import systemHandlers.SystemManager;
-import web.html.HtmlPageMaker;
-import web.server.LoghmehServer;
+import old.web.html.HtmlPageMaker;
+import old.web.server.LoghmehServer;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
