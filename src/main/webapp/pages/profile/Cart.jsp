@@ -1,4 +1,3 @@
-<%@ taglib prefix="mytags" uri="http://kharchal.com" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 
 <%@ page import="java.util.ArrayList" %>
@@ -17,7 +16,7 @@
         total = (Double) request.getAttribute("total");
     }
     if(lowCredit==null){
-        lowCredit = true;
+        lowCredit = false;
     }
 %>
 
@@ -37,7 +36,7 @@
     <c:if test="${not isemptyv}">
         <h3>restaurant : <%=restaurant%></h3>
         <c:forEach items="<%=items%>" var="item">
-            <mytags:OrderItem item="${item}"></mytags:OrderItem>
+            <li>${item.foodName} : ${item.count} : ${item.price}$</li>
         </c:forEach>
         <br>
         <h3>

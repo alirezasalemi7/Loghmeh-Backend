@@ -50,7 +50,7 @@ public class CartPageController extends HttpServlet {
             req.setAttribute("user", DataHandler.getInstance().getUser().getName());
             req.setAttribute("empty", true);
         }
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/profile/cart.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/profile/Cart.jsp");
         dispatcher.forward(req, resp);
     }
 }

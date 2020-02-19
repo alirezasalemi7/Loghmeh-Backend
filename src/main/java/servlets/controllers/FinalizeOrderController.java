@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("profile/finalize")
+@WebServlet("/profile/finalize")
 public class FinalizeOrderController extends HttpServlet {
 
     @Override
