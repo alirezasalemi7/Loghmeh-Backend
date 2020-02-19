@@ -8,9 +8,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import systemHandlers.DataHandler;
+import systemHandlers.SystemManager;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@WebListener
 public class DeliveryManInitialListener implements ServletContextListener {
 
     ScheduledExecutorService scheduler;
@@ -59,6 +62,7 @@ public class DeliveryManInitialListener implements ServletContextListener {
                     deliveryMEN.add(deliveryMan);
                 }
                 DataHandler.getInstance().setDeliveries(deliveryMEN);
+                SystemManager.getInstance().assignOrdersToDeliveries();
             }
             catch (IOException e){
                 System.err.println("external server not responding.\nexit.");

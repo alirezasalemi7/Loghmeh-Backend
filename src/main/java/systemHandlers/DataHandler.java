@@ -1,10 +1,8 @@
 package systemHandlers;
 
+import exceptions.OrderDoesNotExist;
 import exceptions.RestaurantDoesntExistException;
-import models.DeliveryMan;
-import models.Location;
-import models.Restaurant;
-import models.User;
+import models.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +11,13 @@ public class DataHandler {
 
     private User _user;
     private HashMap<String, Restaurant> _restaurants;
+    private HashMap<String, Order> _orders;
     private ArrayList<DeliveryMan> _deliveries;
     private static DataHandler _instance;
 
     private DataHandler(){
         _restaurants = new HashMap<>();
+        _orders = new HashMap<>();
         _user = new User(new Location(0, 0), "ali", "mammadi",  "09196055428", "am@gmail.com", 1000.0);
     }
 
@@ -37,6 +37,17 @@ public class DataHandler {
             throw new RestaurantDoesntExistException("Restaurant" + id + "doesn't exist.");
         }
         return _restaurants.get(id);
+    }
+
+    public void addOrder(Order order){
+        _orders.put(String.valueOf(order.getId()), order);
+    }
+
+    public Order getOrder(String id) throws OrderDoesNotExist{
+        if(_orders.containsKey(id)){
+            return _orders.get(id);
+        }
+        throw new OrderDoesNotExist();
     }
 
     public synchronized ArrayList<DeliveryMan> getDeliveries(){
