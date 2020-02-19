@@ -26,27 +26,19 @@
     <title><%=username%>'s Cart</title>
 </head>
 <body>
-    <c:set var="isemptyv" value="<%=empty%>"></c:set>
-    <c:set var="lowcredit" value="<%=lowCredit%>"></c:set>
-    <c:if test="${isemptyv eq true}">
-        <h2>Your cart is empty</h2>
-    </c:if>
-    <c:if test="${lowcredit eq true}">
-        <h2>your credit is not enough</h2>
-    </c:if>
-    <c:if test="${not isemptyv}">
-        <h3>restaurant : <%=restaurant%></h3>
-        <c:forEach items="<%=items%>" var="item">
-            <mytags:OrderItem item="${item}"></mytags:OrderItem>
-        </c:forEach>
-        <br>
-        <h3>
-            Total : <%=total%>
-        </h3>
-        <br>
-        <form action="/profile/finalize" method="GET">
-            <button type="submit">finalize</button>
-        </form>
-    </c:if>
+<c:set var="isemptyv" value="<%=empty%>"></c:set>
+<c:set var="lowcredit" value="<%=lowCredit%>"></c:set>
+<c:if test="${not isemptyv}">
+    <h3>restaurant : <%=restaurant%></h3>
+    <c:forEach items="<%=items%>" var="item">
+        <mytags:OrderItem item="${item}"></mytags:OrderItem>
+    </c:forEach>
+    <br>
+    <h3>
+        Total : <%=total%>
+    </h3>
+    <br>
+    <h2>thanks for shopping</h2>
+</c:if>
 </body>
 </html>

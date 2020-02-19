@@ -1,16 +1,19 @@
 package systemHandlers;
 
 import exceptions.RestaurantDoesntExistException;
+import models.DeliveryMan;
 import models.Location;
 import models.Restaurant;
 import models.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DataHandler {
 
     private User _user;
     private HashMap<String, Restaurant> _restaurants;
+    private ArrayList<DeliveryMan> _deliveries;
     private static DataHandler _instance;
 
     private DataHandler(){
@@ -34,5 +37,13 @@ public class DataHandler {
             throw new RestaurantDoesntExistException("Restaurant" + id + "doesn't exist.");
         }
         return _restaurants.get(id);
+    }
+
+    public synchronized ArrayList<DeliveryMan> getDeliveries(){
+        return this._deliveries;
+    }
+
+    public synchronized void setDeliveries(ArrayList<DeliveryMan> deliveries){
+        this._deliveries = deliveries;
     }
 }

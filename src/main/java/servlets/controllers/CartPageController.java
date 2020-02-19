@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@WebServlet("/profile/cart")
 public class CartPageController extends HttpServlet {
 
     @Override
@@ -28,6 +29,10 @@ public class CartPageController extends HttpServlet {
         }
         catch (RestaurantDoesntExistException e){
             // never reach there
+        }
+        Boolean lowCredit = (Boolean) req.getAttribute("lowCredit"); // come from finalize order
+        if(lowCredit!=null){
+            req.setAttribute("lowCredit", true);
         }
         ArrayList<OrderItem> items = DataHandler.getInstance().getUser().getCart().getOrders();
         if(items.size()>0){
