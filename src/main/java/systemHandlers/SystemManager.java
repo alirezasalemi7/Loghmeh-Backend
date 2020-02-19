@@ -126,4 +126,8 @@ public class SystemManager {
         Restaurant targetRestaurant = _dataHandler.getRestaurantById(restaurantId);
         return (user.getLocation().getDistance(targetRestaurant.getLocation()) <= 170);
     }
+
+    public ArrayList<Restaurant> getAllRestaurantsInfo() {
+        return new ArrayList<Restaurant>(_dataHandler.getAllRestaurant().values());
+    }
 }
