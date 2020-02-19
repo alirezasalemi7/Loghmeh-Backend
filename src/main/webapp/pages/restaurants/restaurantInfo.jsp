@@ -18,6 +18,7 @@
 <html>
 <head>
     <title>Restaurant Info</title>
+    <link rel="stylesheet" type="text/css" href="<%=application.getContextPath()%>/css/main.css">
 </head>
 <body>
     <ul>
