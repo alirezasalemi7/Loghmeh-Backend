@@ -31,7 +31,7 @@ public class OrderPageController extends HttpServlet {
         catch (OrderDoesNotExist e){
             req.setAttribute("valid", false);
         }
-        req.setAttribute("username", DataHandler.getInstance().getUser().getName());
+        req.setAttribute("user", DataHandler.getInstance().getUser().getName());
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/profile/FinalizedOrder.jsp");
         dispatcher.forward(req, resp);
     }
