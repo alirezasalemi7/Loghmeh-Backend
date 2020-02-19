@@ -19,4 +19,8 @@ public class OrderItem {
     public void setCount(int count){
         _count = count;
     }
+
+    public double getPrice(){
+        return _count*_food.getPrice();
+    }
 }

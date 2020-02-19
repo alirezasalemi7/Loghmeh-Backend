@@ -13,11 +13,13 @@ import systemHandlers.SystemManager;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+@WebListener
 public class ServerInitialListener implements ServletContextListener {
 
     private SystemManager _system = SystemManager.getInstance();
@@ -25,6 +27,11 @@ public class ServerInitialListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         fetchFromExternalServer();
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+
     }
 
     private String sendGetRequestToGetDataOnStart(){
