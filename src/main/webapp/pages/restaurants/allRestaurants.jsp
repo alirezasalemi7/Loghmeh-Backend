@@ -10,7 +10,7 @@
 <html>
 <head>
     <title>All restaurants</title>
-    <link rel="stylesheet" href="../../css/logo.css">
+    <link rel="stylesheet" type="text/css" href="<%=application.getContextPath()%>/css/main.css">
 </head>
 <body>
     <table>
