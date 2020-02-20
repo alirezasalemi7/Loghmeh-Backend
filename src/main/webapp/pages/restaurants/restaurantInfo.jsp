@@ -1,22 +1,25 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="models.Restaurant" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="models.Food" %><%--
+<%@ page import="models.Food" %>
+<%@ page pageEncoding="utf-8" %>
+<%--
   Created by IntelliJ IDEA.
   User: reza
   Date: 2/20/20
   Time: 12:00 AM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
 
 <%
     Restaurant restaurant = (Restaurant) request.getAttribute("restaurant");
     ArrayList<Food> menu = restaurant.getMenu();
 %>
 
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Restaurant Info</title>
     <link rel="stylesheet" type="text/css" href="<%=application.getContextPath()%>/css/main.css">
 </head>
@@ -43,7 +46,7 @@
                                 <img src="${food.imageAddress}" alt="logo">
                                 <div>${food.name}</div>
                                 <div>${food.price} Toman</div>
-                                <form action="<%=application.getContextPath()%>/profile/addtocart" method="post">
+                                <form action="<%=application.getContextPath()%>/profile/addtocart" accept-charset="UTF-8" method="post">
                                     <input type="hidden" name="foodName" value="${food.name}">
                                     <input type="hidden" name="restaurantId" value="${food.restaurantId}">
                                     <button type="submit">Add to cart</button>
