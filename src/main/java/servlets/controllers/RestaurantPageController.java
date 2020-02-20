@@ -23,6 +23,7 @@ public class RestaurantPageController extends HttpServlet {
         try {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(id);
             if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
+                resp.setStatus(200);
                 req.setAttribute("restaurant", restaurant);
                 dispatcher = req.getRequestDispatcher("/pages/restaurants/restaurantInfo.jsp");
             } else {

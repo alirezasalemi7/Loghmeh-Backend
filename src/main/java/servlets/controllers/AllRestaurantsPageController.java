@@ -19,6 +19,7 @@ public class AllRestaurantsPageController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ArrayList<Restaurant> restaurants = SystemManager.getInstance().getInRangeRestaurants(SystemManager.getInstance().getUser());
         req.setAttribute("restaurants", restaurants);
+        resp.setStatus(200);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/restaurants/allRestaurants.jsp");
         dispatcher.forward(req, resp);
     }

@@ -44,7 +44,8 @@ public class AddToCartController extends HttpServlet {
                     Food food = restaurant.getFoodByName(foodName);
                     User user = SystemManager.getInstance().getUser();
                     SystemManager.getInstance().addToCart(food, user);
-                    resp.sendRedirect("/restaurants/" + restaurantId);
+                    resp.setStatus(200);
+                    resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/restaurants/" + restaurantId);
                     return;
                 } else {
                     resp.setStatus(403);
@@ -58,7 +59,7 @@ public class AddToCartController extends HttpServlet {
                 dispatcher = dispatchErrorPage("404", "Restaurant not found.", req);
             } catch (UnregisteredOrderException e) {
                 resp.setStatus(400);
-                dispatcher = dispatchErrorPage("400", "Bad request. unregistered order", req);
+                dispatcher = dispatchErrorPage("400", "Bad request. You have some unregistered orders in your cart.", req);
             }
         }
         dispatcher.forward(req, resp);
