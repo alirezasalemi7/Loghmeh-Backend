@@ -4,6 +4,7 @@ import exceptions.FoodDoesntExistException;
 import exceptions.RestaurantDoesntExistException;
 import exceptions.UnregisteredOrderException;
 import models.Food;
+import models.OrderItem;
 import models.Restaurant;
 import models.User;
 import systemHandlers.SystemManager;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 @WebServlet("/profile/addtocart")
 public class AddToCartController extends HttpServlet {
@@ -27,15 +29,14 @@ public class AddToCartController extends HttpServlet {
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
         String restaurantId = req.getParameter("restaurantId");
-        String foodName = new String(req.getParameter("foodName").getBytes(), StandardCharsets.UTF_8);
+        String foodName = req.getParameter("foodName");
         RequestDispatcher dispatcher;
-        String oldEncoding=req.getCharacterEncoding();
         if (restaurantId == null || foodName == null) {
             resp.setStatus(400);
-            dispatcher = dispatchErrorPage("400", "Bad request. Both are null", req);
+            dispatcher = dispatchErrorPage("400", "Bad request.", req);
         } else {
+            foodName = new String(foodName.getBytes(StandardCharsets.ISO_8859_1),"UTF-8");
             Restaurant restaurant = null;
             try {
                 restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
@@ -43,18 +44,15 @@ public class AddToCartController extends HttpServlet {
                     Food food = restaurant.getFoodByName(foodName);
                     User user = SystemManager.getInstance().getUser();
                     SystemManager.getInstance().addToCart(food, user);
-                    user.addToCart(food, restaurantId);
-                    dispatcher = req.getRequestDispatcher("/restaurants/" + restaurantId);
+                    resp.sendRedirect("/restaurants/" + restaurantId);
+                    return;
                 } else {
                     resp.setStatus(403);
                     dispatcher = dispatchErrorPage("403", "You're not allowed to see this page.", req);
                 }
             } catch (FoodDoesntExistException e) {
-                String message = "\"Food(" + foodName + ") not found.";
-                for (Food food : restaurant.getMenu())
-                    message += ("(" + food.getName() + ")\n");
                 resp.setStatus(404);
-                dispatcher = dispatchErrorPage("404", message + oldEncoding, req);
+                dispatcher = dispatchErrorPage("404", "Food not found.", req);
             } catch (RestaurantDoesntExistException e) {
                 resp.setStatus(404);
                 dispatcher = dispatchErrorPage("404", "Restaurant not found.", req);
