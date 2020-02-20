@@ -26,11 +26,13 @@ public class RestaurantPageController extends HttpServlet {
                 req.setAttribute("restaurant", restaurant);
                 dispatcher = req.getRequestDispatcher("/pages/restaurants/restaurantInfo.jsp");
             } else {
+                resp.setStatus(403);
                 req.setAttribute("errorCode", "403");
                 req.setAttribute("message", "You're not allowed to see this page.");
                 dispatcher = req.getRequestDispatcher("/pages/errors/errorPage.jsp");
             }
         } catch (RestaurantDoesntExistException e) {
+            resp.setStatus(404);
             req.setAttribute("errorCode", "404");
             req.setAttribute("message", "Page not found.");
             dispatcher = req.getRequestDispatcher("/pages/errors/errorPage.jsp");
