@@ -21,18 +21,19 @@ public class OrderPageController extends HttpServlet {
         try {
             if(orderId!=null){
                 Order order = DataHandler.getInstance().getOrder(orderId);
-                req.setAttribute("valid", true);
                 req.setAttribute("order", order);
+                req.setAttribute("user", DataHandler.getInstance().getUser().getName());
+                RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/profile/FinalizedOrder.jsp");
+                dispatcher.forward(req, resp);
             }
             else {
                 throw new OrderDoesNotExist();
             }
         }
         catch (OrderDoesNotExist e){
-            req.setAttribute("valid", false);
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/profile/errors/InvalidOrder.jsp");
+            resp.setStatus(404);
+            dispatcher.forward(req, resp);
         }
-        req.setAttribute("user", DataHandler.getInstance().getUser().getName());
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/profile/FinalizedOrder.jsp");
-        dispatcher.forward(req, resp);
     }
 }

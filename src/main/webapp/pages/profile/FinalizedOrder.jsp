@@ -28,12 +28,6 @@
     <title><%=username%>'s order</title>
 </head>
 <body>
-<c:set var="isvalid" value="<%=valid%>"></c:set>
-<c:if test="${not isvalid}">
-    <h2>
-        cannot find requested order
-    </h2>
-</c:if>
 <c:if test="${isvalid}">
     <h3>restaurant : <%=order.getRestaurant().getName()%></h3>
     <c:forEach items="<%=order.getItems()%>" var="item">
