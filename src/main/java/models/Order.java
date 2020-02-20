@@ -76,7 +76,7 @@ public class Order {
         long deliveryTime = (long) (distance/deliveryMan.getVelocity());
         this.remainingTime = deliveryTime;
         timer.schedule(new DeliveryTask(), 1000*deliveryTime);
-        timer.schedule(new RemainingTimeTask(), 1000*deliveryTime);
+        timer.scheduleAtFixedRate(new RemainingTimeTask(), 0,1000);
     }
 
     public Restaurant getRestaurant(){
