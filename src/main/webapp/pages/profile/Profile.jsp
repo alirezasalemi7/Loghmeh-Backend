@@ -13,6 +13,10 @@
 <%
     ArrayList<OrderItem> orders = (ArrayList<OrderItem>) request.getAttribute("orders");
     User user = (User) request.getAttribute("user");
+    boolean creditIsNegative = (boolean) session.getAttribute("creditIsNegative");
+    session.removeAttribute("creditIsNegative");
+    boolean successFullAddCredit = (boolean) session.getAttribute("successFullAddCredit");
+    session.removeAttribute("successFullAddCrediti");
 %>
 
 <html>
@@ -28,34 +32,54 @@
         <li>Email: ${user.email}</li>
         <li>Credit: ${user.credit} Toman</li>
         <c:set value="<%=orders.size()%>" var="numberOfOrders" scope="session"></c:set>
-        <c:choose>
-            <c:when test="${numberOfOrders} == 0">
-                <li>
-                    Orders :<br>
-                    <c:forEach items="<%=orders%>" var="order">
-                        <ul>
-                            <li>
-                                    ${order.foodName} : ${order.count}
-                            </li>
-                        </ul>
-                    </c:forEach>
-                        <%--            TODO: change address and name after merging.--%>
-                    <form action="<%=application.getContextPath()%>/profile/cart" method="GET">
-                        <button type="submit">Go to cart</button>
-                    </form>
-                </li>
-            </c:when>
-            <c:otherwise>
-                <p>Tou doesn't order anything.</p>
-                <form action="<%=application.getContextPath()%>/restaurants" method="GET">
-                    <button type="submit">Go to restaurants page</button>
-                </form>
-            </c:otherwise>
-        </c:choose>
+<%--        TODO: change address and name after merging.--%>
+<%--        <c:choose>--%>
+<%--            <c:when test="${numberOfOrders} == 0">--%>
+<%--                <li>--%>
+<%--                    Orders :<br>--%>
+<%--                    <c:forEach items="<%=orders%>" var="order">--%>
+<%--                        <ul>--%>
+<%--                            <li>--%>
+<%--                                    ${order.foodName} : ${order.count}--%>
+<%--                            </li>--%>
+<%--                        </ul>--%>
+<%--                    </c:forEach>--%>
+<%--                    <form action="<%=application.getContextPath()%>/profile/cart" method="GET">--%>
+<%--                        <button type="submit">Go to cart</button>--%>
+<%--                    </form>--%>
+<%--                </li>--%>
+<%--            </c:when>--%>
+<%--            <c:otherwise>--%>
+<%--                <p>You doesn't order anything.</p>--%>
+<%--                <form action="<%=application.getContextPath()%>/restaurants" method="GET">--%>
+<%--                    <button type="submit">Go to restaurants page</button>--%>
+<%--                </form>--%>
+<%--            </c:otherwise>--%>
+<%--        </c:choose>--%>
     </ul>
     <form action="<%=application.getContextPath()%>/profile/addcredit" method="POST">
         <button type="submit">increase</button>
         <input type="number" name="credit" value="" />
     </form>
+    <c:set var="success" value="<%=successFullAddCredit%>"></c:set>
+    <c:set var="creditIsNegative" value="<%=creditIsNegative%>"></c:set>
+    <c:choose>
+        <c:when test="${creditIsNegative eq true}">
+            <c:if test="${success eq false}">
+                <p class="error">Creidt must be positive</p>
+            </c:if>
+        </c:when>
+        <c:otherwise>
+            <c:choose>
+                <c:when test="${success eq true}">
+                    <p class="success">Increased successfully.</p>
+                </c:when>
+                <c:otherwise>
+                    <p class="error">Input format is wrong</p>
+                </c:otherwise>
+            </c:choose>
+        </c:otherwise>
+    </c:choose>
+
 </body>
 </html>
