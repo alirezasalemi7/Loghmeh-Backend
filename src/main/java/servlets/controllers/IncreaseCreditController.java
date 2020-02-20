@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/profile/addcredit")
@@ -30,16 +31,20 @@ public class IncreaseCreditController extends HttpServlet {
                 SystemManager.getInstance().increaseCredit(SystemManager.getInstance().getUser(), creditValue);
                 negativeCredit = false;
                 successFulIncrease = true;
+                resp.setStatus(400);
             } catch (NegativeChargeAmountException e) {
                 negativeCredit = true;
                 successFulIncrease = false;
+                resp.setStatus(400);
             } catch (NumberFormatException e) {
                 negativeCredit = false;
                 successFulIncrease = false;
+                resp.setStatus(400);
             }
-            req.setAttribute("negativeCredit", negativeCredit);
-            req.setAttribute("successFullAddCredit", successFulIncrease);
-            resp.sendRedirect("/pages/profile/Profile.jsp");
+            HttpSession session = req.getSession();
+            session.setAttribute("creditIsNegative", negativeCredit);
+            session.setAttribute("successFullAddCredit", successFulIncrease);
+            resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/profile");
         }
     }
 }
