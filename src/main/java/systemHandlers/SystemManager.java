@@ -11,7 +11,6 @@ public class SystemManager {
 
     private static SystemManager _instance;
     private DataHandler _dataHandler;
-    private Queue<Order> _notAssignedOrders = new LinkedList<>();
 
     private SystemManager() {
         _dataHandler = DataHandler.getInstance();
@@ -121,36 +120,15 @@ public class SystemManager {
         try {
             Restaurant restaurant = this.getRestaurantById(items.get(0).getFood().getRestaurantId());
             Order order = new Order(items,user,restaurant);
-            _notAssignedOrders.add(order);
             DataHandler.getInstance().addOrder(order);
             user.addOrder(order);
-            assignOrdersToDeliveries();
+            order.searchForDelivery();
             return order;
         }
         catch (RestaurantDoesntExistException e){
             //never reach there
         }
         return null;
-    }
-
-    public void assignOrdersToDeliveries(){
-        ArrayList<DeliveryMan> deliveryMEN = DataHandler.getInstance().getDeliveries();
-        if(deliveryMEN.size()==0){
-            return;
-        }
-        for(Order order : _notAssignedOrders){
-            DeliveryMan minDistanceDeliveryMan = null;
-            double minTime = 0;
-            for (DeliveryMan deliveryMan : deliveryMEN){
-                double distance = deliveryMan.getLocation().getDistance(order.getRestaurant().getLocation())+order.getRestaurant().getLocation().getDistance(order.getUser().getLocation());
-                double tempTime = distance/deliveryMan.getVelocity();
-                if(tempTime<minTime){
-                    minDistanceDeliveryMan = deliveryMan;
-                }
-            }
-            order.setDeliveryMan(minDistanceDeliveryMan);
-        }
-        _notAssignedOrders.clear();
     }
 
     public Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {

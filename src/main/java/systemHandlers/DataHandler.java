@@ -12,7 +12,6 @@ public class DataHandler {
     private User _user;
     private HashMap<String, Restaurant> _restaurants;
     private HashMap<String, Order> _orders;
-    private ArrayList<DeliveryMan> _deliveries;
     private static DataHandler _instance;
 
     private DataHandler(){
@@ -48,13 +47,5 @@ public class DataHandler {
             return _orders.get(id);
         }
         throw new OrderDoesNotExist();
-    }
-
-    public synchronized ArrayList<DeliveryMan> getDeliveries(){
-        return this._deliveries;
-    }
-
-    public synchronized void setDeliveries(ArrayList<DeliveryMan> deliveries){
-        this._deliveries = deliveries;
     }
 }
