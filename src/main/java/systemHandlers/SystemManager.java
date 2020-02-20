@@ -124,6 +124,7 @@ public class SystemManager {
             _notAssignedOrders.add(order);
             DataHandler.getInstance().addOrder(order);
             user.addOrder(order);
+            assignOrdersToDeliveries();
             return order;
         }
         catch (RestaurantDoesntExistException e){
