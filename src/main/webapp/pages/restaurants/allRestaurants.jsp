@@ -27,7 +27,7 @@
                     <td><img class="logo" src="${item.logoAddress}" alt="logo"></td>
                     <td>${item.name}</td>
                     <td>
-                        <form action="restaurants/${item.id}">
+                        <form action="<%=application.getContextPath()%>/restaurants/${item.id}">
                             <input type="submit" value="Resaturant Page" />
                         </form>
                     </td>

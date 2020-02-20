@@ -43,7 +43,7 @@
                                 <img src="${food.imageAddress}" alt="logo">
                                 <div>${food.name}</div>
                                 <div>${food.price} Toman</div>
-                                <form action="/profile/addtocart" method="post">
+                                <form action="<%=application.getContextPath()%>/profile/addtocart" method="post">
                                     <input type="hidden" name="foodName" value="${food.name}">
                                     <input type="hidden" name="restaurantId" value="${food.restaurantId}">
                                     <button type="submit">Add to cart</button>
