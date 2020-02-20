@@ -4,7 +4,6 @@ import exceptions.FoodDoesntExistException;
 import exceptions.RestaurantDoesntExistException;
 import exceptions.UnregisteredOrderException;
 import models.Food;
-import models.OrderItem;
 import models.Restaurant;
 import models.User;
 import systemHandlers.SystemManager;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 @WebServlet("/profile/addtocart")
 public class AddToCartController extends HttpServlet {

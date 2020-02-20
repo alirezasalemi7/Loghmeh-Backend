@@ -21,7 +21,6 @@ public class ProfilePageController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = SystemManager.getInstance().getUser();
         ArrayList<OrderItem> orders = user.getCart().getOrders();
-        System.err.println("SIZE" + orders.size());
         req.setAttribute("user", user);
         req.setAttribute("orders", orders);
         HttpSession session = req.getSession();
