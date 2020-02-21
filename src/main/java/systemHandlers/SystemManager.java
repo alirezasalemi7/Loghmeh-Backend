@@ -2,11 +2,8 @@ package systemHandlers;
 
 import exceptions.*;
 
+import models.*;
 import org.javatuples.Pair;
-import models.Food;
-import models.OrderItem;
-import models.Restaurant;
-import models.User;
 
 import java.util.*;
 
@@ -118,8 +115,20 @@ public class SystemManager {
         user.addToCart(_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName), restaurantId);
     }
 
-    public ArrayList<OrderItem> finalizeOrder(User user) throws CartIsEmptyException, CreditIsNotEnoughException {
-        return user.finalizeOrder();
+    public Order finalizeOrder(User user) throws CartIsEmptyException, CreditIsNotEnoughException {
+        ArrayList<OrderItem> items = user.finalizeOrder();
+        try {
+            Restaurant restaurant = this.getRestaurantById(items.get(0).getFood().getRestaurantId());
+            Order order = new Order(items,user,restaurant);
+            DataHandler.getInstance().addOrder(order);
+            user.addOrder(order);
+            order.searchForDelivery();
+            return order;
+        }
+        catch (RestaurantDoesntExistException e){
+            //never reach there
+        }
+        return null;
     }
 
     public Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {

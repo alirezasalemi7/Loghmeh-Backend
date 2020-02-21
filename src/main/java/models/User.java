@@ -5,6 +5,7 @@ import exceptions.CreditIsNotEnoughException;
 import exceptions.UnregisteredOrderException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User {
     private Cart _cart;
@@ -15,6 +16,7 @@ public class User {
     private String _email;
     private Double _credit;
     private String _id;
+    private HashMap<String,Order> _orders = new HashMap<>();
 
     public String getName() {
         return _name;
@@ -88,6 +90,14 @@ public class User {
         ArrayList<OrderItem> orders = _cart.getOrders();
         _cart.clearCart();
         return orders;
+    }
+
+    public void addOrder(Order order){
+        this._orders.put(String.valueOf(order.getId()), order);
+    }
+
+    public ArrayList<Order> getOrders(){
+        return new ArrayList<>(this._orders.values());
     }
 
 }
