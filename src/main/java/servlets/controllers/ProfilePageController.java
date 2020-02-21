@@ -1,5 +1,6 @@
 package servlets.controllers;
 
+import models.Order;
 import models.OrderItem;
 import models.User;
 import systemHandlers.SystemManager;
@@ -20,7 +21,7 @@ public class ProfilePageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = SystemManager.getInstance().getUser();
-        ArrayList<OrderItem> orders = user.getCart().getOrders();
+        ArrayList<Order> orders = user.getOrders();
         req.setAttribute("user", user);
         req.setAttribute("orders", orders);
         HttpSession session = req.getSession();

@@ -1,7 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="models.OrderItem" %>
-<%@ page import="models.User" %><%--
+<%@ page import="models.User" %>
+<%@ page import="models.Order" %><%--
   Created by IntelliJ IDEA.
   User: reza
   Date: 2/20/20
@@ -11,7 +12,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
-    ArrayList<OrderItem> orders = (ArrayList<OrderItem>) request.getAttribute("orders");
+    ArrayList<Order> orders = (ArrayList<Order>) request.getAttribute("orders");
     User user = (User) request.getAttribute("user");
     boolean creditIsNegative = (boolean) session.getAttribute("creditIsNegative");
     session.removeAttribute("creditIsNegative");
@@ -31,35 +32,10 @@
         <li>Phone number: ${user.phoneNumber}</li>
         <li>Email: ${user.email}</li>
         <li>Credit: ${user.credit} Toman</li>
-        <c:set value="<%=orders.size()%>" var="numberOfOrders" scope="session"></c:set>
-<%--        TODO: change address and name after merging.--%>
-<%--        <c:choose>--%>
-<%--            <c:when test="${numberOfOrders} == 0">--%>
-<%--                <li>--%>
-<%--                    Orders :<br>--%>
-<%--                    <c:forEach items="<%=orders%>" var="order">--%>
-<%--                        <ul>--%>
-<%--                            <li>--%>
-<%--                                    ${order.foodName} : ${order.count}--%>
-<%--                            </li>--%>
-<%--                        </ul>--%>
-<%--                    </c:forEach>--%>
-<%--                    <form action="<%=application.getContextPath()%>/profile/cart" method="GET">--%>
-<%--                        <button type="submit">Go to cart</button>--%>
-<%--                    </form>--%>
-<%--                </li>--%>
-<%--            </c:when>--%>
-<%--            <c:otherwise>--%>
-<%--                <p>You doesn't order anything.</p>--%>
-<%--                <form action="<%=application.getContextPath()%>/restaurants" method="GET">--%>
-<%--                    <button type="submit">Go to restaurants page</button>--%>
-<%--                </form>--%>
-<%--            </c:otherwise>--%>
-<%--        </c:choose>--%>
     </ul>
     <form action="<%=application.getContextPath()%>/profile/addcredit" method="POST">
         <button type="submit">increase</button>
-        <input type="number" name="credit" value="" />
+        <input type="number" name="credit" value="" required/>
     </form>
     <c:set var="success" value="<%=successFullAddCredit%>"></c:set>
     <c:set var="creditIsNegative" value="<%=creditIsNegative%>"></c:set>
@@ -78,6 +54,23 @@
                     <p class="error">Input format is wrong</p>
                 </c:otherwise>
             </c:choose>
+        </c:otherwise>
+    </c:choose>
+    <c:set value="<%=orders.size()%>" var="numberOfOrders" scope="session"></c:set>
+    <c:choose>
+        <c:when test="${numberOfOrders > 0}">
+            <ul>
+                <c:forEach var="item" items="<%=orders%>">
+                    <li>
+                        <a href="/profile/orders?id=${item.id}">order id : ${item.id}</a>
+                    </li>
+                </c:forEach>
+            </ul>
+        </c:when>
+        <c:otherwise>
+            <p>
+                you don't have any orders
+            </p>
         </c:otherwise>
     </c:choose>
 
