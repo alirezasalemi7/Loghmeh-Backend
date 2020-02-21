@@ -52,7 +52,6 @@ public class FoodPartyListener implements ServletContextListener {
             HttpClient client = HttpClientBuilder.create().build();
             HttpGet getRequest = new HttpGet("http://138.197.181.131:8080/foodparty");
             try {
-
                 HttpResponse response = client.execute(getRequest);
                 if (response.getStatusLine().getStatusCode() != 200) {
                     System.err.println("Failed to obtain food Party information from external server. Error code: " + response.getStatusLine().getStatusCode());
@@ -73,7 +72,7 @@ public class FoodPartyListener implements ServletContextListener {
                         }
                     }
                 }
-            } catch (IOException | FoodIsRegisteredException | InvalidPopularityException | InvalidPriceException e) {
+            } catch (Exception e) {
                 System.err.println("HERE->" + e.getMessage());
                 e.printStackTrace();
             }
@@ -83,8 +82,9 @@ public class FoodPartyListener implements ServletContextListener {
             String line = "";
             StringBuilder input = new StringBuilder();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-            while (bufferedReader.ready() && (line = bufferedReader.readLine()) != null)
+            while ((line = bufferedReader.readLine()) != null) {
                 input.append(line);
+            }
             return input.toString();
         }
 
