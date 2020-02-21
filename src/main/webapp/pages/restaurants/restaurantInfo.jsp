@@ -26,14 +26,14 @@
 </head>
 <body>
     <ul>
-        <li>Id: <%=restaurant.getId()%></li>
-        <li>Name: <%=restaurant.getName()%></li>
-        <li>Location: (<%=restaurant.getLocation().getX()%>, <%=restaurant.getLocation().getY()%>)</li>
-        <li>
+        <li class="horizontal-li">Id: <%=restaurant.getId()%></li>
+        <li class="horizontal-li">Name: <%=restaurant.getName()%></li>
+        <li class="horizontal-li">Location: (<%=restaurant.getLocation().getX()%>, <%=restaurant.getLocation().getY()%>)</li>
+        <li class="horizontal-li">
             Logo:
             <img src="<%=restaurant.getLogoAddress()%>" alt="logo">
         </li>
-        <li>
+        <li class="horizontal-li">
             Menu: <br>
             <c:set var="numberOfFoods" scope="session" value="<%=menu.size()%>"></c:set>
             <c:choose>
@@ -43,7 +43,7 @@
                 <c:otherwise>
                     <ol>
                         <c:forEach items="<%=menu%>" var="food">
-                            <li>
+                            <li class="horizontal-li">
                                 <img src="${food.imageAddress}" alt="logo">
                                 <div>${food.name}</div>
                                 <div>${food.price} Toman</div>

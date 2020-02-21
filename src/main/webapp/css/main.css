@@ -15,7 +15,7 @@ img {
     height: 50px;
 }
 
-li {
+.horizontal-li {
     display: flex;
     flex-direction: row;
     padding: 0 0 5px;

@@ -27,10 +27,10 @@
 <body>
     <ul>
         <c:set var="user" value="<%=user%>"></c:set>
-        <li>Full name: ${user.name} ${user.family}</li>
-        <li>Phone number: ${user.phoneNumber}</li>
-        <li>Email: ${user.email}</li>
-        <li>Credit: ${user.credit} Toman</li>
+        <li class="horizontal-li">Full name: ${user.name} ${user.family}</li>
+        <li class="horizontal-li">Phone number: ${user.phoneNumber}</li>
+        <li class="horizontal-li">Email: ${user.email}</li>
+        <li class="horizontal-li">Credit: ${user.credit} Toman</li>
         <c:set value="<%=orders.size()%>" var="numberOfOrders" scope="session"></c:set>
 <%--        TODO: change address and name after merging.--%>
 <%--        <c:choose>--%>
