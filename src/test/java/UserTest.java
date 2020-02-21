@@ -15,9 +15,9 @@ public class UserTest {
     public void setup() throws UnregisteredOrderException {
         _user = new User(new Location(4, 5), "mammad", "mammadi", "09101010102", "mmmd@gmail.com", 12000.0);
         try {
-            Food food1 = new Food("gheime", "yummy1", 0.45, 1000.0, "image1", "123");
-            Food food2 = new Food("kabab", "yummy2", 0.45, 1000.0, "image2", "123");
-            Food food3 = new Food("falafel", "yummy2", 0.45, 1000.0, "image3", "123");
+            NormalFood food1 = new NormalFood("gheime", "yummy1", 0.45, 1000.0, "image1", "123");
+            NormalFood food2 = new NormalFood("kabab", "yummy2", 0.45, 1000.0, "image2", "123");
+            NormalFood food3 = new NormalFood("falafel", "yummy2", 0.45, 1000.0, "image3", "123");
             _user.addToCart(food1,"123");
             _user.addToCart(food2,"123");
             _user.addToCart(food1,"123");
@@ -32,7 +32,7 @@ public class UserTest {
     @Test(expected = UnregisteredOrderException.class)
     public void testAddToCart() throws UnregisteredOrderException, InvalidPopularityException, InvalidPriceException {
         Cart cart = _user.getCart();
-        Food food1 = new Food("gheime", "yummy1", 0.45, 1000.0, "image1", "123");
+        NormalFood food1 = new NormalFood("gheime", "yummy1", 0.45, 1000.0, "image1", "123");
         assertEquals(3, cart.getOrders().size(), 0.0);
         assertEquals(3, cart.getOrders().get(0).getCount(), 0.0);
         assertEquals(2, cart.getOrders().get(1).getCount(), 0.0);
