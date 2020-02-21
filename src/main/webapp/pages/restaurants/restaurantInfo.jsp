@@ -2,6 +2,7 @@
 <%@ page import="models.Restaurant" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="models.Food" %>
+<%@ page import="models.NormalFood" %>
 <%@ page pageEncoding="utf-8" %>
 <%--
   Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@
 
 <%
     Restaurant restaurant = (Restaurant) request.getAttribute("restaurant");
-    ArrayList<Food> menu = restaurant.getMenu();
+    ArrayList<NormalFood> menu = new ArrayList<>(restaurant.getNormalMenu().values());
 %>
 
 <html lang="en">

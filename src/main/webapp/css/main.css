@@ -38,3 +38,7 @@ form {
 .success {
     color: green;
 }
+
+.old-price {
+    text-decoration: line-through;
+}
