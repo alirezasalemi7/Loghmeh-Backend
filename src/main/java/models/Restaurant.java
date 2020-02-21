@@ -189,7 +189,13 @@ public class Restaurant {
                 Restaurant restaurant = new Restaurant(name, id, logo, "",location);
                 if(menuNode.isArray()){
                     for(JsonNode node : menuNode){
-                        Food food = mapper.readValue(node.toString(), Food.class);
+                        Food food;
+                        if(node.get("oldPrice")==null){
+                            food = mapper.readValue(node.toString(), NormalFood.class);
+                        }
+                        else {
+                            food = mapper.readValue(node.toString(), SpecialFood.class);
+                        }
                         food.setRestaurantId(id);
                         try {
                             restaurant.addFood(food);

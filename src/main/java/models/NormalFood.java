@@ -1,8 +1,17 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.InvalidJsonInputException;
 import exceptions.InvalidPopularityException;
 import exceptions.InvalidPriceException;
+import exceptions.InvalidToJsonException;
 
+import java.io.IOException;
+
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY , getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class NormalFood extends Food {
 
     public NormalFood() {
@@ -14,13 +23,28 @@ public class NormalFood extends Food {
     }
 
     @Override
-    public String toJson() {
-        return null;
+    public String toJson()throws InvalidToJsonException {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        }
+        catch (JsonProcessingException e){
+            throw new InvalidToJsonException();
+        }
     }
 
     @Override
-    public Food deserializeFromJson(String jsonData) {
-        return null;
+    public Food deserializeFromJson(String jsonData)throws InvalidJsonInputException {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(jsonData, NormalFood.class);
+        }
+        catch (JsonMappingException e){
+            throw new InvalidJsonInputException();
+        }
+        catch (IOException e){
+            throw new InvalidJsonInputException();
+        }
     }
 
 }
