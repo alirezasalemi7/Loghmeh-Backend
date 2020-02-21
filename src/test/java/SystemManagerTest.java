@@ -1,13 +1,10 @@
 import exceptions.*;
+import models.*;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import models.Food;
-import models.Location;
-import models.Restaurant;
-import models.User;
 import systemHandlers.SystemManager;
 
 import java.util.ArrayList;
@@ -20,7 +17,7 @@ public class SystemManagerTest {
     static SystemManager systemManager = SystemManager.getInstance();
     static User user = new User(new Location(0, 0), "aUser", "anonymous", "09100000000", "aa@gmail.com", 1000.0);
     static Restaurant restaurant1, restaurant2, restaurant3, restaurant4, restaurant5;
-    static Food food1, food2, food3, food4, food5, food6, food7, food8, food9, food10;
+    static NormalFood food1, food2, food3, food4, food5, food6, food7, food8, food9, food10;
 
     double cost = 0;
 
@@ -32,16 +29,16 @@ public class SystemManagerTest {
         restaurant4 = new Restaurant("jenis","4","logo4", "the same!", new Location(210,920));
         restaurant5 = new Restaurant("ayda","5","logo5", "duplex!", new Location(789,20));
         try {
-            food1 = new Food("bandari", "inspiring!", 0.99, 12000, "naz1", "1");
-            food2 = new Food("felafel", "awful but cheap", 0.51, 7000, "naz2", "1");
-            food3 = new Food("olvieh", "good", 0.7, 10000, "naminoland1", "2");
-            food4 = new Food("bandari", "awful!!!", 0.2, 10500, "naminoland2", "2");
-            food5 = new Food("soltani", "royal", 0.9, 120000, "rafael1", "3");
-            food6 = new Food("fish", "see taste", 0.6, 80000, "rafael2", "3");
-            food7 = new Food("large pizza", "cheap", 0.8, 18000, "jenis1", "4");
-            food8 = new Food("hot dog", "hmmm!", 0.98, 14000, "jenis2", "4");
-            food9 = new Food("italian pizza", "italian!!!", 0.7, 38000, "ayda1", "5");
-            food10 = new Food("nugget", "delicious", 0.75, 22000, "ayda2", "5");
+            food1 = new NormalFood("bandari", "inspiring!", 0.99, 12000, "naz1", "1");
+            food2 = new NormalFood("felafel", "awful but cheap", 0.51, 7000, "naz2", "1");
+            food3 = new NormalFood("olvieh", "good", 0.7, 10000, "naminoland1", "2");
+            food4 = new NormalFood("bandari", "awful!!!", 0.2, 10500, "naminoland2", "2");
+            food5 = new NormalFood("soltani", "royal", 0.9, 120000, "rafael1", "3");
+            food6 = new NormalFood("fish", "see taste", 0.6, 80000, "rafael2", "3");
+            food7 = new NormalFood("large pizza", "cheap", 0.8, 18000, "jenis1", "4");
+            food8 = new NormalFood("hot dog", "hmmm!", 0.98, 14000, "jenis2", "4");
+            food9 = new NormalFood("italian pizza", "italian!!!", 0.7, 38000, "ayda1", "5");
+            food10 = new NormalFood("nugget", "delicious", 0.75, 22000, "ayda2", "5");
             restaurant1.addFood(food1);
             restaurant1.addFood(food2);
             restaurant2.addFood(food3);

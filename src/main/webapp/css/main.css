@@ -15,15 +15,15 @@ img {
     height: 50px;
 }
 
-li {
-    display: flex;
-    flex-direction: row;
-    padding: 0 0 5px;
-}
-
 div,
 form {
     padding: 0 5px
+}
+
+.horizontal-li {
+    display: flex;
+    flex-direction: row;
+    padding: 0 0 5px;
 }
 
 .logo {
@@ -37,4 +37,8 @@ form {
 
 .success {
     color: green;
+}
+
+.old-price {
+    text-decoration: line-through;
 }

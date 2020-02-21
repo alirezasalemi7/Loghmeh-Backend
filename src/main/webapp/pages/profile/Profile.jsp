@@ -28,10 +28,10 @@
 <body>
     <ul>
         <c:set var="user" value="<%=user%>"></c:set>
-        <li>Full name: ${user.name} ${user.family}</li>
-        <li>Phone number: ${user.phoneNumber}</li>
-        <li>Email: ${user.email}</li>
-        <li>Credit: ${user.credit} Toman</li>
+        <li class="horizontal-li">Full name: ${user.name} ${user.family}</li>
+        <li class="horizontal-li">Phone number: ${user.phoneNumber}</li>
+        <li class="horizontal-li">Email: ${user.email}</li>
+        <li class="horizontal-li">Credit: ${user.credit} Toman</li>
     </ul>
     <form action="<%=application.getContextPath()%>/profile/addcredit" method="POST">
         <button type="submit">increase</button>

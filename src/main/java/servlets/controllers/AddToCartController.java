@@ -3,9 +3,7 @@ package servlets.controllers;
 import exceptions.FoodDoesntExistException;
 import exceptions.RestaurantDoesntExistException;
 import exceptions.UnregisteredOrderException;
-import models.Food;
-import models.Restaurant;
-import models.User;
+import models.*;
 import systemHandlers.SystemManager;
 
 import javax.servlet.RequestDispatcher;
@@ -35,19 +33,29 @@ public class AddToCartController extends HttpServlet {
             dispatcher = dispatchErrorPage("400", "Bad request.", req);
         } else {
             foodName = new String(foodName.getBytes(StandardCharsets.ISO_8859_1),"UTF-8");
-            Restaurant restaurant = null;
             try {
-                restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
-                if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
-                    Food food = restaurant.getFoodByName(foodName);
-                    User user = SystemManager.getInstance().getUser();
-                    SystemManager.getInstance().addToCart(food, user);
+                Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
+                Food food = restaurant.getFoodByName(foodName);
+                User user = SystemManager.getInstance().getUser();
+                if (food instanceof SpecialFood) {
+                    SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
+                    ((SpecialFood) food).setCount(((SpecialFood) food).getCount() - 1);
                     resp.setStatus(200);
-                    resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/restaurants/" + restaurantId);
+                    resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/foodParty");
                     return;
+                } else if (food instanceof NormalFood) {
+                    if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
+                        SystemManager.getInstance().addToCart(food, user);
+                        resp.setStatus(200);
+                        resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/restaurants/" + restaurantId);
+                        return;
+                    } else {
+                        resp.setStatus(403);
+                        dispatcher = dispatchErrorPage("403", "You're not allowed to see this page.", req);
+                    }
                 } else {
-                    resp.setStatus(403);
-                    dispatcher = dispatchErrorPage("403", "You're not allowed to see this page.", req);
+                    resp.setStatus(400);
+                    dispatcher = dispatchErrorPage("400", "Bad request.", req);
                 }
             } catch (FoodDoesntExistException e) {
                 resp.setStatus(404);
