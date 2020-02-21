@@ -51,8 +51,11 @@ public class SystemManager {
     public ArrayList<Restaurant> getInRangeRestaurants(User user) {
         ArrayList<Restaurant> nearbyRestaurants = new ArrayList<>();
         for (HashMap.Entry<String, Restaurant> entry : _dataHandler.getAllRestaurant().entrySet()) {
-            if (user.getLocation().getDistance(entry.getValue().getLocation()) <= 170) {
-                nearbyRestaurants.add(entry.getValue());
+            try {
+                if (isRestaurantInRange(user, entry.getKey()))
+                    nearbyRestaurants.add(entry.getValue());
+            } catch (RestaurantDoesntExistException e) {
+                System.err.println("Unexpected exception occurs.");
             }
         }
         return nearbyRestaurants;
@@ -125,9 +128,5 @@ public class SystemManager {
     public Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {
         Restaurant targetRestaurant = _dataHandler.getRestaurantById(restaurantId);
         return (user.getLocation().getDistance(targetRestaurant.getLocation()) <= 170);
-    }
-
-    public ArrayList<Restaurant> getAllRestaurantsInfo() {
-        return new ArrayList<Restaurant>(_dataHandler.getAllRestaurant().values());
     }
 }

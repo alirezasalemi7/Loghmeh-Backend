@@ -21,11 +21,22 @@ public class Restaurant {
     private String _logoAddress;
     private Location _location;
     private String _id;
-    private HashMap<String, Food> _menu = new HashMap<>();
+    private HashMap<String, NormalFood> _normalMenu = new HashMap<>();
+    private HashMap<String, SpecialFood> _specialMenu = new HashMap<>();
     private double _averagePopularity = 0;
 
     public ArrayList<Food> getMenu() {
-        return new ArrayList<Food>(this._menu.values());
+        ArrayList<Food> allFoods = new ArrayList<Food>(this._normalMenu.values());
+        allFoods.addAll(this._specialMenu.values());
+        return allFoods;
+    }
+
+    public HashMap<String, NormalFood> getNormalMenu() {
+        return this._normalMenu;
+    }
+
+    public HashMap<String, SpecialFood> getSpecialMenu() {
+        return this._specialMenu;
     }
 
     public String getId() {
@@ -81,19 +92,41 @@ public class Restaurant {
     }
 
     public void addFood(Food food) throws FoodIsRegisteredException {
-        if (this._menu.containsKey(food.getName())) {
-            throw new FoodIsRegisteredException(food.getName() + " is already registered in " + this.getName());
+        if (food instanceof NormalFood) {
+            if (this._normalMenu.containsKey(food.getName()))
+                throw new FoodIsRegisteredException(food.getName() + " is already registered in " + this.getName());
+            this._normalMenu.put(food.getName(), (NormalFood) food);
+        } else if (food instanceof SpecialFood) {
+            if (this._specialMenu.containsKey(food.getName()))
+                throw new FoodIsRegisteredException(food.getName() + " is already registered in " + this.getName());
+            this._specialMenu.put(food.getName(), (SpecialFood) food);
         }
-        int numberOfFoods = this._menu.size();
-        this.setAveragePopularity((this._averagePopularity * numberOfFoods + food.getPopularity()) / (numberOfFoods + 1));
-        this._menu.put(food.getName(), food);
+        int numberOfFoods = this._specialMenu.size() + this._normalMenu.size();
+        this.setAveragePopularity((this._averagePopularity * (numberOfFoods - 1) + food.getPopularity()) / (numberOfFoods));
+    }
+
+    public void removeFood(Food food) {
+        boolean restaurantHasFood = true;
+        if (food instanceof NormalFood)
+            if (_normalMenu.remove(food.getName()) == null)
+                restaurantHasFood = false;
+        else
+            if(_specialMenu.remove(food.getName()) == null)
+                restaurantHasFood = false;
+        if (restaurantHasFood) {
+            int numberOfFoods = this._specialMenu.size() + this._normalMenu.size();
+            double prevAveragePopularity = ((numberOfFoods + 1) * this._averagePopularity - food.getPopularity()) / numberOfFoods;
+            this.setAveragePopularity(prevAveragePopularity);
+        }
     }
 
     public Food getFoodByName(String name) throws FoodDoesntExistException {
-        if (!_menu.containsKey(name)) {
-            throw new FoodDoesntExistException(name + "Doesn't exist in the menu of " + this.getName() + " restaurant");
+        if (!_normalMenu.containsKey(name)) {
+            if (!_specialMenu.containsKey(name))
+                throw new FoodDoesntExistException(name + "Doesn't exist in the menu of " + this.getName() + " restaurant");
+            return _normalMenu.get(name);
         }
-        return _menu.get(name);
+        return _normalMenu.get(name);
     }
 
     private class RestaurantSerializer extends StdSerializer<Restaurant>{
@@ -104,7 +137,7 @@ public class Restaurant {
 
         @Override
         public void serialize(Restaurant restaurant, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-            ArrayList<Food> foodList = new ArrayList<Food>(_menu.values());
+            ArrayList<Food> foodList = new ArrayList<Food>(_normalMenu.values());
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField("name", _name);
             jsonGenerator.writeObjectField("id", _id);
