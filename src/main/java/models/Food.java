@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY , getterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonPropertyOrder({"name","description","popularity","price","image"})
-public class Food {
+public abstract class Food {
 
     @JsonProperty("name")
     private String _name;
@@ -94,26 +94,26 @@ public class Food {
         this._imageAddress = _imageAddress;
     }
 
-    public String toJson() throws InvalidToJsonException{
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this);
-        }
-        catch (JsonProcessingException e){
-            throw new InvalidToJsonException();
-        }
-    }
+    public abstract String toJson();// throws InvalidToJsonException{
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            return mapper.writeValueAsString(this);
+//        }
+//        catch (JsonProcessingException e){
+//            throw new InvalidToJsonException();
+//        }
+//    }
 
-    public static Food deserializeFromJson(String jsonData) throws InvalidJsonInputException{
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(jsonData, Food.class);
-        }
-        catch (JsonMappingException e){
-            throw new InvalidJsonInputException();
-        }
-        catch (IOException e){
-            throw new InvalidJsonInputException();
-        }
-    }
+    public abstract Food deserializeFromJson(String jsonData);// throws InvalidJsonInputException{
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            return mapper.readValue(jsonData, Food.class);
+//        }
+//        catch (JsonMappingException e){
+//            throw new InvalidJsonInputException();
+//        }
+//        catch (IOException e){
+//            throw new InvalidJsonInputException();
+//        }
+//    }
 }
