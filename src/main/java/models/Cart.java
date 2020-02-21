@@ -77,5 +77,6 @@ public class Cart {
     public void clearCart() {
         _orders.clear();
         _restaurantId = null;
+        _sumOfPrices = 0;
     }
 }

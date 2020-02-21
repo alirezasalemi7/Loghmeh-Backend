@@ -8,10 +8,7 @@
 <%
     String username = (String) request.getAttribute("user");
     Boolean valid = (Boolean) request.getAttribute("valid");
-    Order order = null;
-    if(valid){
-        order = (Order) request.getAttribute("order");
-    }
+    Order order = (Order) request.getAttribute("order");
     int state = 0;
     if(order!=null){
         switch (order.getState()){
@@ -28,7 +25,6 @@
     <title><%=username%>'s order</title>
 </head>
 <body>
-<c:if test="${isvalid}">
     <h3>restaurant : <%=order.getRestaurant().getName()%></h3>
     <c:forEach items="<%=order.getItems()%>" var="item">
         <li>${item.foodName} : ${item.count} : ${item.price}$</li>
@@ -57,7 +53,5 @@
            status : enjoy your meal
         </h3>
     </c:if>
-
-</c:if>
 </body>
 </html>
