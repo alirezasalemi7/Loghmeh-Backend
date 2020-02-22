@@ -21,7 +21,7 @@ public class FinalizeOrderController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Order order = SystemManager.getInstance().finalizeOrder(DataHandler.getInstance().getUser());
-            resp.sendRedirect("/profile/orders?id="+order.getId());
+            resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/profile/orders?id="+order.getId());
             return;
         }
         catch (CartIsEmptyException e){

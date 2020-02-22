@@ -116,7 +116,8 @@ public class SystemManager {
         if (!_dataHandler.getAllRestaurant().containsKey(restaurantId)) {
             throw new RestaurantDoesntExistException(restaurantId + " doesn't exist in the list of restaurants");
         }
-        user.addToCart(_dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName), restaurantId);
+        _dataHandler.getAllRestaurant().get(restaurantId).getFoodByName(foodName);  // Just for exception!
+        user.addToCart(food, restaurantId);
     }
 
     public Order finalizeOrder(User user) throws CartIsEmptyException, CreditIsNotEnoughException {
