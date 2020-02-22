@@ -41,7 +41,7 @@ public class AddToCartController extends HttpServlet {
                     SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
                     ((SpecialFood) food).setCount(((SpecialFood) food).getCount() - 1);
                     resp.setStatus(200);
-                    resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/foodParty");
+                    resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/restaurants/foodparty");
                     return;
                 } else if (food instanceof NormalFood) {
                     if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
@@ -54,6 +54,7 @@ public class AddToCartController extends HttpServlet {
                         dispatcher = dispatchErrorPage("403", "You're not allowed to see this page.", req);
                     }
                 } else {
+                    System.err.println(food);
                     resp.setStatus(400);
                     System.err.println("here");
                     dispatcher = dispatchErrorPage("400", "Bad request.", req);

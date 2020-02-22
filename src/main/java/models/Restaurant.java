@@ -124,7 +124,7 @@ public class Restaurant {
         if (!_normalMenu.containsKey(name)) {
             if (!_specialMenu.containsKey(name))
                 throw new FoodDoesntExistException(name + "Doesn't exist in the menu of " + this.getName() + " restaurant");
-            return _normalMenu.get(name);
+            return _specialMenu.get(name);
         }
         return _normalMenu.get(name);
     }

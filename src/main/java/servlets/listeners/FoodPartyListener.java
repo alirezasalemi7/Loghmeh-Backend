@@ -117,7 +117,7 @@ public class FoodPartyListener implements ServletContextListener {
                     try {
                         restaurant.addFood(food.changeToNormalFood());
                     } catch (FoodIsRegisteredException | InvalidPopularityException | InvalidPriceException e) {
-                        e.printStackTrace();
+                        // nothing
                     } finally {
                         restaurant.removeFood(food);
                     }
