@@ -26,37 +26,15 @@ public class FoodTest {
         } catch (InvalidPopularityException | InvalidPriceException e) {
             e.printStackTrace();
         }
-//        String content = "";
-//        try {
-//            content = new String(Files.readAllBytes(Paths.get("./src/test/resources/foodTest1.json")));
-//            food = Food.deserializeFromJson(content);
-//        } catch (InvalidJsonInputException e) {
-//            System.err.println(e.getMessage());
-//            System.err.println(content);
-//        } catch (java.io.FileNotFoundException e) {
-//            System.err.println("Address is invalid.");
-//        } catch (IOException e) {
-//            System.err.println("invalid address");
-//        }
     }
 
-//    @Test
-//    public void testDeserializeFromJson() {
-//        assertEquals(expectedFood1.getName(), food.getName());
-//        assertEquals(expectedFood1.getDescription(), food.getDescription());
-//        assertEquals(expectedFood1.getPopularity(), food.getPopularity(), 0.000001);
-//        assertEquals(expectedFood1.getPrice(), food.getPrice(), 0.000001);
-//    }
-
-//    @Test
-//    public void testToJson() {
-//        try {
-//            String content = "{\"name\":\"gheime\",\"description\":\"yummy!\",\"popularity\":0.8,\"price\":20000.0,\"image\":\"image3\"}";
-//            assertEquals(content, food.toJson());
-//        } catch (InvalidToJsonException e) {
-//            assertEquals("invalid object. cannot convert to json.", e.getMessage());
-//        }
-//    }
+    @Test
+    public void testNewFood() {
+        assertEquals(expectedFood1.getName(), "gheime");
+        assertEquals(expectedFood1.getDescription(), "yummy!");
+        assertEquals(expectedFood1.getPopularity(), 0.8, 0.000001);
+        assertEquals(expectedFood1.getPrice(), 20000, 0.000001);
+    }
 
     @Test
     public void testSetters() {

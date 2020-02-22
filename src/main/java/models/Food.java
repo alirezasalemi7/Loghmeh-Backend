@@ -94,26 +94,7 @@ public abstract class Food {
         this._imageAddress = _imageAddress;
     }
 
-    public abstract String toJson() throws InvalidToJsonException;// {
-//        ObjectMapper mapper = new ObjectMapper();
-//        try {
-//            return mapper.writeValueAsString(this);
-//        }
-//        catch (JsonProcessingException e){
-//            throw new InvalidToJsonException();
-//        }
-//    }
+    public abstract String toJson() throws InvalidToJsonException;
 
-    public abstract Food deserializeFromJson(String jsonData) throws InvalidJsonInputException;// throws InvalidJsonInputException{
-//        ObjectMapper mapper = new ObjectMapper();
-//        try {
-//            return mapper.readValue(jsonData, Food.class);
-//        }
-//        catch (JsonMappingException e){
-//            throw new InvalidJsonInputException();
-//        }
-//        catch (IOException e){
-//            throw new InvalidJsonInputException();
-//        }
-//    }
+    public abstract Food deserializeFromJson(String jsonData) throws InvalidJsonInputException;
 }
