@@ -39,12 +39,18 @@ public class Cart {
     public void addOrder(Food food, String restaurantId) throws UnregisteredOrderException {
         String foodName = food.getName();
         if (this._restaurantId == null) {
+            if(food instanceof SpecialFood){
+                foodName = foodName + "@";
+            }
             this._restaurantId = restaurantId;
             this._orders.put(foodName, new OrderItem(food, 1));
             this._sumOfPrices += food.getPrice();
         } else if (!this._restaurantId.equals(restaurantId)) {
             throw new UnregisteredOrderException("You have some orders from " + this._restaurantId + "in your cart.");
         } else {
+            if(food instanceof SpecialFood){
+                foodName = foodName + "@";
+            }
             if (_orders.containsKey(foodName)) {
                 _orders.get(foodName).setCount(_orders.get(foodName).getCount() + 1);
             } else {

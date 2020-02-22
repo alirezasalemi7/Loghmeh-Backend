@@ -67,7 +67,7 @@ public class FoodPartyListener implements ServletContextListener {
                         SystemManager.getInstance().addRestaurant(equivalent);
                     } catch (RestaurantIsRegisteredException e) {
                         for (SpecialFood food : restaurant.getSpecialMenu().values()) {
-                            equivalent.removeFood(food.changeToNormalFood());
+//                            equivalent.removeFood(food.changeToNormalFood());
                             equivalent.addFood(food);
                         }
                     }
@@ -116,9 +116,10 @@ public class FoodPartyListener implements ServletContextListener {
                 for (SpecialFood food : restaurant.getSpecialMenu().values()) {
                     try {
                         restaurant.addFood(food.changeToNormalFood());
-                        restaurant.removeFood(food);
                     } catch (FoodIsRegisteredException | InvalidPopularityException | InvalidPriceException e) {
                         e.printStackTrace();
+                    } finally {
+                        restaurant.removeFood(food);
                     }
                 }
             }

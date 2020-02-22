@@ -25,7 +25,7 @@ public class SpecialFood extends Food {
     }
 
     public void setOldPrice(double _oldPrice) {
-        this._oldPrice = _count;
+        this._oldPrice = _oldPrice;
     }
 
     public int getCount() {

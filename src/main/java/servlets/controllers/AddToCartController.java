@@ -55,6 +55,7 @@ public class AddToCartController extends HttpServlet {
                     }
                 } else {
                     resp.setStatus(400);
+                    System.err.println("here");
                     dispatcher = dispatchErrorPage("400", "Bad request.", req);
                 }
             } catch (FoodDoesntExistException e) {

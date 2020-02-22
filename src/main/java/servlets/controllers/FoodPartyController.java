@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-@WebServlet("/foodParty")
+@WebServlet("/restaurants/foodparty")
 public class FoodPartyController extends HttpServlet {
 
     @Override
