@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="<%=application.getContextPath()%>/css/main.css">
 </head>
 <body>
+    <%@include file="/pages/NavigationBar.jsp"%>
     <ul>
         <c:set var="user" value="<%=user%>"></c:set>
         <li class="horizontal-li">Full name: ${user.name} ${user.family}</li>

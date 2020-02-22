@@ -25,6 +25,7 @@
     <title><%=username%>'s Cart</title>
 </head>
 <body>
+    <%@include file="/pages/NavigationBar.jsp"%>
     <c:set var="isemptyv" value="<%=empty%>"></c:set>
     <c:set var="lowcredit" value="<%=lowCredit%>"></c:set>
     <c:if test="${isemptyv eq true}">

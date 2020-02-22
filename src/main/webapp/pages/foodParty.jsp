@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" href="<%=application.getContextPath()%>/css/main.css">
 </head>
 <body>
+    <%@include file="/pages/NavigationBar.jsp"%>
+
 <%--TODO: Check view of a restaurant when we have more than 2 food in it & Recover css file in inappropriate view--%>
     <ol>
         <c:forEach items="<%=restaurants%>" var="restaurant">

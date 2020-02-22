@@ -25,6 +25,7 @@
     <link rel="stylesheet" type="text/css" href="<%=application.getContextPath()%>/css/main.css">
 </head>
 <body>
+    <%@include file="/pages/NavigationBar.jsp"%>
     <ul>
         <li class="horizontal-li">Id: <%=restaurant.getId()%></li>
         <li class="horizontal-li">Name: <%=restaurant.getName()%></li>

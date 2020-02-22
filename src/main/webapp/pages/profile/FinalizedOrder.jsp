@@ -25,6 +25,7 @@
     <title><%=username%>'s order</title>
 </head>
 <body>
+    <%@include file="/pages/NavigationBar.jsp"%>
     <h3>restaurant : <%=order.getRestaurant().getName()%></h3>
     <c:forEach items="<%=order.getItems()%>" var="item">
         <li>${item.foodName} : ${item.count} : ${item.price}$</li>

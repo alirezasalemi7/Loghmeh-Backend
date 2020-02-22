@@ -11,6 +11,7 @@
     <title>Loghmeh App</title>
 </head>
 <body>
+    <%@include file="pages/NavigationBar.jsp"%>
     <h1>welcome to Loghmeh</h1>
 </body>
 </html>

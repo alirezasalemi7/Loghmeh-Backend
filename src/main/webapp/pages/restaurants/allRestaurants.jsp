@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="<%=application.getContextPath()%>/css/main.css">
 </head>
 <body>
+    <%@include file="/pages/NavigationBar.jsp"%>
     <table>
         <thead>
             <th>Id</th>
