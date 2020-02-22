@@ -62,7 +62,7 @@
             <ul>
                 <c:forEach var="item" items="<%=orders%>">
                     <li>
-                        <a href="/profile/orders?id=${item.id}">order id : ${item.id}</a>
+                        <a href="<%=application.getContextPath()%>/profile/orders?id=${item.id}">order id : ${item.id}</a>
                     </li>
                 </c:forEach>
             </ul>

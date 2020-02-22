@@ -43,7 +43,7 @@
             Total : <%=total%>
         </h3>
         <br>
-        <form action="/profile/finalize" method="GET">
+        <form action="<%=application.getContextPath()%>/profile/finalize" method="GET">
             <button type="submit">finalize</button>
         </form>
     </c:if>

@@ -34,7 +34,7 @@
                             <input type="submit" value="Resaturant Page" />
                         </form>
                     </td>
-                    <td><%=estimateTimes.get(i)%></td>
+                    <td><%=estimateTimes.get(i) / 60%> min <%=estimateTimes.get(i) % 60%> sec</td>
                     <%i++;%>
                 </tr>
             </c:forEach>

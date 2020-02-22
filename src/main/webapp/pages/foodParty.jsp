@@ -28,12 +28,24 @@
                         <div>${food.value.price} Toman</div>
                         <div>Remaining count: ${food.value.count}</div>
                         <div>Popularity: ${food.value.popularity}</div>
-                        <form action="<%=application.getContextPath()%>/profile/addtocart" accept-charset="UTF-8" method="post">
-                            <input type="hidden" name="foodType" value="special">
-                            <input type="hidden" name="foodName" value="${food.value.name}">
-                            <input type="hidden" name="restaurantId" value="${food.value.restaurantId}">
-                            <button type="submit">Add to cart</button>
-                        </form>
+                        <c:choose>
+                            <c:when test="${food.value.count == 0}">
+                                <form action="<%=application.getContextPath()%>/profile/addtocart" accept-charset="UTF-8" method="post">
+                                    <input type="hidden" name="foodType" value="special">
+                                    <input type="hidden" name="foodName" value="${food.value.name}">
+                                    <input type="hidden" name="restaurantId" value="${food.value.restaurantId}">
+                                    <button type="submit" disabled>Add to cart</button>
+                                </form>
+                            </c:when>
+                            <c:otherwise>
+                                <form action="<%=application.getContextPath()%>/profile/addtocart" accept-charset="UTF-8" method="post">
+                                    <input type="hidden" name="foodType" value="special">
+                                    <input type="hidden" name="foodName" value="${food.value.name}">
+                                    <input type="hidden" name="restaurantId" value="${food.value.restaurantId}">
+                                    <button type="submit">Add to cart</button>
+                                </form>
+                            </c:otherwise>
+                        </c:choose>
                     </li>
                 </c:forEach>
             </li>
