@@ -107,17 +107,34 @@ public class Restaurant {
 
     public void removeFood(Food food) {
         boolean restaurantHasFood = true;
-        if (food instanceof NormalFood)
+        if (food instanceof NormalFood) {
+            System.err.println("HEY i am normal food");
             if (_normalMenu.remove(food.getName()) == null)
                 restaurantHasFood = false;
-        else
-            if(_specialMenu.remove(food.getName()) == null)
+        }
+        else {
+            System.err.println("HEY i am special food");
+            if (_specialMenu.remove(food.getName()) == null)
                 restaurantHasFood = false;
+        }
         if (restaurantHasFood) {
+            System.err.println("HEY i am food. This restaurant already has the food:(");
             int numberOfFoods = this._specialMenu.size() + this._normalMenu.size();
             double prevAveragePopularity = ((numberOfFoods + 1) * this._averagePopularity - food.getPopularity()) / numberOfFoods;
             this.setAveragePopularity(prevAveragePopularity);
         }
+    }
+
+    public SpecialFood getSpecialFoodByName(String name) throws FoodDoesntExistException {
+        if (!_specialMenu.containsKey(name))
+            throw new FoodDoesntExistException(name + "Doesn't exist in the menu of " + this.getName() + " restaurant");
+        return _specialMenu.get(name);
+    }
+
+    public NormalFood getNormalFoodByName(String name) throws FoodDoesntExistException {
+        if (!_normalMenu.containsKey(name))
+            throw new FoodDoesntExistException(name + "Doesn't exist in the menu of " + this.getName() + " restaurant");
+        return _normalMenu.get(name);
     }
 
     public Food getFoodByName(String name) throws FoodDoesntExistException {

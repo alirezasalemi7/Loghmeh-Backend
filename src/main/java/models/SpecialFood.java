@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.InvalidJsonInputException;
-import exceptions.InvalidPopularityException;
-import exceptions.InvalidPriceException;
-import exceptions.InvalidToJsonException;
+import exceptions.*;
 
 import java.io.IOException;
 
@@ -32,7 +29,8 @@ public class SpecialFood extends Food {
         return _count;
     }
 
-    public void setCount(int _count) {
+    public void setCount(int _count) throws FoodCountIsNegativeException {
+        if (_count < 0) throw new FoodCountIsNegativeException("Food Count must be positive.");
         this._count = _count;
     }
 

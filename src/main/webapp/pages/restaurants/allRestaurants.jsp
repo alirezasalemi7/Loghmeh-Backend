@@ -5,6 +5,7 @@
 
 <%
     ArrayList<Restaurant> restaurants = (ArrayList<Restaurant>) request.getAttribute("restaurants");
+    ArrayList<Long> estimateTimes = (ArrayList<Long>) request.getAttribute("estimates");
 %>
 
 <html>
@@ -19,8 +20,10 @@
             <th>Logo</th>
             <th>Name</th>
             <th>Page</th>
+            <th>Estimate delivery time</th>
         </thead>
         <tbody>
+            <%int i = 0;%>
             <c:forEach items="<%=restaurants%>" var="item">
                 <tr>
                     <td>${item.id}</td>
@@ -31,6 +34,8 @@
                             <input type="submit" value="Resaturant Page" />
                         </form>
                     </td>
+                    <td><%=estimateTimes.get(i)%></td>
+                    <%i++;%>
                 </tr>
             </c:forEach>
         </tbody>

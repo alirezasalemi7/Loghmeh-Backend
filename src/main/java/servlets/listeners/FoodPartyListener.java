@@ -82,9 +82,8 @@ public class FoodPartyListener implements ServletContextListener {
             String line = "";
             StringBuilder input = new StringBuilder();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null)
                 input.append(line);
-            }
             return input.toString();
         }
 
@@ -93,8 +92,8 @@ public class FoodPartyListener implements ServletContextListener {
             ArrayList<Restaurant> restaurants = new ArrayList<>();
             try {
                 JsonNode root = mapper.readTree(jsonBody);
-                if(root.isArray()){
-                    for(JsonNode restaurant : root){
+                if(root.isArray()) {
+                    for(JsonNode restaurant : root) {
                         String utf8 = new String(restaurant.toString().getBytes(),"UTF-8");
                         Restaurant encodedObject = Restaurant.deserializeFromJson(utf8);
                         restaurants.add(encodedObject);

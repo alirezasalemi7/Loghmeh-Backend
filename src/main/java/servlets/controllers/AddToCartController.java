@@ -27,8 +27,9 @@ public class AddToCartController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String restaurantId = req.getParameter("restaurantId");
         String foodName = req.getParameter("foodName");
+        String foodType = req.getParameter("foodType");
         RequestDispatcher dispatcher;
-        if (restaurantId == null || foodName == null) {
+        if (restaurantId == null || foodName == null || foodType == null) {
             resp.setStatus(400);
             dispatcher = dispatchErrorPage("400", "Bad request.", req);
         } else {
@@ -37,13 +38,13 @@ public class AddToCartController extends HttpServlet {
                 Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
                 Food food = restaurant.getFoodByName(foodName);
                 User user = SystemManager.getInstance().getUser();
-                if (food instanceof SpecialFood) {
+                if (foodType.equals("special")) {
                     SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
                     ((SpecialFood) food).setCount(((SpecialFood) food).getCount() - 1);
                     resp.setStatus(200);
                     resp.sendRedirect(req.getRequestURL().toString().replace(req.getServletPath(), "") + "/restaurants/foodparty");
                     return;
-                } else if (food instanceof NormalFood) {
+                } else if (foodType.equals("normal")) {
                     if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
                         SystemManager.getInstance().addToCart(food, user);
                         resp.setStatus(200);

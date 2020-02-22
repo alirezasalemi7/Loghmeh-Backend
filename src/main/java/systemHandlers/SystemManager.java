@@ -1,5 +1,6 @@
 package systemHandlers;
 
+import com.fasterxml.jackson.databind.type.ResolvedRecursiveType;
 import exceptions.*;
 
 import models.*;
@@ -137,5 +138,9 @@ public class SystemManager {
     public Boolean isRestaurantInRange(User user, String restaurantId) throws RestaurantDoesntExistException {
         Restaurant targetRestaurant = _dataHandler.getRestaurantById(restaurantId);
         return (user.getLocation().getDistance(targetRestaurant.getLocation()) <= 170);
+    }
+
+    public long estimateDeliveryTime(User user, Restaurant restaurant) throws RestaurantDoesntExistException {
+        return (long) (60 + restaurant.getLocation().getDistance(user.getLocation()) * 1.5 * 5);
     }
 }
