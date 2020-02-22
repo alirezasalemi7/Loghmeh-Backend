@@ -108,17 +108,14 @@ public class Restaurant {
     public void removeFood(Food food) {
         boolean restaurantHasFood = true;
         if (food instanceof NormalFood) {
-            System.err.println("HEY i am normal food");
             if (_normalMenu.remove(food.getName()) == null)
                 restaurantHasFood = false;
         }
         else {
-            System.err.println("HEY i am special food");
             if (_specialMenu.remove(food.getName()) == null)
                 restaurantHasFood = false;
         }
         if (restaurantHasFood) {
-            System.err.println("HEY i am food. This restaurant already has the food:(");
             int numberOfFoods = this._specialMenu.size() + this._normalMenu.size();
             double prevAveragePopularity = ((numberOfFoods + 1) * this._averagePopularity - food.getPopularity()) / numberOfFoods;
             this.setAveragePopularity(prevAveragePopularity);

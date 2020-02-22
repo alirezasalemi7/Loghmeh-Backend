@@ -73,8 +73,7 @@ public class FoodPartyListener implements ServletContextListener {
                     }
                 }
             } catch (Exception e) {
-                System.err.println("HERE->" + e.getMessage());
-                e.printStackTrace();
+                //
             }
         }
 

@@ -142,6 +142,6 @@ public class SystemManager {
     }
 
     public long estimateDeliveryTime(User user, Restaurant restaurant) throws RestaurantDoesntExistException {
-        return (long) (60 + restaurant.getLocation().getDistance(user.getLocation()) * 1.5 * 5);
+        return (long) (60 + restaurant.getLocation().getDistance(user.getLocation()) * 1.5 / 5);
     }
 }
