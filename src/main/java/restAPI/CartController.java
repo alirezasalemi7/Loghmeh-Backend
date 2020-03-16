@@ -1,5 +1,6 @@
 package restAPI;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -141,7 +142,7 @@ public class CartController {
         User user = DataHandler.getInstance().getUser();
         try {
             Order order = SystemManager.getInstance().finalizeOrder(user);
-            answerJson.put("order",mapper.readTree(order.toJson()));
+            answerJson.set("order",mapper.readTree(order.toJson()));
             answerJson.put("status", 200);
             return new ResponseEntity<>(answerJson,HttpStatus.OK);
         }
@@ -156,6 +157,23 @@ public class CartController {
             return new ResponseEntity<>(answerJson,HttpStatus.BAD_REQUEST);
         }
         catch (IOException e){
+            answerJson.put("status", 500);
+            answerJson.put("description", "internal server error");
+            return new ResponseEntity<>(answerJson,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value="/",method = RequestMethod.GET)
+    public ResponseEntity<Object> getCart(
+            @PathVariable(value = "id",required = true) String userId)
+    {
+        User user = DataHandler.getInstance().getUser();
+        try {
+            JsonNode answerJson = mapper.readTree(user.getCart().toJson());
+            return new ResponseEntity<>(answerJson,HttpStatus.OK);
+        }
+        catch (IOException | InvalidToJsonException e){
+            ObjectNode answerJson = factory.objectNode();
             answerJson.put("status", 500);
             answerJson.put("description", "internal server error");
             return new ResponseEntity<>(answerJson,HttpStatus.INTERNAL_SERVER_ERROR);

@@ -86,11 +86,13 @@ public class Cart {
         ArrayNode arrayNode = jsonNodeFactory.arrayNode();
         for(Map.Entry<String,OrderItem> entry : _orders.entrySet()){
             ObjectNode food = jsonNodeFactory.objectNode();
-            food.put("foodName", entry.getKey());
+            food.put("name", entry.getKey());
             food.put("count", entry.getValue().getCount());
+            food.put("cost", entry.getValue().getPrice());
             arrayNode.add(food);
         }
-        root.set("foods", arrayNode);
+        root.set("orders", arrayNode);
+        root.put("cost", this.getSumOfPrices());
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(root);
