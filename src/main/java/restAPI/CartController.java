@@ -3,19 +3,15 @@ package restAPI;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import exceptions.FoodCountIsNegativeException;
-import exceptions.FoodDoesntExistException;
-import exceptions.RestaurantDoesntExistException;
-import exceptions.UnregisteredOrderException;
-import models.NormalFood;
-import models.Restaurant;
-import models.SpecialFood;
-import models.User;
+import exceptions.*;
+import models.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import systemHandlers.DataHandler;
 import systemHandlers.SystemManager;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @RestController
@@ -23,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 public class CartController {
 
     private JsonNodeFactory factory = JsonNodeFactory.instance;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @RequestMapping(value="/add",method = RequestMethod.POST)
     public ResponseEntity<Object> addToCart(
@@ -135,4 +132,34 @@ public class CartController {
             }
         }
     }
+
+    @RequestMapping(value="/finalize",method = RequestMethod.POST)
+    public ResponseEntity<Object> finalize(
+            @PathVariable(value = "id",required = true) String userId)
+    {
+        ObjectNode answerJson = factory.objectNode();
+        User user = DataHandler.getInstance().getUser();
+        try {
+            Order order = SystemManager.getInstance().finalizeOrder(user);
+            answerJson.put("order",mapper.readTree(order.toJson()));
+            answerJson.put("status", 200);
+            return new ResponseEntity<>(answerJson,HttpStatus.OK);
+        }
+        catch (CartIsEmptyException e){
+            answerJson.put("status", 400);
+            answerJson.put("description", "cart is empty");
+            return new ResponseEntity<>(answerJson,HttpStatus.BAD_REQUEST);
+        }
+        catch (CreditIsNotEnoughException e){
+            answerJson.put("status", 400);
+            answerJson.put("description", "credit not enough");
+            return new ResponseEntity<>(answerJson,HttpStatus.BAD_REQUEST);
+        }
+        catch (IOException e){
+            answerJson.put("status", 500);
+            answerJson.put("description", "internal server error");
+            return new ResponseEntity<>(answerJson,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

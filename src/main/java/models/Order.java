@@ -3,6 +3,9 @@ package models;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -163,5 +166,20 @@ public class Order {
             cost += item.getPrice();
         }
         return cost;
+    }
+
+    public String toJson(){
+        ObjectNode json = JsonNodeFactory.instance.objectNode();
+        json.put("cost", this.getTotalCost());
+        ArrayNode orders = JsonNodeFactory.instance.arrayNode();
+        for(OrderItem orderItem : this.items){
+            ObjectNode orderItemJson = JsonNodeFactory.instance.objectNode();
+            orderItemJson.put("name", orderItem.getFood().getName());
+            orderItemJson.put("count", orderItem.getCount());
+            orderItemJson.put("cost", orderItem.getPrice());
+            orders.add(orderItemJson);
+        }
+        json.put("order",orders);
+        return json.asText();
     }
 }
