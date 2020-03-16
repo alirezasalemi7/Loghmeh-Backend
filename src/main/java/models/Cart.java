@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import exceptions.FoodDoesntExistException;
 import exceptions.InvalidToJsonException;
 import exceptions.UnregisteredOrderException;
 
@@ -57,6 +58,25 @@ public class Cart {
                 _orders.put(foodName, new OrderItem(food, 1));
             }
             _sumOfPrices += food.getPrice();
+        }
+    }
+
+    public Food removeOrder(Food food) throws FoodDoesntExistException{
+        String foodName = food.getName();
+        if(food instanceof SpecialFood){
+            foodName = foodName + "@";
+        }
+        if (_orders.containsKey(foodName)) {
+            int count = _orders.get(foodName).getCount();
+            _orders.get(foodName).setCount(count - 1);
+            _sumOfPrices -= food.getPrice();
+            if(count <= 1){
+                _orders.remove(foodName);
+            }
+            return food;
+        }
+        else {
+            throw new FoodDoesntExistException("food dose not exist in cart.");
         }
     }
 
