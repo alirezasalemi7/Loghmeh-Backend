@@ -83,7 +83,7 @@ public class RestaurantController {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
             if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
                 NormalFood food = restaurant.getNormalFoodByName(foodId);
-                JsonNode answerJson = mapper.readTree(NormalFood.toJson());
+                JsonNode answerJson = mapper.readTree(food.toJson());
                 return new ResponseEntity<>(answerJson, HttpStatus.OK);
             } else {
                 ObjectNode answerJson = factory.objectNode();
@@ -112,7 +112,7 @@ public class RestaurantController {
     }
 
     @RequestMapping(value = "/{id}/special/{fid}",method = RequestMethod.GET)
-    public ResponseEntity<Object> getNormalFood(
+    public ResponseEntity<Object> getSpecialFood(
             @PathVariable(value = "id",required = true) String restaurantId,
             @PathVariable(value = "id",required = true) String foodId
     ){
@@ -120,7 +120,7 @@ public class RestaurantController {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
             if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
                 SpecialFood food = restaurant.getSpecialFoodByName(foodId);
-                JsonNode answerJson = mapper.readTree(NormalFood.toJson());
+                JsonNode answerJson = mapper.readTree(food.toJson());
                 return new ResponseEntity<>(answerJson, HttpStatus.OK);
             } else {
                 ObjectNode answerJson = factory.objectNode();
