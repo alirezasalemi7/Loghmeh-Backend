@@ -12,6 +12,7 @@ import exceptions.RestaurantDoesntExistException;
 import models.Food;
 import models.NormalFood;
 import models.Restaurant;
+import models.SpecialFood;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -110,5 +111,41 @@ public class RestaurantController {
         }
     }
 
+    @RequestMapping(value = "/{id}/special/{fid}",method = RequestMethod.GET)
+    public ResponseEntity<Object> getNormalFood(
+            @PathVariable(value = "id",required = true) String restaurantId,
+            @PathVariable(value = "id",required = true) String foodId
+    ){
+        try {
+            Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
+            if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
+                SpecialFood food = restaurant.getSpecialFoodByName(foodId);
+                JsonNode answerJson = mapper.readTree(NormalFood.toJson());
+                return new ResponseEntity<>(answerJson, HttpStatus.OK);
+            } else {
+                ObjectNode answerJson = factory.objectNode();
+                answerJson.put("status", 403);
+                answerJson.put("description", "restaurant not in range");
+                return new ResponseEntity<>(answerJson, HttpStatus.FORBIDDEN);
+            }
+        } catch (RestaurantDoesntExistException e) {
+            ObjectNode answerJson = factory.objectNode();
+            answerJson.put("status", 404);
+            answerJson.put("description", "restaurant does not exist");
+            return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
+        }
+        catch (FoodDoesntExistException e){
+            ObjectNode answerJson = factory.objectNode();
+            answerJson.put("status", 404);
+            answerJson.put("description", "food does not exist");
+            return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
+        }
+        catch (InvalidToJsonException| IOException e){
+            ObjectNode answerJson = factory.objectNode();
+            answerJson.put("status", 500);
+            answerJson.put("description", "internal server error");
+            return new ResponseEntity<>(answerJson,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
