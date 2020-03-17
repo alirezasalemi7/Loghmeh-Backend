@@ -163,7 +163,7 @@ public class CartController {
         }
     }
 
-    @RequestMapping(value="/",method = RequestMethod.GET)
+    @RequestMapping(value="/view",method = RequestMethod.GET)
     public ResponseEntity<Object> getCart(
             @PathVariable(value = "id",required = true) String userId)
     {

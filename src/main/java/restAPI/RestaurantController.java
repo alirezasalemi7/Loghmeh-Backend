@@ -32,7 +32,7 @@ public class RestaurantController {
     private JsonNodeFactory factory = JsonNodeFactory.instance;
     private ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value = "/",method = RequestMethod.GET)
+    @RequestMapping(value = "/all",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllRestaurants(){
         ArrayNode answerJson = factory.arrayNode();
         ArrayList<Restaurant> restaurants = SystemManager.getInstance().getInRangeRestaurants(DataHandler.getInstance().getUser());
@@ -41,6 +41,7 @@ public class RestaurantController {
             node.put("name", restaurant.getName());
             node.put("img", restaurant.getLogoAddress());
             node.put("id", restaurant.getId());
+            answerJson.add(node);
         }
         return new ResponseEntity<>(answerJson, HttpStatus.OK);
     }
@@ -77,7 +78,7 @@ public class RestaurantController {
     @RequestMapping(value = "/{id}/{fid}",method = RequestMethod.GET)
     public ResponseEntity<Object> getNormalFood(
             @PathVariable(value = "id",required = true) String restaurantId,
-            @PathVariable(value = "id",required = true) String foodId
+            @PathVariable(value = "fid",required = true) String foodId
     ){
         try {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
@@ -114,7 +115,7 @@ public class RestaurantController {
     @RequestMapping(value = "/{id}/special/{fid}",method = RequestMethod.GET)
     public ResponseEntity<Object> getSpecialFood(
             @PathVariable(value = "id",required = true) String restaurantId,
-            @PathVariable(value = "id",required = true) String foodId
+            @PathVariable(value = "fid",required = true) String foodId
     ){
         try {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
