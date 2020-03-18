@@ -14,6 +14,7 @@ import systemHandlers.SystemManager;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping(value = "/users/{id}/cart")
@@ -25,16 +26,20 @@ public class CartController {
     @RequestMapping(value="/add",method = RequestMethod.POST)
     public ResponseEntity<Object> addToCart(
             @PathVariable(value = "id",required = true) String userId,
-            @RequestParam(value = "food",required = true) String foodName,
-            @RequestParam(value = "restaurant",required = true) String restaurantId,
-            @RequestParam(value = "special",required = true) Boolean specialFood)
+            @RequestBody (required = true) JsonNode payload)
     {
+        JsonNode foodNameJson = payload.get("food");
+        JsonNode restaurantIdJson = payload.get("restaurant");
+        JsonNode specialFoodJson = payload.get("special");
         ObjectNode answerJson = factory.objectNode();
-        if (restaurantId == null || foodName == null || specialFood == null) {
+        if (restaurantIdJson == null || foodNameJson == null || specialFoodJson == null) {
             answerJson.put("status", 400);
             answerJson.put("description", "bad request");
             return new ResponseEntity<>(answerJson, HttpStatus.BAD_REQUEST);
         } else {
+            String foodName = foodNameJson.asText();
+            String restaurantId = restaurantIdJson.asText();
+            Boolean specialFood = specialFoodJson.asBoolean();
             try {
                 Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
                 User user = SystemManager.getInstance().getUser();
@@ -83,17 +88,21 @@ public class CartController {
     @RequestMapping(value="/remove",method = RequestMethod.DELETE)
     public ResponseEntity<Object> removeFromCart(
             @PathVariable(value = "id",required = true) String userId,
-            @RequestParam(value = "food",required = true) String foodName,
-            @RequestParam(value = "restaurant",required = true) String restaurantId,
-            @RequestParam(value = "special",required = true) Boolean specialFood)
+            @RequestBody (required = true) JsonNode payload)
     {
+        JsonNode foodNameJson = payload.get("food");
+        JsonNode restaurantIdJson = payload.get("restaurant");
+        JsonNode specialFoodJson = payload.get("special");
         ObjectNode answerJson = factory.objectNode();
-        if (restaurantId == null || foodName == null || specialFood == null) {
+        if (restaurantIdJson == null || foodNameJson == null || specialFoodJson == null) {
             answerJson.put("status", 400);
             answerJson.put("description", "bad request");
             return new ResponseEntity<>(answerJson, HttpStatus.BAD_REQUEST);
         } else {
             try {
+                String foodName = foodNameJson.asText();
+                String restaurantId = restaurantIdJson.asText();
+                Boolean specialFood = specialFoodJson.asBoolean();
                 Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
                 User user = SystemManager.getInstance().getUser();
                 if (specialFood) {
