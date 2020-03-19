@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.FoodDoesntExistException;
 import exceptions.InvalidToJsonException;
 import exceptions.RestaurantDoesntExistException;
-import models.Food;
 import models.NormalFood;
 import models.Restaurant;
 import models.SpecialFood;
