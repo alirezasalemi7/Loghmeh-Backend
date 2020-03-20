@@ -48,5 +48,21 @@ public class UserController {
         return new ResponseEntity<>(generateError(factory, 200, "Increased successfully"), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/users/{id}/orders/all", method = RequestMethod.GET)
+    public ResponseEntity<Object> getAllOrders() {
+        ArrayNode response = factory.arrayNode();
+        ArrayList<OrderItem> orders = SystemManager.getInstance().getUser().getCart().getOrders();
+        for (OrderItem order : orders) {
+            ObjectNode node = factory.objectNode();
+            try {
+                node.put("restaurantName", SystemManager.getInstance().getRestaurantById(order.getFood().getRestaurantId()).getName());
+            } catch (RestaurantDoesntExistException e) {
+                return new ResponseEntity<>(generateError(factory, 500, "internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            response.add(node);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }
