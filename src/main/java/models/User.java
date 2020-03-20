@@ -2,6 +2,7 @@ package models;
 
 import exceptions.CartIsEmptyException;
 import exceptions.CreditIsNotEnoughException;
+import exceptions.OrderDoesNotExist;
 import exceptions.UnregisteredOrderException;
 
 import java.util.ArrayList;
@@ -98,6 +99,13 @@ public class User {
 
     public ArrayList<Order> getOrders(){
         return new ArrayList<>(this._orders.values());
+    }
+
+    public Order getOrderById(String orderId) throws OrderDoesNotExist {
+        Order order = this._orders.getOrDefault(orderId, null);
+        if (order == null)
+            throw new OrderDoesNotExist();
+        return order;
     }
 
 }
