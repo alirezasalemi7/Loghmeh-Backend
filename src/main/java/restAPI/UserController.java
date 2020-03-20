@@ -34,8 +34,22 @@ public class UserController {
         return errorNode;
     }
 
+    @RequestMapping(value = "users/{id}/profile/view", method = RequestMethod.GET)
+    public ResponseEntity<Object> getProfileInfo(
+            @PathVariable(value = "id") String userId
+    ) {
+        User user = SystemManager.getInstance().getUser();
+        ObjectNode response = factory.objectNode();
+        response.put("name", user.getName());
+        response.put("phoneNumber", user.getPhoneNumber());
+        response.put("email", user.getEmail());
+        response.put("credit", user.getCredit());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/users/{id}/profile/addCredit", method = RequestMethod.POST)
     public ResponseEntity<Object> addCredit(
+            @PathVariable(value = "id") String userId,
             @RequestBody (required = true) JsonNode node
     ) {
         JsonNode increasedValue = node.get("credit");
@@ -67,7 +81,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping("users/{id}/orders/{oid}")
+    @RequestMapping(value = "users/{id}/orders/{oid}", method = RequestMethod.GET)
     public ResponseEntity<Object> getOrder(
             @PathVariable(value = "id") String userId,
             @PathVariable(value = "oid") String orderId
