@@ -32,8 +32,8 @@ public class FoodPartyController {
             for (SpecialFood food : restaurant.getSpecialMenu().values()) {
                 JsonNode node = null;
                 try {
-                    node = mapper.readTree(food.toJson());
-                } catch (IOException | InvalidToJsonException e) {
+                    node = food.toJsonNode();
+                } catch (InvalidToJsonException e) {
                     ObjectNode errorNode = factory.objectNode();
                     errorNode.put("status", "500");
                     errorNode.put("description", "internal server error");
@@ -57,9 +57,9 @@ public class FoodPartyController {
                 continue;
             }
             try {
-                JsonNode node = mapper.readTree(food.toJson());
+                JsonNode node = food.toJsonNode();
                 return new ResponseEntity<>(node, HttpStatus.OK);
-            } catch (IOException | InvalidToJsonException e) {
+            } catch (InvalidToJsonException e) {
                 ObjectNode errorNode = factory.objectNode();
                 errorNode.put("status", 500);
                 errorNode.put("description", "internal server error");

@@ -169,6 +169,10 @@ public class Order {
     }
 
     public String toJson(){
+        return this.toJsonNode().asText();
+    }
+
+    public ObjectNode toJsonNode() {
         ObjectNode json = JsonNodeFactory.instance.objectNode();
         json.put("cost", this.getTotalCost());
         ArrayNode orders = JsonNodeFactory.instance.arrayNode();
@@ -180,6 +184,6 @@ public class Order {
             orders.add(orderItemJson);
         }
         json.put("order",orders);
-        return json.asText();
+        return json;
     }
 }

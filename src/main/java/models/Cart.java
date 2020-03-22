@@ -81,6 +81,17 @@ public class Cart {
     }
 
     public String toJson() throws InvalidToJsonException {
+        ObjectNode root = this.toJsonNode();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(root);
+        }
+        catch (JsonProcessingException e){
+            throw new InvalidToJsonException();
+        }
+    }
+
+    public ObjectNode toJsonNode() {
         JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
         ObjectNode root = jsonNodeFactory.objectNode();
         ArrayNode arrayNode = jsonNodeFactory.arrayNode();
@@ -93,13 +104,7 @@ public class Cart {
         }
         root.set("orders", arrayNode);
         root.put("cost", this.getSumOfPrices());
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(root);
-        }
-        catch (JsonProcessingException e){
-            throw new InvalidToJsonException();
-        }
+        return root;
     }
 
     public void clearCart() {

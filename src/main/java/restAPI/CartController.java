@@ -151,7 +151,7 @@ public class CartController {
         User user = DataHandler.getInstance().getUser();
         try {
             Order order = SystemManager.getInstance().finalizeOrder(user);
-            answerJson.set("order",mapper.readTree(order.toJson()));
+            answerJson.set("order", order.toJsonNode());
             answerJson.put("status", 200);
             return new ResponseEntity<>(answerJson,HttpStatus.OK);
         }
@@ -165,11 +165,11 @@ public class CartController {
             answerJson.put("description", "credit not enough");
             return new ResponseEntity<>(answerJson,HttpStatus.BAD_REQUEST);
         }
-        catch (IOException e){
-            answerJson.put("status", 500);
-            answerJson.put("description", "internal server error");
-            return new ResponseEntity<>(answerJson,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        catch (IOException e){
+//            answerJson.put("status", 500);
+//            answerJson.put("description", "internal server error");
+//            return new ResponseEntity<>(answerJson,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     @RequestMapping(value="/view",method = RequestMethod.GET)
@@ -177,16 +177,16 @@ public class CartController {
             @PathVariable(value = "id",required = true) String userId)
     {
         User user = DataHandler.getInstance().getUser();
-        try {
-            JsonNode answerJson = mapper.readTree(user.getCart().toJson());
-            return new ResponseEntity<>(answerJson,HttpStatus.OK);
-        }
-        catch (IOException | InvalidToJsonException e){
-            ObjectNode answerJson = factory.objectNode();
-            answerJson.put("status", 500);
-            answerJson.put("description", "internal server error");
-            return new ResponseEntity<>(answerJson,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        try {
+        JsonNode answerJson = user.getCart().toJsonNode();
+        return new ResponseEntity<>(answerJson,HttpStatus.OK);
+//        }
+//        catch (IOException | InvalidToJsonException e){
+//            ObjectNode answerJson = factory.objectNode();
+//            answerJson.put("status", 500);
+//            answerJson.put("description", "internal server error");
+//            return new ResponseEntity<>(answerJson,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
 }

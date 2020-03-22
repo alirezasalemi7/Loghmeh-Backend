@@ -181,6 +181,15 @@ public class Restaurant {
         }
     }
 
+    public JsonNode toJsonNode() throws InvalidToJsonException {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readTree(this.toJson());
+        } catch (IOException e) {
+            throw new InvalidToJsonException();
+        }
+    }
+
     private static class RestaurantDeserializer extends StdDeserializer<Restaurant>{
 
         protected RestaurantDeserializer(Class<?> vc) {

@@ -7,16 +7,11 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.NegativeChargeAmountException;
 import exceptions.OrderDoesNotExist;
-import exceptions.RestaurantDoesntExistException;
-import models.Food;
 import models.Order;
-import models.OrderItem;
 import models.User;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import systemHandlers.DataHandler;
 import systemHandlers.SystemManager;
 
 import java.io.IOException;
@@ -92,11 +87,7 @@ public class UserController {
         } catch (OrderDoesNotExist orderDoesNotExist) {
             return new ResponseEntity<>(generateError(factory, 400, orderDoesNotExist.getMessage()), HttpStatus.BAD_REQUEST);
         }
-        try {
-            return new ResponseEntity<>(mapper.readTree(order.toJson()), HttpStatus.OK);
-        } catch (IOException e) {
-            return new ResponseEntity<>(generateError(factory, 500, "internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(order.toJsonNode(), HttpStatus.OK);
     }
 
 }

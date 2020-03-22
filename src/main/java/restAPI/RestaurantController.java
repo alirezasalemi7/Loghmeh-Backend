@@ -52,7 +52,7 @@ public class RestaurantController {
         try {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
             if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
-                JsonNode answerJson = mapper.readTree(restaurant.toJson());
+                JsonNode answerJson = restaurant.toJsonNode();
                 return new ResponseEntity<>(answerJson, HttpStatus.OK);
             } else {
                 ObjectNode answerJson = factory.objectNode();
@@ -66,7 +66,7 @@ public class RestaurantController {
             answerJson.put("description", "restaurant does not exist");
             return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
         }
-        catch (InvalidToJsonException| IOException e){
+        catch (InvalidToJsonException e){
             ObjectNode answerJson = factory.objectNode();
             answerJson.put("status", 500);
             answerJson.put("description", "internal server error");
@@ -83,7 +83,7 @@ public class RestaurantController {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
             if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
                 NormalFood food = restaurant.getNormalFoodByName(foodId);
-                JsonNode answerJson = mapper.readTree(food.toJson());
+                JsonNode answerJson = food.toJsonNode();
                 return new ResponseEntity<>(answerJson, HttpStatus.OK);
             } else {
                 ObjectNode answerJson = factory.objectNode();
@@ -103,7 +103,7 @@ public class RestaurantController {
             answerJson.put("description", "food does not exist");
             return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
         }
-        catch (InvalidToJsonException| IOException e){
+        catch (InvalidToJsonException e){
             ObjectNode answerJson = factory.objectNode();
             answerJson.put("status", 500);
             answerJson.put("description", "internal server error");
@@ -120,7 +120,7 @@ public class RestaurantController {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
             if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
                 SpecialFood food = restaurant.getSpecialFoodByName(foodId);
-                JsonNode answerJson = mapper.readTree(food.toJson());
+                JsonNode answerJson = food.toJsonNode();
                 return new ResponseEntity<>(answerJson, HttpStatus.OK);
             } else {
                 ObjectNode answerJson = factory.objectNode();
@@ -140,7 +140,7 @@ public class RestaurantController {
             answerJson.put("description", "food does not exist");
             return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
         }
-        catch (InvalidToJsonException| IOException e){
+        catch (InvalidToJsonException e){
             ObjectNode answerJson = factory.objectNode();
             answerJson.put("status", 500);
             answerJson.put("description", "internal server error");

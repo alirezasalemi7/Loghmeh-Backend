@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.InvalidJsonInputException;
 import exceptions.InvalidPopularityException;
@@ -95,6 +96,8 @@ public abstract class Food {
     }
 
     public abstract String toJson() throws InvalidToJsonException;
+
+    public abstract JsonNode toJsonNode() throws InvalidToJsonException;
 
     public abstract Food deserializeFromJson(String jsonData) throws InvalidJsonInputException;
 }
