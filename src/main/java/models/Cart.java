@@ -97,7 +97,14 @@ public class Cart {
         ArrayNode arrayNode = jsonNodeFactory.arrayNode();
         for(Map.Entry<String,OrderItem> entry : _orders.entrySet()){
             ObjectNode food = jsonNodeFactory.objectNode();
-            food.put("name", entry.getKey());
+            if(entry.getKey().contains("@")){
+                food.put("special", true);
+            }
+            else{
+                food.put("special", false);
+            }
+            food.put("restaurant", entry.getValue().getFood().getRestaurantId());
+            food.put("food", entry.getKey());
             food.put("count", entry.getValue().getCount());
             food.put("cost", entry.getValue().getPrice());
             arrayNode.add(food);

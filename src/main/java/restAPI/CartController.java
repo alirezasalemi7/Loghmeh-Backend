@@ -31,22 +31,28 @@ public class CartController {
         JsonNode foodNameJson = payload.get("food");
         JsonNode restaurantIdJson = payload.get("restaurant");
         JsonNode specialFoodJson = payload.get("special");
+        JsonNode numberOfOrders = payload.get("food_count");
         ObjectNode answerJson = factory.objectNode();
         if (restaurantIdJson == null || foodNameJson == null || specialFoodJson == null) {
-            answerJson.put("status", 400);
+            answerJson.put("status", 40002);
             answerJson.put("description", "bad request");
             return new ResponseEntity<>(answerJson, HttpStatus.BAD_REQUEST);
         } else {
+            int count = 1;
+            if(numberOfOrders!=null){
+                count = numberOfOrders.asInt();
+            }
             String foodName = foodNameJson.asText();
             String restaurantId = restaurantIdJson.asText();
             Boolean specialFood = specialFoodJson.asBoolean();
             try {
                 Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
-                User user = SystemManager.getInstance().getUser();
                 if (specialFood) {
                     SpecialFood food = restaurant.getSpecialFoodByName(foodName);
-                    SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
-                    food.setCount(food.getCount() - 1);
+                    food.setCount(food.getCount() - count);
+                    for(int i=0;i<count;i++){
+                        SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
+                    }
                     answerJson.put("status", 200);
                     answerJson.put("food", foodName);
                     answerJson.put("count", food.getCount());
@@ -54,7 +60,9 @@ public class CartController {
                 } else {
                     NormalFood food = restaurant.getNormalFoodByName(foodName);
                     if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
-                        SystemManager.getInstance().addToCart(food, user);
+                        for(int i=0;i<count;i++){
+                            SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
+                        }
                         answerJson.put("status", 200);
                         answerJson.put("food", foodName);
                         answerJson.put("count", "inf");
@@ -66,19 +74,19 @@ public class CartController {
                     }
                 }
             } catch (FoodDoesntExistException e) {
-                answerJson.put("status", 404);
+                answerJson.put("status", 40401);
                 answerJson.put("description", "food does not exist");
                 return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
             } catch (RestaurantDoesntExistException e) {
-                answerJson.put("status", 404);
+                answerJson.put("status", 40402);
                 answerJson.put("description", "restaurant does not exist");
                 return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
             } catch (UnregisteredOrderException e) {
-                answerJson.put("status", 400);
+                answerJson.put("status", 40004);
                 answerJson.put("description", "unregistered order");
                 return new ResponseEntity<>(answerJson, HttpStatus.BAD_REQUEST);
             } catch (FoodCountIsNegativeException e) {
-                answerJson.put("status", 400);
+                answerJson.put("status", 40001);
                 answerJson.put("description", "food count negative");
                 return new ResponseEntity<>(answerJson, HttpStatus.BAD_REQUEST);
             }
@@ -95,7 +103,7 @@ public class CartController {
         JsonNode specialFoodJson = payload.get("special");
         ObjectNode answerJson = factory.objectNode();
         if (restaurantIdJson == null || foodNameJson == null || specialFoodJson == null) {
-            answerJson.put("status", 400);
+            answerJson.put("status", 40002);
             answerJson.put("description", "bad request");
             return new ResponseEntity<>(answerJson, HttpStatus.BAD_REQUEST);
         } else {
@@ -128,15 +136,15 @@ public class CartController {
                     }
                 }
             } catch (FoodDoesntExistException e) {
-                answerJson.put("status", 404);
+                answerJson.put("status", 40401);
                 answerJson.put("description", "food does not exist");
                 return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
             } catch (RestaurantDoesntExistException e) {
-                answerJson.put("status", 404);
+                answerJson.put("status", 40402);
                 answerJson.put("description", "restaurant does not exist");
                 return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
             } catch (FoodCountIsNegativeException e) {
-                answerJson.put("status", 400);
+                answerJson.put("status", 40001);
                 answerJson.put("description", "food count negative");
                 return new ResponseEntity<>(answerJson, HttpStatus.BAD_REQUEST);
             }
@@ -156,12 +164,12 @@ public class CartController {
             return new ResponseEntity<>(answerJson,HttpStatus.OK);
         }
         catch (CartIsEmptyException e){
-            answerJson.put("status", 400);
+            answerJson.put("status", 40001);
             answerJson.put("description", "cart is empty");
             return new ResponseEntity<>(answerJson,HttpStatus.BAD_REQUEST);
         }
         catch (CreditIsNotEnoughException e){
-            answerJson.put("status", 400);
+            answerJson.put("status", 40002);
             answerJson.put("description", "credit not enough");
             return new ResponseEntity<>(answerJson,HttpStatus.BAD_REQUEST);
         }
