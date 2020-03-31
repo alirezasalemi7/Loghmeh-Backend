@@ -25,13 +25,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping(value = "/restaurants/")
 public class RestaurantController {
 
     private JsonNodeFactory factory = JsonNodeFactory.instance;
     private ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value = "/all",method = RequestMethod.GET)
+    @RequestMapping(value = "/restaurants",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllRestaurants(){
         ArrayNode answerJson = factory.arrayNode();
         ArrayList<Restaurant> restaurants = SystemManager.getInstance().getInRangeRestaurants(DataHandler.getInstance().getUser());
@@ -45,7 +44,7 @@ public class RestaurantController {
         return new ResponseEntity<>(answerJson, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    @RequestMapping(value = "/restaurants/{id}",method = RequestMethod.GET)
     public ResponseEntity<Object> getRestaurant(
             @PathVariable(value = "id") String restaurantId
     ){
@@ -74,7 +73,7 @@ public class RestaurantController {
         }
    }
 
-    @RequestMapping(value = "/{id}/{fid}",method = RequestMethod.GET)
+    @RequestMapping(value = "/restaurants/{id}/{fid}",method = RequestMethod.GET)
     public ResponseEntity<Object> getNormalFood(
             @PathVariable(value = "id",required = true) String restaurantId,
             @PathVariable(value = "fid",required = true) String foodId
@@ -111,7 +110,7 @@ public class RestaurantController {
         }
     }
 
-    @RequestMapping(value = "/{id}/special/{fid}",method = RequestMethod.GET)
+    @RequestMapping(value = "/restaurants/{id}/special/{fid}",method = RequestMethod.GET)
     public ResponseEntity<Object> getSpecialFood(
             @PathVariable(value = "id",required = true) String restaurantId,
             @PathVariable(value = "fid",required = true) String foodId

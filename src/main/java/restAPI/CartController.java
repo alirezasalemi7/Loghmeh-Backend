@@ -17,13 +17,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping(value = "/users/{id}/cart")
+@RequestMapping(value = "/users/{id}")
 public class CartController {
 
     private JsonNodeFactory factory = JsonNodeFactory.instance;
     private ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value="/add",method = RequestMethod.POST)
+    @RequestMapping(value="/cart",method = RequestMethod.POST)
     public ResponseEntity<Object> addToCart(
             @PathVariable(value = "id",required = true) String userId,
             @RequestBody (required = true) JsonNode payload)
@@ -93,7 +93,7 @@ public class CartController {
         }
     }
 
-    @RequestMapping(value="/remove",method = RequestMethod.DELETE)
+    @RequestMapping(value="/cart",method = RequestMethod.DELETE)
     public ResponseEntity<Object> removeFromCart(
             @PathVariable(value = "id",required = true) String userId,
             @RequestBody (required = true) JsonNode payload)
@@ -151,7 +151,7 @@ public class CartController {
         }
     }
 
-    @RequestMapping(value="/finalize",method = RequestMethod.POST)
+    @RequestMapping(value="/cart/finalize",method = RequestMethod.POST)
     public ResponseEntity<Object> finalize(
             @PathVariable(value = "id",required = true) String userId)
     {
@@ -180,7 +180,7 @@ public class CartController {
 //        }
     }
 
-    @RequestMapping(value="/view",method = RequestMethod.GET)
+    @RequestMapping(value="/cart",method = RequestMethod.GET)
     public ResponseEntity<Object> getCart(
             @PathVariable(value = "id",required = true) String userId)
     {
