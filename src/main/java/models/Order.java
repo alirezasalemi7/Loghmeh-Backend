@@ -153,7 +153,7 @@ public class Order {
     }
 
     public User getUser(){
-        return this.getUser();
+        return this.user;
     }
 
     public long getRemainingTime(){
@@ -174,7 +174,7 @@ public class Order {
 
     public ObjectNode toJsonNode() {
         ObjectNode json = JsonNodeFactory.instance.objectNode();
-        json.put("cost", this.getTotalCost());
+        json.put("totalCost", this.getTotalCost());
         ArrayNode orders = JsonNodeFactory.instance.arrayNode();
         for(OrderItem orderItem : this.items){
             ObjectNode orderItemJson = JsonNodeFactory.instance.objectNode();

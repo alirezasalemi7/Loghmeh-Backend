@@ -36,6 +36,7 @@ public class UserController {
         User user = SystemManager.getInstance().getUser();
         ObjectNode response = factory.objectNode();
         response.put("name", user.getName());
+        response.put("family", user.getFamily());
         response.put("phoneNumber", user.getPhoneNumber());
         response.put("email", user.getEmail());
         response.put("credit", user.getCredit());
@@ -49,14 +50,14 @@ public class UserController {
     ) {
         JsonNode increasedValue = node.get("credit");
         if (increasedValue == null)
-            return new ResponseEntity<>(generateError(factory, 400, "bad request"), HttpStatus.BAD_REQUEST);
-        String amount = increasedValue.toString();
+            return new ResponseEntity<>(generateError(factory, 4003, "bad request"), HttpStatus.BAD_REQUEST);
+        String amount = increasedValue.toString().replace("\"", "");
         if (!amount.matches("(-)?[0-9]+(\\.[0-9]+)?"))
-            return new ResponseEntity<>(generateError(factory, 400, "amount must be a valid number"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(generateError(factory, 4002, "amount must be a valid number"), HttpStatus.BAD_REQUEST);
         try {
             SystemManager.getInstance().increaseCredit(SystemManager.getInstance().getUser(), Double.parseDouble(amount));
         } catch (NegativeChargeAmountException e) {
-            return new ResponseEntity<>(generateError(factory, 400, "amount must be a positive number"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(generateError(factory, 4001, "amount must be a positive number"), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(generateError(factory, 200, "Increased successfully"), HttpStatus.OK);
     }
@@ -71,6 +72,7 @@ public class UserController {
             ObjectNode node = factory.objectNode();
             node.put("orderStatus", order.getState().toString());
             node.put("restaurantName", order.getRestaurant().getName());
+            node.put("id", order.getId());
             response.add(node);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
