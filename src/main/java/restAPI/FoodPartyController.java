@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import systemHandlers.DataHandler;
+import systemHandlers.SystemManager;
 
 import java.io.IOException;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/foodParty/")
@@ -46,8 +48,12 @@ public class FoodPartyController {
         }
         ObjectNode finalNode = factory.objectNode();
         finalNode.put("foods", nodes);
-        finalNode.put("minutes", 3);
-        finalNode.put("seconds", 0);
+        Date start = SystemManager.getInstance().getFoodPartyStartTime();
+        Date current = new Date();
+        long diff = current.getTime() - start.getTime();
+        diff = 180000 - diff;
+        finalNode.put("minutes", (int) (diff / (60 * 1000)));
+        finalNode.put("seconds", (int) ((diff / (1000)) % 60));
         return new ResponseEntity<>(finalNode, HttpStatus.OK);
     }
 

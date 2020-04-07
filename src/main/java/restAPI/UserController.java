@@ -43,7 +43,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/{id}/profile/addCredit", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/{id}/profile/credit", method = RequestMethod.PUT)
     public ResponseEntity<Object> addCredit(
             @PathVariable(value = "id") String userId,
             @RequestBody (required = true) JsonNode node
