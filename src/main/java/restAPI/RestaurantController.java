@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.FoodDoesntExistException;
 import exceptions.InvalidToJsonException;
 import exceptions.RestaurantDoesntExistException;
+import models.Food;
 import models.NormalFood;
 import models.Restaurant;
 import models.SpecialFood;
@@ -81,7 +82,12 @@ public class RestaurantController {
         try {
             Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
             if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
-                NormalFood food = restaurant.getNormalFoodByName(foodId);
+                Food food = null;
+                try {
+                    food = restaurant.getNormalFoodByName(foodId);
+                } catch (FoodDoesntExistException e) {
+                    food = restaurant.getSpecialFoodByName(foodId);
+                }
                 JsonNode answerJson = food.toJsonNode();
                 return new ResponseEntity<>(answerJson, HttpStatus.OK);
             } else {
@@ -100,6 +106,7 @@ public class RestaurantController {
             ObjectNode answerJson = factory.objectNode();
             answerJson.put("status", 404);
             answerJson.put("description", "food does not exist");
+            System.err.println("FOOD ID IS {" + foodId + "}");
             return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
         }
         catch (InvalidToJsonException e){
