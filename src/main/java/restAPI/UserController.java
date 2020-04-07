@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import systemHandlers.SystemManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 @RestController
@@ -29,7 +28,7 @@ public class UserController {
         return errorNode;
     }
 
-    @RequestMapping(value = "users/{id}/profile/view", method = RequestMethod.GET)
+    @RequestMapping(value = "users/{id}/profile", method = RequestMethod.GET)
     public ResponseEntity<Object> getProfileInfo(
             @PathVariable(value = "id") String userId
     ) {
@@ -43,7 +42,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/{id}/profile/credit", method = RequestMethod.PUT)
+    @RequestMapping(value = "/users/{id}/profile", method = RequestMethod.PUT)
     public ResponseEntity<Object> addCredit(
             @PathVariable(value = "id") String userId,
             @RequestBody (required = true) JsonNode node
@@ -62,7 +61,7 @@ public class UserController {
         return new ResponseEntity<>(generateError(factory, 200, "Increased successfully"), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/{id}/orders/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/{id}/orders", method = RequestMethod.GET)
     public ResponseEntity<Object> getAllOrders(
             @PathVariable(value = "id") String userId
     ) {

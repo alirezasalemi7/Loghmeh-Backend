@@ -18,16 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import systemHandlers.DataHandler;
 import systemHandlers.SystemManager;
 
-import java.io.IOException;
 import java.util.Date;
 
 @RestController
-@RequestMapping(value = "/foodParty/")
 public class FoodPartyController {
     private JsonNodeFactory factory = JsonNodeFactory.instance;
     private ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value = "/all",method = RequestMethod.GET)
+    @RequestMapping(value = "/foodParty",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllFoods() {
         ArrayNode nodes = factory.arrayNode();
         for (Restaurant restaurant : DataHandler.getInstance().getAllRestaurant().values()) {
@@ -57,7 +55,7 @@ public class FoodPartyController {
         return new ResponseEntity<>(finalNode, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{fid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/foodParty/{fid}", method = RequestMethod.GET)
     public ResponseEntity<Object> getSpecialFood(
             @PathVariable(value = "fid") String foodId
     ) {
