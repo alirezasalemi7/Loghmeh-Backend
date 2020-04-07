@@ -30,9 +30,11 @@ public class FoodPartyController {
         ArrayNode nodes = factory.arrayNode();
         for (Restaurant restaurant : DataHandler.getInstance().getAllRestaurant().values()) {
             for (SpecialFood food : restaurant.getSpecialMenu().values()) {
-                JsonNode node = null;
+                ObjectNode  node = null;
                 try {
-                    node = food.toJsonNode();
+                    node = (ObjectNode) food.toJsonNode();
+                    node.put("restaurantName", restaurant.getName());
+                    node.put("restaurantId", restaurant.getId());
                 } catch (InvalidToJsonException e) {
                     ObjectNode errorNode = factory.objectNode();
                     errorNode.put("status", "500");
@@ -57,7 +59,9 @@ public class FoodPartyController {
                 continue;
             }
             try {
-                JsonNode node = food.toJsonNode();
+                ObjectNode node = (ObjectNode) food.toJsonNode();
+                node.put("restaurantName", restaurant.getName());
+                node.put("restaurantId", restaurant.getId());
                 return new ResponseEntity<>(node, HttpStatus.OK);
             } catch (InvalidToJsonException e) {
                 ObjectNode errorNode = factory.objectNode();
