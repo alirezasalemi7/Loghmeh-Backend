@@ -104,7 +104,7 @@ public class Cart {
                 food.put("special", false);
             }
             food.put("restaurant", entry.getValue().getFood().getRestaurantId());
-            food.put("food", entry.getKey());
+            food.put("food", entry.getValue().getFoodName());
             food.put("count", entry.getValue().getCount());
             food.put("cost", entry.getValue().getPrice());
             arrayNode.add(food);
