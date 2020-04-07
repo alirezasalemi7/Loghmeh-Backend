@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -58,6 +59,7 @@ public class FoodPartyListener implements ServletContextListener {
                     System.exit(1);
                 }
                 terminatePreviousFoodParty();
+                SystemManager.getInstance().setFoodPartStartTime(java.util.Calendar.getInstance().getTime());
                 HashMap<String, Restaurant> systemRestaurants = DataHandler.getInstance().getAllRestaurant();
                 ArrayList<Restaurant> restaurants = externalServerBodyParser(getInputString(response.getEntity().getContent()));
                 for (Restaurant restaurant : restaurants) {

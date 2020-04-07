@@ -12,6 +12,7 @@ public class SystemManager {
 
     private static SystemManager _instance;
     private DataHandler _dataHandler;
+    private Date _foodPartyStartTime;
 
     private SystemManager() {
         _dataHandler = DataHandler.getInstance();
@@ -143,5 +144,13 @@ public class SystemManager {
 
     public long estimateDeliveryTime(User user, Restaurant restaurant) throws RestaurantDoesntExistException {
         return (long) (60 + restaurant.getLocation().getDistance(user.getLocation()) * 1.5 / 5);
+    }
+
+    public void setFoodPartStartTime(Date date){
+        this._foodPartyStartTime = date;
+    }
+
+    public Date getFoodPartyStartTime(){
+        return _foodPartyStartTime;
     }
 }
