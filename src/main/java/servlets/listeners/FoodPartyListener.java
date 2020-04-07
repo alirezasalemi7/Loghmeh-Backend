@@ -57,7 +57,6 @@ public class FoodPartyListener implements ServletContextListener {
                     System.err.println("Failed to obtain food Party information from external server. Error code: " + response.getStatusLine().getStatusCode());
                     System.exit(1);
                 }
-//                TODO: I assumed that a food only could be a SpecialFood or NormalFood and it can't be both of them.
                 terminatePreviousFoodParty();
                 HashMap<String, Restaurant> systemRestaurants = DataHandler.getInstance().getAllRestaurant();
                 ArrayList<Restaurant> restaurants = externalServerBodyParser(getInputString(response.getEntity().getContent()));
@@ -67,7 +66,6 @@ public class FoodPartyListener implements ServletContextListener {
                         SystemManager.getInstance().addRestaurant(equivalent);
                     } catch (RestaurantIsRegisteredException e) {
                         for (SpecialFood food : restaurant.getSpecialMenu().values()) {
-//                            equivalent.removeFood(food.changeToNormalFood());
                             equivalent.addFood(food);
                         }
                     }

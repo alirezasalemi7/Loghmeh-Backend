@@ -73,6 +73,7 @@ public class UserController {
             node.put("orderStatus", order.getState().toString());
             node.put("restaurantName", order.getRestaurant().getName());
             node.put("id", order.getId());
+            node.put("details", order.toJsonNode());
             response.add(node);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);

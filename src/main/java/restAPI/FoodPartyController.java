@@ -44,7 +44,11 @@ public class FoodPartyController {
                 nodes.add(node);
             }
         }
-        return new ResponseEntity<>(nodes, HttpStatus.OK);
+        ObjectNode finalNode = factory.objectNode();
+        finalNode.put("foods", nodes);
+        finalNode.put("minutes", 3);
+        finalNode.put("seconds", 0);
+        return new ResponseEntity<>(finalNode, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{fid}", method = RequestMethod.GET)

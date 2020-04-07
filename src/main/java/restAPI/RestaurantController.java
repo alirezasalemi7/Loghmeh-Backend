@@ -106,7 +106,6 @@ public class RestaurantController {
             ObjectNode answerJson = factory.objectNode();
             answerJson.put("status", 404);
             answerJson.put("description", "food does not exist");
-            System.err.println("FOOD ID IS {" + foodId + "}");
             return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
         }
         catch (InvalidToJsonException e){
