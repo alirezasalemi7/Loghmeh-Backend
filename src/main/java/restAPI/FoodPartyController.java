@@ -44,15 +44,19 @@ public class FoodPartyController {
                 nodes.add(node);
             }
         }
-        ObjectNode finalNode = factory.objectNode();
-        finalNode.put("foods", nodes);
+        return new ResponseEntity<>(nodes, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/foodParty/time", method = RequestMethod.GET)
+    public ResponseEntity<Object> getFoodPartyTime() {
+        ObjectNode node = factory.objectNode();
         Date start = SystemManager.getInstance().getFoodPartyStartTime();
         Date current = new Date();
         long diff = current.getTime() - start.getTime();
         diff = 180000 - diff;
-        finalNode.put("minutes", (int) (diff / (60 * 1000)));
-        finalNode.put("seconds", (int) ((diff / (1000)) % 60));
-        return new ResponseEntity<>(finalNode, HttpStatus.OK);
+        node.put("minutes", (int) (diff / (60 * 1000)));
+        node.put("seconds", (int) ((diff / (1000)) % 60));
+        return new ResponseEntity<>(node, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/foodParty/{fid}", method = RequestMethod.GET)
