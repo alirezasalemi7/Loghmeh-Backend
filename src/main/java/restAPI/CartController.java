@@ -23,7 +23,7 @@ public class CartController {
     private JsonNodeFactory factory = JsonNodeFactory.instance;
     private ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value="/cart",method = RequestMethod.POST)
+    @RequestMapping(value="/cart",method = RequestMethod.PUT)
     public ResponseEntity<Object> addToCart(
             @PathVariable(value = "id",required = true) String userId,
             @RequestBody (required = true) JsonNode payload)
@@ -151,7 +151,7 @@ public class CartController {
         }
     }
 
-    @RequestMapping(value="/cart/finalize",method = RequestMethod.POST)
+    @RequestMapping(value="/cart",method = RequestMethod.POST)
     public ResponseEntity<Object> finalize(
             @PathVariable(value = "id",required = true) String userId)
     {

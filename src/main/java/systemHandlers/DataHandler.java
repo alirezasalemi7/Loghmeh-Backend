@@ -17,7 +17,7 @@ public class DataHandler {
     private DataHandler(){
         _restaurants = new HashMap<>();
         _orders = new HashMap<>();
-        _user = new User(new Location(0, 0), "ali", "mammadi",  "09196055428", "am@gmail.com", 1000.0);
+        _user = new User(new Location(0, 0), "خرچال", "شاه",  "09196055428", "kharchal@gmail.com", 1000.0);
     }
 
     public static DataHandler getInstance() {
