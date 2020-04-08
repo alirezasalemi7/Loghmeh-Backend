@@ -49,10 +49,10 @@ public class CartController {
                 Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
                 if (specialFood) {
                     SpecialFood food = restaurant.getSpecialFoodByName(foodName);
-                    food.setCount(food.getCount() - count);
                     for(int i=0;i<count;i++){
                         SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
                     }
+                    food.setCount(food.getCount() - count);
                     answerJson.put("status", 200);
                     answerJson.put("food", foodName);
                     answerJson.put("count", food.getCount());
