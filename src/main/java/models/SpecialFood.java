@@ -39,6 +39,10 @@ public class SpecialFood extends Food {
         super();
     }
 
+    public SpecialFood(String name, String description, double popularity, double price, String imageAddress, String restaurantId) throws InvalidPopularityException, InvalidPriceException {
+        super(name, description, popularity, price, imageAddress, restaurantId);
+    }
+
     @Override
     public String toJson() throws InvalidToJsonException {
         ObjectMapper mapper = new ObjectMapper();
@@ -81,8 +85,15 @@ public class SpecialFood extends Food {
         this._count = count;
     }
 
-    public NormalFood changeToNormalFood() throws InvalidPopularityException, InvalidPriceException {
-        return new NormalFood(super.getName(), super.getDescription(), super.getPopularity(), this.getOldPrice(), super.getImageAddress(), super.getRestaurantId());
+    public NormalFood changeToNormalFood() {
+        NormalFood food = null;
+        try {
+            food = new NormalFood(super.getName(), super.getDescription(), super.getPopularity(), this.getOldPrice(), super.getImageAddress(), super.getRestaurantId());
+        } catch (InvalidPopularityException | InvalidPriceException e) {
+//            do nothing
+        } finally {
+            return food;
+        }
     }
 
 }

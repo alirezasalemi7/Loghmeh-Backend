@@ -67,13 +67,17 @@ public class Cart {
             foodName = foodName + "@";
         }
         if (_orders.containsKey(foodName)) {
-            int count = _orders.get(foodName).getCount();
+            OrderItem orderItem = _orders.get(foodName);
+            int count = orderItem.getCount();
             _orders.get(foodName).setCount(count - 1);
-            _sumOfPrices -= food.getPrice();
+            _sumOfPrices -= orderItem.getFood().getPrice();
             if(count <= 1){
                 _orders.remove(foodName);
+                if (_orders.size() == 0) {
+                    this._restaurantId = null;
+                }
             }
-            return food;
+            return orderItem.getFood();
         }
         else {
             throw new FoodDoesntExistException("food dose not exist in cart.");

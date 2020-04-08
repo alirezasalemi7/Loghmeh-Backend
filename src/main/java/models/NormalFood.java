@@ -34,6 +34,17 @@ public class NormalFood extends Food {
         }
     }
 
+    public SpecialFood changeToSpecialFood() {
+        SpecialFood food = null;
+        try {
+            food = new SpecialFood(this.getName(), this.getDescription(), this.getPopularity(), this.getPrice(), this.getImageAddress(), this.getRestaurantId());
+        } catch (InvalidPopularityException | InvalidPriceException e) {
+            e.printStackTrace();
+        } finally {
+            return food;
+        }
+    }
+
     @Override
     public JsonNode toJsonNode() throws InvalidToJsonException {
         ObjectMapper mapper = new ObjectMapper();

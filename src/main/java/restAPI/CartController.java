@@ -110,19 +110,27 @@ public class CartController {
             try {
                 String foodName = foodNameJson.asText();
                 String restaurantId = restaurantIdJson.asText();
-                Boolean specialFood = specialFoodJson.asBoolean();
+                boolean specialFood = specialFoodJson.asBoolean();
                 Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
                 User user = SystemManager.getInstance().getUser();
                 if (specialFood) {
-                    SpecialFood food = restaurant.getSpecialFoodByName(foodName);
-                    user.getCart().removeOrder(food);
-                    food.setCount(food.getCount() - 1);
+                    try {
+                        SpecialFood food = restaurant.getSpecialFoodByName(foodName);
+                        user.getCart().removeOrder(food);
+                        food.setCount(food.getCount() + 1);
+                        answerJson.put("count", food.getCount());
+                    } catch (FoodDoesntExistException e) {
+                        System.err.println("->" + "HERE");
+                        NormalFood food = restaurant.getNormalFoodByName(foodName);
+                        SpecialFood cartFood = (SpecialFood) user.getCart().removeOrder((food.changeToSpecialFood()));
+                        answerJson.put("count", cartFood.getCount());
+                    }
                     answerJson.put("status", 200);
                     answerJson.put("food", foodName);
-                    answerJson.put("count", food.getCount());
                     return new ResponseEntity<>(answerJson, HttpStatus.OK);
                 } else {
                     NormalFood food = restaurant.getNormalFoodByName(foodName);
+                    System.err.println(food.getName());
                     if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
                         user.getCart().removeOrder(food);
                         answerJson.put("status", 200);
@@ -137,7 +145,7 @@ public class CartController {
                 }
             } catch (FoodDoesntExistException e) {
                 answerJson.put("status", 40401);
-                answerJson.put("description", "food does not exist");
+                answerJson.put("description",  "food does not exist");
                 return new ResponseEntity<>(answerJson, HttpStatus.NOT_FOUND);
             } catch (RestaurantDoesntExistException e) {
                 answerJson.put("status", 40402);
