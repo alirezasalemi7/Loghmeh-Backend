@@ -50,15 +50,6 @@ public class CartTest {
         assertEquals(orders.get(1).getCount(), 1, 0.0);
     }
 
-    @Test
-    public void testToJson() {
-        try {
-            assertEquals("{\"foods\":[{\"foodName\":\"gheime\",\"count\":2},{\"foodName\":\"ghorme\",\"count\":1}]}", _cart.toJson());
-        } catch (InvalidToJsonException e) {
-            e.printStackTrace();
-        }
-    }
-
     @After
     public void teardown() {
         _cart = null;

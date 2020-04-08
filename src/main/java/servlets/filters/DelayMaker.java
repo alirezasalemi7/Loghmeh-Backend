@@ -12,7 +12,7 @@ public class DelayMaker implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
-            Thread.sleep(1500);
+            Thread.sleep(500);
             filterChain.doFilter(servletRequest, servletResponse);
         }
         catch (InterruptedException e){
