@@ -20,7 +20,7 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
 
     abstract protected T getObject(ResultSet rs);
 
-    abstract protected T getPartialObject(ResultSet rs);
+    abstract protected T getPartialObject(ResultSet rs, ArrayList<String> columnNames);
 
     @Override
     public T find(I id, ArrayList<String> columnNames) throws SQLException {
@@ -30,7 +30,7 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
         ) {
             ResultSet rs = stmt.executeQuery();
             rs.next();
-            return getPartialObject(rs);
+            return getPartialObject(rs, columnNames);
         } catch (SQLException e) {
             throw e;
         }
