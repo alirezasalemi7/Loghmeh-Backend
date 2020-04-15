@@ -10,27 +10,27 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
 
     abstract protected String getFindStatement(I id);
 
+    abstract protected String getFindStatement(I id, ArrayList<String> columnNames);
+
     abstract protected String getInsertStatement(T obj);
 
     abstract protected String getDeleteStatement(I id);
 
-    abstract protected String getInfoStatement(ArrayList<String> columnNames);
+    abstract protected String getUpdateStatement(I id, T obj);
 
     abstract protected T getObject(ResultSet rs);
 
     abstract protected T getPartialObject(ResultSet rs);
 
     @Override
-    public ArrayList<T> getInfo(ArrayList<String> columnNames) throws SQLException {
+    public T find(I id, ArrayList<String> columnNames) throws SQLException {
         try (
                 Connection connection = ConnectionPool.getConnection();
-                PreparedStatement stmt = connection.prepareStatement(getInfoStatement(columnNames))
-                ) {
+                PreparedStatement stmt = connection.prepareStatement(getFindStatement(id, columnNames))
+        ) {
             ResultSet rs = stmt.executeQuery();
-            ArrayList<T> info = null;
-            while (rs.next())
-                info.add(getPartialObject(rs));
-            return info;
+            rs.next();
+            return getPartialObject(rs);
         } catch (SQLException e) {
             throw e;
         }
@@ -55,6 +55,18 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
         try (
                 Connection connection = ConnectionPool.getConnection();
                 PreparedStatement stmt = connection.prepareStatement(getInsertStatement(obj))
+                ) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void update(I id, T obj) throws SQLException {
+        try (
+                Connection connection = ConnectionPool.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(getUpdateStatement(id, obj))
                 ) {
             stmt.executeUpdate();
         } catch (SQLException e) {
