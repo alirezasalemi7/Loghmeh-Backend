@@ -12,6 +12,8 @@ import models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import restAPI.DTO.User.UserProfileDTO;
+import systemHandlers.Services.UserServices;
 import systemHandlers.SystemManager;
 
 import java.util.ArrayList;
@@ -33,13 +35,8 @@ public class UserController {
             @PathVariable(value = "id") String userId
     ) {
         User user = SystemManager.getInstance().getUser();
-        ObjectNode response = factory.objectNode();
-        response.put("name", user.getName());
-        response.put("family", user.getFamily());
-        response.put("phoneNumber", user.getPhoneNumber());
-        response.put("email", user.getEmail());
-        response.put("credit", user.getCredit());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        UserProfileDTO profileDTO = UserServices.getInstance().getUserProfile(userId);
+        return new ResponseEntity<>(profileDTO, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/users/{id}/profile", method = RequestMethod.PUT)
@@ -54,7 +51,7 @@ public class UserController {
         if (!amount.matches("(-)?[0-9]+(\\.[0-9]+)?"))
             return new ResponseEntity<>(generateError(factory, 4002, "amount must be a valid number"), HttpStatus.BAD_REQUEST);
         try {
-            SystemManager.getInstance().increaseCredit(SystemManager.getInstance().getUser(), Double.parseDouble(amount));
+            UserServices.getInstance().increaseCredit(userId, Double.parseDouble(amount));
         } catch (NegativeChargeAmountException e) {
             return new ResponseEntity<>(generateError(factory, 4001, "amount must be a positive number"), HttpStatus.BAD_REQUEST);
         }

@@ -16,7 +16,7 @@ public class UserMapper extends Mapper<User,String> {
 
     private final String tableName = "Users";
 
-    UserMapper() throws SQLException{
+    public UserMapper() throws SQLException{
         super();
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();

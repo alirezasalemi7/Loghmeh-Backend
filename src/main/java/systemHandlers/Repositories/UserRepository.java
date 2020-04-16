@@ -1,5 +1,6 @@
 package systemHandlers.Repositories;
 
+import database.DAO.UserDAO;
 import database.UserMapper;
 import exceptions.NegativeChargeAmountException;
 import models.Cart;
@@ -20,7 +21,7 @@ public class UserRepository {
         return instance;
     }
 
-    public User getUser(String id) {
+    public UserDAO getUser(String id) {
         try {
             UserMapper mapper = new UserMapper();
             User user = mapper.find(id);
@@ -31,7 +32,7 @@ public class UserRepository {
         }
     }
 
-    public void updateCredit(User user) throws NegativeChargeAmountException {
+    public void updateCredit(UserDAO user) throws NegativeChargeAmountException {
         try {
             UserMapper mapper = new UserMapper();
             mapper.updateCredit(user);

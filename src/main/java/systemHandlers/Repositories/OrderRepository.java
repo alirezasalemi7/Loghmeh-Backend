@@ -21,7 +21,7 @@ public class OrderRepository {
         return null;
     }
 
-    ArrayList<Order> getOrdersOfUser(String uid){
+    public ArrayList<Order> getOrdersOfUser(String uid){
         return null;
     }
 
