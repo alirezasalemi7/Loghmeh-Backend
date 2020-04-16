@@ -1,10 +1,12 @@
 package systemHandlers.Repositories;
 
 import database.DAO.OrderDAO;
+import database.DAO.OrderState;
 import exceptions.OrderDoesNotExist;
 import models.Order;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class OrderRepository {
 
@@ -31,7 +33,7 @@ public class OrderRepository {
 
     }
 
-    public void updateOrderState(String oid,Order.OrderState state){
+    public void updateOrderState(String oid, OrderState state,Date date){
 
     }
 }

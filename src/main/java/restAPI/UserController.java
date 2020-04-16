@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.NegativeChargeAmountException;
 import exceptions.OrderDoesNotExist;
-import models.Order;
 import models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +75,7 @@ public class UserController {
     ) {
         OrderDetailDTO order;
         try {
-            order = UserServices.getInstance().getSpecialOrder(orderId);
+            order = UserServices.getInstance().getOrder(orderId);
         } catch (OrderDoesNotExist orderDoesNotExist) {
             return new ResponseEntity<>(generateError(factory, 400, orderDoesNotExist.getMessage()), HttpStatus.BAD_REQUEST);
         }

@@ -1,5 +1,6 @@
 package systemHandlers.Repositories;
 
+import database.DAO.CartDAO;
 import database.DAO.UserDAO;
 import database.UserMapper;
 import exceptions.NegativeChargeAmountException;
@@ -29,7 +30,12 @@ public class UserRepository {
 
     }
 
-    public Cart getUserCart(String userId){
+    public void emptyCart(String userId){
+
+    }
+
+    public CartDAO getUserCart(String userId){
+        // todo: how to get cart;
         return null;
     }
 

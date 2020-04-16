@@ -10,7 +10,6 @@ public class OrderDAO {
 
     private String id;
     private OrderState state;
-    private DeliveryMan deliveryMan;
     private ArrayList<OrderItemDAO> items;
     private String userId;
     private String restaurantId;
@@ -31,14 +30,6 @@ public class OrderDAO {
 
     public void setState(OrderState state) {
         this.state = state;
-    }
-
-    public DeliveryMan getDeliveryMan() {
-        return deliveryMan;
-    }
-
-    public void setDeliveryMan(DeliveryMan deliveryMan) {
-        this.deliveryMan = deliveryMan;
     }
 
     public ArrayList<OrderItemDAO> getItems() {
