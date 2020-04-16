@@ -36,7 +36,24 @@ public class UserServices {
         if (chargeAmount <= 0) {
             throw new NegativeChargeAmountException("Your charge amount must be positive.");
         }
-        UserRepository.getInstance().increaseCredit(userId,chargeAmount);
+        User user = UserRepository.getInstance().getUser(userId);
+        user.setCredit(user.getCredit() + chargeAmount);
+        UserRepository.getInstance().updateCredit(user);
     }
 
+    public void addToCart(String foodName,String RestaurantId,boolean special){
+
+    }
+
+    public void removeFromCart(String foodName,boolean special){
+
+    }
+
+    public void finalizeCart(String userId){
+
+    }
+
+    public ArrayList<Order> getUserOrders(String userId){
+        return null;
+    }
 }

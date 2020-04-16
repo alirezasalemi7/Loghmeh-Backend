@@ -2,6 +2,7 @@ package systemHandlers.Repositories;
 
 import database.UserMapper;
 import exceptions.NegativeChargeAmountException;
+import models.Cart;
 import models.User;
 
 import java.sql.SQLException;
@@ -30,15 +31,19 @@ public class UserRepository {
         }
     }
 
-    public void increaseCredit(String userId, Double chargeAmount) throws NegativeChargeAmountException {
+    public void updateCredit(User user) throws NegativeChargeAmountException {
         try {
-            User user = getUser(userId);
             UserMapper mapper = new UserMapper();
-            user.setCredit(user.getCredit() + chargeAmount);
             mapper.updateCredit(user);
         }
         catch (SQLException e){
 
         }
     }
+
+    public Cart getUserCart(String userId){
+        return null;
+    }
+
+
 }
