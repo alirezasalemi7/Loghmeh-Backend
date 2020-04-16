@@ -11,9 +11,5 @@ public interface IMapper<T, I> {
 
     void insert(T obj) throws SQLException;
 
-    void update(T obj) throws SQLException;
-
-    void update(I id, T obj) throws SQLException;
-
     void delete(I id) throws SQLException;
 }

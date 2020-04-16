@@ -16,11 +16,9 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
 
     abstract protected String getDeleteStatement(I id);
 
-    abstract protected String getUpdateStatement(I id, T obj);
+    abstract protected T getObject(ResultSet rs) throws SQLException;
 
-    abstract protected T getObject(ResultSet rs);
-
-    abstract protected T getPartialObject(ResultSet rs, ArrayList<String> columnNames);
+    abstract protected T getPartialObject(ResultSet rs, ArrayList<String> columnNames) throws SQLException;
 
     @Override
     public T find(I id, ArrayList<String> columnNames) throws SQLException {
@@ -55,18 +53,6 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
         try (
                 Connection connection = ConnectionPool.getConnection();
                 PreparedStatement stmt = connection.prepareStatement(getInsertStatement(obj))
-                ) {
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        }
-    }
-
-    @Override
-    public void update(I id, T obj) throws SQLException {
-        try (
-                Connection connection = ConnectionPool.getConnection();
-                PreparedStatement stmt = connection.prepareStatement(getUpdateStatement(id, obj))
                 ) {
             stmt.executeUpdate();
         } catch (SQLException e) {

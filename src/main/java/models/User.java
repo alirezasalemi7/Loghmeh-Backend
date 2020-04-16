@@ -17,7 +17,11 @@ public class User {
     private String _email;
     private Double _credit;
     private String _id;
-    private HashMap<String,Order> _orders = new HashMap<>();
+    private HashMap<String,Order> _orders;
+
+    public String getId(){
+        return _id;
+    }
 
     public String getName() {
         return _name;
@@ -59,14 +63,24 @@ public class User {
         this._credit = _credit;
     }
 
-    public User(Location location, String name, String family, String phoneNumber, String email, Double credit) {
-        this._cart = new Cart();
+    public void setOrders(HashMap<String,Order> orders){
+        this._orders = orders;
+    }
+
+    public User(Location location,String id ,String name, Cart cart, String family, String phoneNumber, String email, Double credit,HashMap<String,Order> orders) {
+        this._cart = cart;
         this._location = location;
         this._name = name;
         this._family = family;
         this._phoneNumber = phoneNumber;
         this._email = email;
         this._credit = credit;
+        this._id=id;
+        this._orders = orders;
+    }
+
+    public void setCart(Cart cart){
+        this._cart = cart;
     }
 
     public void addToCart(Food food, String restaurantId) throws UnregisteredOrderException {

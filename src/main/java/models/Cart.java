@@ -18,11 +18,17 @@ public class Cart {
     private HashMap<String, OrderItem> _orders;
     private String _restaurantId;
     private double _sumOfPrices;
+    private String _userId;
 
-    public Cart() {
-        this._orders = new HashMap<>();
-        this._restaurantId = null;
-        this._sumOfPrices = 0.0;
+    public Cart(String uid,String restaurantId,double sum,HashMap<String, OrderItem> items) {
+        this._orders = items;
+        this._restaurantId = restaurantId;
+        this._sumOfPrices = sum;
+        this._userId = uid;
+    }
+
+    public String getUserId(){
+        return _userId;
     }
 
     public String getRestaurantId() {
@@ -44,7 +50,7 @@ public class Cart {
                 foodName = foodName + "@";
             }
             this._restaurantId = restaurantId;
-            this._orders.put(foodName, new OrderItem(food, 1));
+            this._orders.put(foodName, new OrderItem(food, 1,_userId));
             this._sumOfPrices += food.getPrice();
         } else if (!this._restaurantId.equals(restaurantId)) {
             throw new UnregisteredOrderException("You have some orders from " + this._restaurantId + "in your cart.");
@@ -55,7 +61,7 @@ public class Cart {
             if (_orders.containsKey(foodName)) {
                 _orders.get(foodName).setCount(_orders.get(foodName).getCount() + 1);
             } else {
-                _orders.put(foodName, new OrderItem(food, 1));
+                _orders.put(foodName, new OrderItem(food, 1,_userId));
             }
             _sumOfPrices += food.getPrice();
         }
@@ -122,5 +128,9 @@ public class Cart {
         _orders.clear();
         _restaurantId = null;
         _sumOfPrices = 0;
+    }
+
+    public void setItems(HashMap<String, OrderItem> items){
+        _orders = items;
     }
 }
