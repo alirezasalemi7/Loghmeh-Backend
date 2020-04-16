@@ -1,5 +1,7 @@
 package systemHandlers.Repositories;
 
+import database.DAO.OrderDAO;
+import exceptions.OrderDoesNotExist;
 import models.Order;
 
 import java.util.ArrayList;
@@ -17,15 +19,15 @@ public class OrderRepository {
         return instance;
     }
 
-    public Order getOrder(String oid){
+    public OrderDAO getOrder(String oid)throws OrderDoesNotExist {
         return null;
     }
 
-    public ArrayList<Order> getOrdersOfUser(String uid){
+    public ArrayList<OrderDAO> getOrdersOfUser(String uid){
         return null;
     }
 
-    public void addOrder(Order order){
+    public void addOrder(OrderDAO order){
 
     }
 

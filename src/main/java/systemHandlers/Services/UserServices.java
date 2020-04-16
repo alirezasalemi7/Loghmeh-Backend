@@ -1,17 +1,17 @@
 package systemHandlers.Services;
 
+import database.DAO.OrderDAO;
+import database.DAO.OrderItemDAO;
 import database.DAO.UserDAO;
 import database.UserMapper;
-import exceptions.CartIsEmptyException;
-import exceptions.CreditIsNotEnoughException;
-import exceptions.NegativeChargeAmountException;
-import exceptions.RestaurantDoesntExistException;
+import exceptions.*;
 import models.Order;
 import models.OrderItem;
 import models.Restaurant;
 import models.User;
 import restAPI.DTO.Order.OrderDTO;
 import restAPI.DTO.Order.OrderDetailDTO;
+import restAPI.DTO.Order.OrderItemDTO;
 import restAPI.DTO.User.UserProfileDTO;
 import systemHandlers.DataHandler;
 import systemHandlers.Repositories.OrderRepository;
@@ -54,22 +54,43 @@ public class UserServices {
     }
 
     public ArrayList<OrderDTO> getAllOrders(String userId){
-        ArrayList<Order> orders = OrderRepository.getInstance().getOrdersOfUser(userId);
+        ArrayList<OrderDAO> orders = OrderRepository.getInstance().getOrdersOfUser(userId);
         ArrayList<OrderDTO> orderDTOS = new ArrayList<>();
-        for(Order order:orders){
+        for(OrderDAO order:orders){
             OrderDTO dto = new OrderDTO();
             dto.setId(order.getId());
             dto.setOrderStatus(order.getState());
-            dto.setRestaurantName(order.getRestaurant().getName());
+            dto.setRestaurantName(order.getRestaurantName());
             OrderDetailDTO detailDTO = new OrderDetailDTO();
             detailDTO.setTotalCost(order.getTotalCost());
-//            for(OrderItem item : ){
-//
-//            }
-            // items
+            ArrayList<OrderItemDTO> orderItemDTOS = new ArrayList<>();
+            for(OrderItemDAO item : order.getItems()){
+                OrderItemDTO itemDTO = new OrderItemDTO();
+                itemDTO.setCost(item.getCost());
+                itemDTO.setCount(item.getCount());
+                itemDTO.setName(item.getFoodName());
+                orderItemDTOS.add(itemDTO);
+            }
+            detailDTO.setOrder(orderItemDTOS);
             dto.setDetails(detailDTO);
         }
         return orderDTOS;
+    }
+
+    public OrderDetailDTO getSpecialOrder(String oid) throws OrderDoesNotExist {
+        OrderDAO orderDAO = OrderRepository.getInstance().getOrder(oid);
+        OrderDetailDTO dto = new OrderDetailDTO();
+        dto.setTotalCost(orderDAO.getTotalCost());
+        ArrayList<OrderItemDTO> itemDTOS = new ArrayList<>();
+        for(OrderItemDAO item : orderDAO.getItems()){
+            OrderItemDTO itemDTO = new OrderItemDTO();
+            itemDTO.setCost(item.getCost());
+            itemDTO.setCount(item.getCount());
+            itemDTO.setName(item.getFoodName());
+            itemDTOS.add(itemDTO);
+        }
+        dto.setOrder(itemDTOS);
+        return dto;
     }
 
     public void addToCart(String foodName,String RestaurantId,boolean special){
@@ -84,7 +105,4 @@ public class UserServices {
 
     }
 
-    public ArrayList<Order> getUserOrders(String userId){
-        return null;
-    }
 }

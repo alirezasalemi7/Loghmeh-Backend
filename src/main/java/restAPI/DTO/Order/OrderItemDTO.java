@@ -1,6 +1,6 @@
 package restAPI.DTO.Order;
 
-public class OrderItem {
+public class OrderItemDTO {
 
     private String name;
     private int count;

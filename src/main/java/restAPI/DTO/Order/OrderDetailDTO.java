@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class OrderDetailDTO {
 
     private double totalCost;
-    private ArrayList<OrderItem> order;
+    private ArrayList<OrderItemDTO> order;
 
     public double getTotalCost() {
         return totalCost;
@@ -15,11 +15,11 @@ public class OrderDetailDTO {
         this.totalCost = totalCost;
     }
 
-    public ArrayList<OrderItem> getOrder() {
+    public ArrayList<OrderItemDTO> getOrder() {
         return order;
     }
 
-    public void setOrder(ArrayList<OrderItem> order) {
+    public void setOrder(ArrayList<OrderItemDTO> order) {
         this.order = order;
     }
 }

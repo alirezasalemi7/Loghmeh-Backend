@@ -12,6 +12,8 @@ import models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import restAPI.DTO.Order.OrderDTO;
+import restAPI.DTO.Order.OrderDetailDTO;
 import restAPI.DTO.User.UserProfileDTO;
 import systemHandlers.Services.UserServices;
 import systemHandlers.SystemManager;
@@ -63,16 +65,8 @@ public class UserController {
             @PathVariable(value = "id") String userId
     ) {
         ArrayNode response = factory.arrayNode();
-        ArrayList<Order> orders = SystemManager.getInstance().getUser().getOrders();
-        for (Order order : orders) {
-            ObjectNode node = factory.objectNode();
-            node.put("orderStatus", order.getState().toString());
-            node.put("restaurantName", order.getRestaurant().getName());
-            node.put("id", order.getId());
-            node.put("details", order.toJsonNode());
-            response.add(node);
-        }
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ArrayList<OrderDTO> orders = UserServices.getInstance().getAllOrders(userId);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "users/{id}/orders/{oid}", method = RequestMethod.GET)
@@ -80,13 +74,13 @@ public class UserController {
             @PathVariable(value = "id") String userId,
             @PathVariable(value = "oid") String orderId
     ) {
-        Order order;
+        OrderDetailDTO order;
         try {
-            order = SystemManager.getInstance().getUser().getOrderById(orderId);
+            order = UserServices.getInstance().getSpecialOrder(orderId);
         } catch (OrderDoesNotExist orderDoesNotExist) {
             return new ResponseEntity<>(generateError(factory, 400, orderDoesNotExist.getMessage()), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(order.toJsonNode(), HttpStatus.OK);
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
 }

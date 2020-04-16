@@ -22,24 +22,11 @@ public class UserRepository {
     }
 
     public UserDAO getUser(String id) {
-        try {
-            UserMapper mapper = new UserMapper();
-            User user = mapper.find(id);
-            return user;
-        }
-        catch (SQLException e){
-            return null;
-        }
+        return null;
     }
 
     public void updateCredit(UserDAO user) throws NegativeChargeAmountException {
-        try {
-            UserMapper mapper = new UserMapper();
-            mapper.updateCredit(user);
-        }
-        catch (SQLException e){
 
-        }
     }
 
     public Cart getUserCart(String userId){

@@ -1,11 +1,12 @@
 package restAPI.DTO.Order;
 
+import database.DAO.OrderState;
 import models.*;
 
 public class OrderDTO {
 
     private String id;
-    private Order.OrderState orderStatus;
+    private OrderState orderStatus;
     private String restaurantName;
     private OrderDetailDTO details;
 
@@ -17,11 +18,11 @@ public class OrderDTO {
         this.id = id;
     }
 
-    public Order.OrderState getOrderStatus() {
+    public OrderState getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Order.OrderState orderStatus) {
+    public void setOrderStatus(OrderState orderStatus) {
         this.orderStatus = orderStatus;
     }
 
