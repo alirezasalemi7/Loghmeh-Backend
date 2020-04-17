@@ -4,6 +4,7 @@ import database.DAO.FoodDAO;
 import database.DAO.RestaurantDAO;
 import exceptions.FoodDoesntExistException;
 import exceptions.RestaurantDoesntExistException;
+import models.Location;
 
 import java.util.ArrayList;
 
@@ -41,6 +42,10 @@ public class RestaurantRepository {
 
     public int getFoodCount(String restaurantId, String foodId) {
         return 0;
+    }
+
+    public Location getRestaurantLocation(String restaurantId) {
+        return new Location();
     }
 
 }

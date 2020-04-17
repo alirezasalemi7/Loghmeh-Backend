@@ -105,4 +105,8 @@ public class RestaurantManager {
         return specialFoods;
     }
 
+    public Location getRestaurantLocation(String restaurantId) {
+        return RestaurantRepository.getInstance().getRestaurantLocation(restaurantId);
+    }
+
 }
