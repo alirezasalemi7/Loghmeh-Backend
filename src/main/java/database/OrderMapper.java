@@ -1,7 +1,7 @@
 package database;
 
+import database.Mappers.Mapper;
 import models.Order;
-import models.OrderItem;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

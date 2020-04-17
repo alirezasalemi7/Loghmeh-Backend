@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.NegativeChargeAmountException;
 import exceptions.OrderDoesNotExist;
+import exceptions.ServerInternalException;
 import exceptions.UserDoesNotExistException;
 import models.User;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class UserController {
         return new ErrorDTO(description, status);
     }
 
-    @RequestMapping(value = "users/{id}/profile", method = RequestMethod.GET)
+    @RequestMapping(value = "users/{id}/profile", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> getProfileInfo(
             @PathVariable(value = "id") String userId
     ) {
@@ -41,9 +42,12 @@ public class UserController {
         catch (UserDoesNotExistException e){
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
+        catch (ServerInternalException e){
+            return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @RequestMapping(value = "/users/{id}/profile", method = RequestMethod.PUT)
+    @RequestMapping(value = "/users/{id}/profile", method = RequestMethod.PUT,produces = "application/json")
     public ResponseEntity<Object> addCredit(
             @PathVariable(value = "id") String userId,
             @RequestBody (required = true) JsonNode node
@@ -62,10 +66,13 @@ public class UserController {
         catch (UserDoesNotExistException e){
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
+        catch (ServerInternalException e){
+            return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(generateError(200, "Increased successfully"), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/{id}/orders", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/{id}/orders", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> getAllOrders(
             @PathVariable(value = "id") String userId
     ) {
@@ -76,9 +83,12 @@ public class UserController {
         catch (UserDoesNotExistException e){
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
+        catch (ServerInternalException e){
+            return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @RequestMapping(value = "users/{id}/orders/{oid}", method = RequestMethod.GET)
+    @RequestMapping(value = "users/{id}/orders/{oid}", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> getOrder(
             @PathVariable(value = "id") String userId,
             @PathVariable(value = "oid") String orderId

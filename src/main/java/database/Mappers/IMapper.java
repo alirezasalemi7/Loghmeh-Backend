@@ -1,11 +1,9 @@
-package database;
+package database.Mappers;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface IMapper<T, I> {
-
-    T find(I id, ArrayList<String> columnNames) throws SQLException;
 
     T find(I id) throws SQLException;
 

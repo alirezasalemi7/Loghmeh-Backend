@@ -29,7 +29,7 @@ public class CartController {
     private JsonNodeFactory factory = JsonNodeFactory.instance;
     private ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value="/cart",method = RequestMethod.PUT)
+    @RequestMapping(value="/cart",method = RequestMethod.PUT,produces = "application/json")
     public ResponseEntity<Object> addToCart(
             @PathVariable(value = "id",required = true) String userId,
             @RequestBody (required = true) JsonNode payload)
@@ -63,11 +63,13 @@ public class CartController {
                 return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
             } catch (RestaurantOutOfRangeException e){
                 return new ResponseEntity<>(new ErrorDTO("restaurant not in range",403), HttpStatus.FORBIDDEN);
+            } catch (ServerInternalException e){
+                return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
 
-    @RequestMapping(value="/cart",method = RequestMethod.DELETE)
+    @RequestMapping(value="/cart",method = RequestMethod.DELETE,produces = "application/json")
     public ResponseEntity<Object> removeFromCart(
             @PathVariable(value = "id",required = true) String userId,
             @RequestBody (required = true) JsonNode payload)
@@ -95,10 +97,12 @@ public class CartController {
             return new ResponseEntity<>(new ErrorDTO("food does not exist in cart",40401), HttpStatus.FORBIDDEN);
         }catch (UserDoesNotExistException e){
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
+        }catch (ServerInternalException e){
+            return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @RequestMapping(value="/cart",method = RequestMethod.POST)
+    @RequestMapping(value="/cart",method = RequestMethod.POST,produces = "application/json")
     public ResponseEntity<Object> finalize(
             @PathVariable(value = "id",required = true) String userId)
     {
@@ -115,9 +119,12 @@ public class CartController {
         catch (UserDoesNotExistException e){
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
+        catch (ServerInternalException e){
+            return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @RequestMapping(value="/cart",method = RequestMethod.GET)
+    @RequestMapping(value="/cart",method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> getCart(
             @PathVariable(value = "id",required = true) String userId)
     {
@@ -127,6 +134,9 @@ public class CartController {
         }
         catch (UserDoesNotExistException e){
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
+        }
+        catch (ServerInternalException e){
+            return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

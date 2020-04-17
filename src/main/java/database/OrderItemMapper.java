@@ -1,7 +1,7 @@
 package database;
 
+import database.Mappers.Mapper;
 import models.OrderItem;
-import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
 import java.sql.Connection;

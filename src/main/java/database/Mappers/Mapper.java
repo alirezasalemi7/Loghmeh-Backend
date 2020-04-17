@@ -1,4 +1,6 @@
-package database;
+package database.Mappers;
+
+import database.ConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,29 +12,12 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
 
     abstract protected String getFindStatement(I id);
 
-    abstract protected String getFindStatement(I id, ArrayList<String> columnNames);
-
     abstract protected String getInsertStatement(T obj);
 
     abstract protected String getDeleteStatement(I id);
 
     abstract protected T getObject(ResultSet rs) throws SQLException;
 
-    abstract protected T getPartialObject(ResultSet rs, ArrayList<String> columnNames) throws SQLException;
-
-    @Override
-    public T find(I id, ArrayList<String> columnNames) throws SQLException {
-        try (
-                Connection connection = ConnectionPool.getConnection();
-                PreparedStatement stmt = connection.prepareStatement(getFindStatement(id, columnNames))
-        ) {
-            ResultSet rs = stmt.executeQuery();
-            rs.next();
-            return getPartialObject(rs, columnNames);
-        } catch (SQLException e) {
-            throw e;
-        }
-    }
 
     @Override
     public T find(I id) throws SQLException {
@@ -41,10 +26,16 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
                 PreparedStatement stmt = connection.prepareStatement(getFindStatement(id))
         ) {
             ResultSet rs = stmt.executeQuery();
-            rs.next();
-            return getObject(rs);
+            T object = getObject(rs);
+            rs.close();
+            stmt.close();
+            connection.close();
+            return object;
         } catch (SQLException e) {
             throw e;
+        }
+        finally {
+
         }
     }
 
@@ -55,6 +46,8 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
                 PreparedStatement stmt = connection.prepareStatement(getInsertStatement(obj))
                 ) {
             stmt.executeUpdate();
+            stmt.close();
+            connection.close();
         } catch (SQLException e) {
             throw e;
         }
@@ -67,6 +60,8 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
                 PreparedStatement stmt = connection.prepareStatement(getDeleteStatement(id))
                 ) {
             stmt.executeUpdate();
+            stmt.close();
+            connection.close();
         } catch (SQLException e) {
             throw e;
         }

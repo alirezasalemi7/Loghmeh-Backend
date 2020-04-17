@@ -9,7 +9,6 @@ import restAPI.DTO.Cart.CartItemDTO;
 import restAPI.DTO.Order.OrderDTO;
 import restAPI.DTO.Order.OrderDetailDTO;
 import restAPI.DTO.Order.OrderItemDTO;
-import restAPI.DTO.Restaurant.SpecialFoodDTO;
 import restAPI.DTO.User.UserProfileDTO;
 import systemHandlers.Repositories.OrderRepository;
 import systemHandlers.Repositories.RestaurantRepository;
@@ -29,7 +28,7 @@ public class UserServices {
 
     private UserServices(){}
 
-    public UserProfileDTO getUserProfile(String id) throws UserDoesNotExistException {
+    public UserProfileDTO getUserProfile(String id) throws UserDoesNotExistException ,ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(id);
         UserProfileDTO dto = new UserProfileDTO();
         dto.setCredit(user.getCredit());
@@ -40,7 +39,7 @@ public class UserServices {
         return dto;
     }
 
-    public void increaseCredit(String userId, Double chargeAmount) throws NegativeChargeAmountException,UserDoesNotExistException {
+    public void increaseCredit(String userId, Double chargeAmount) throws NegativeChargeAmountException,UserDoesNotExistException,ServerInternalException{
         if (chargeAmount <= 0) {
             throw new NegativeChargeAmountException("Your charge amount must be positive.");
         }
@@ -64,7 +63,7 @@ public class UserServices {
         return detailDTO;
     }
 
-    public ArrayList<OrderDTO> getAllOrders(String userId) throws UserDoesNotExistException{
+    public ArrayList<OrderDTO> getAllOrders(String userId) throws UserDoesNotExistException,ServerInternalException{
         if(UserRepository.getInstance().isUserExists(userId)){
             throw new UserDoesNotExistException();
         }
@@ -85,7 +84,7 @@ public class UserServices {
         return makeOrderDetailDTO(orderDAO);
     }
 
-    public CartDTO getUserCart(String userId) throws UserDoesNotExistException{
+    public CartDTO getUserCart(String userId) throws UserDoesNotExistException,ServerInternalException{
         if(UserRepository.getInstance().isUserExists(userId)){
             throw new UserDoesNotExistException();
         }
@@ -106,7 +105,7 @@ public class UserServices {
         return cartDTO;
     }
 
-    public int addToCart(String userId,String foodName,String RestaurantId,boolean special,int count) throws UserDoesNotExistException , RestaurantDoesntExistException ,FoodDoesntExistException ,RestaurantOutOfRangeException, FoodCountIsNegativeException, UnregisteredOrderException{
+    public int addToCart(String userId,String foodName,String RestaurantId,boolean special,int count) throws UserDoesNotExistException , RestaurantDoesntExistException ,FoodDoesntExistException ,RestaurantOutOfRangeException, FoodCountIsNegativeException, UnregisteredOrderException,ServerInternalException{
         CartDAO cart = UserRepository.getInstance().getUserCart(userId);
         FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName);
         UserDAO user = UserRepository.getInstance().getUser(userId);
@@ -114,6 +113,9 @@ public class UserServices {
             throw new RestaurantOutOfRangeException();
         }
         if(cart.getRestaurantId()==null || RestaurantId.equals(cart.getRestaurantId())){
+            if(cart.getRestaurantId()==null){
+                cart.setRestaurantId(RestaurantId);
+            }
             String id = food.getName();
             if(special){
                 id = id + "@";
@@ -126,7 +128,7 @@ public class UserServices {
                 CartItemDAO cartItem = cart.getItems().get(id);
                 cartItem.setCount(cartItem.getCount()+count);
                 cartItem.setCost(cartItem.getCost()+count*food.getPrice());
-                UserRepository.getInstance().updateCartItemToCart(cartItem);
+                UserRepository.getInstance().updateCartItem(cartItem);
             }
             else{
                 CartItemDAO cartItem = new CartItemDAO();
@@ -138,12 +140,13 @@ public class UserServices {
                 cartItem.setSpecial(special);
                 UserRepository.getInstance().addCartItemToCart(cartItem);
             }
+            UserRepository.getInstance().updateCart(cart);
             return (special)?food.getCount()-count:Integer.MAX_VALUE;
         }
         else throw new UnregisteredOrderException("You have some orders in your cart.");
     }
 
-    public int removeFromCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException,RestaurantOutOfRangeException,RestaurantDoesntExistException,FoodDoesntExistException,FoodNotExistInCartException{
+    public int removeFromCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException,RestaurantOutOfRangeException,RestaurantDoesntExistException,FoodDoesntExistException,FoodNotExistInCartException,ServerInternalException{
         CartDAO cart = UserRepository.getInstance().getUserCart(userId);
         FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName);
         UserDAO user = UserRepository.getInstance().getUser(userId);
@@ -163,13 +166,13 @@ public class UserServices {
                 if(item.getCount()==1){
                     UserRepository.getInstance().removeCartItem(item);
                     if(cart.getItems().size()==1){
-                        UserRepository.getInstance().emptyCart(userId);
+                        UserRepository.getInstance().resetCart(userId);
                     }
                 }
                 else{
                     item.setCount(item.getCount()-1);
                     item.setCost(item.getCost()-food.getPrice());
-                    UserRepository.getInstance().updateCartItemToCart(item);
+                    UserRepository.getInstance().updateCartItem(item);
                 }
             }
             else if(special && !food.isSpecial()){
@@ -177,26 +180,26 @@ public class UserServices {
                 if(item.getCount()==1){
                     UserRepository.getInstance().removeCartItem(item);
                     if(cart.getItems().size()==1){
-                        UserRepository.getInstance().emptyCart(userId);
+                        UserRepository.getInstance().resetCart(userId);
                     }
                 }
                 else{
                     item.setCount(item.getCount()-1);
                     item.setCost(item.getCost()-food.getOldPrice());
-                    UserRepository.getInstance().updateCartItemToCart(item);
+                    UserRepository.getInstance().updateCartItem(item);
                 }
             }
             else if (!special && !food.isSpecial()){
                 if(item.getCount()==1){
                     UserRepository.getInstance().removeCartItem(item);
                     if(cart.getItems().size()==1){
-                        UserRepository.getInstance().emptyCart(userId);
+                        UserRepository.getInstance().resetCart(userId);
                     }
                 }
                 else{
                     item.setCount(item.getCount()-1);
                     item.setCost(item.getCost()-food.getPrice());
-                    UserRepository.getInstance().updateCartItemToCart(item);
+                    UserRepository.getInstance().updateCartItem(item);
                 }
             }
             return count;
@@ -204,7 +207,7 @@ public class UserServices {
         else throw new FoodNotExistInCartException();
     }
 
-    public OrderDetailDTO finalizeCart(String userId) throws CartIsEmptyException,UserDoesNotExistException,CreditIsNotEnoughException{
+    public OrderDetailDTO finalizeCart(String userId) throws CartIsEmptyException,UserDoesNotExistException,CreditIsNotEnoughException,ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(userId);
         CartDAO cart = UserRepository.getInstance().getUserCart(userId);
         if (cart.getItems().size() == 0) {
@@ -213,8 +216,8 @@ public class UserServices {
             throw new CreditIsNotEnoughException("Your credit is not enough.");
         }
         user.setCredit(user.getCredit() - cart.getSumOfPrices());
-        try { UserRepository.getInstance().updateCredit(user); } catch (NegativeChargeAmountException e){}
-        UserRepository.getInstance().emptyCart(userId);
+        UserRepository.getInstance().updateCredit(user);
+        UserRepository.getInstance().resetCart(userId);
         OrderDAO order = new OrderDAO();
         order.setState(OrderState.DeliveryManFinding);
         order.setId(RandomStringUtils.randomAlphanumeric(50));
