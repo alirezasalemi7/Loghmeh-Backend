@@ -105,7 +105,7 @@ public class RestaurantManager {
         return specialFoods;
     }
 
-    public Location getRestaurantLocation(String restaurantId) {
+    public Location getRestaurantLocation(String restaurantId) throws RestaurantDoesntExistException {
         return RestaurantRepository.getInstance().getRestaurantLocation(restaurantId);
     }
 

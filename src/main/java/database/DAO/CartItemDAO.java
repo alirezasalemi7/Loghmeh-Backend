@@ -7,6 +7,16 @@ public class CartItemDAO {
     private int count;
     private double cost;
     private boolean special;
+    private String cartId;
+
+
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
+    }
 
     public String getFoodName() {
         return foodName;

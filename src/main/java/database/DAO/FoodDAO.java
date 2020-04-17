@@ -11,6 +11,15 @@ public class FoodDAO {
     private String description;
     private int count;
     private Double oldPrice;
+    private boolean special;
+
+    public boolean isSpecial() {
+        return special;
+    }
+
+    public void setSpecial(boolean special) {
+        this.special = special;
+    }
 
     public String getRestaurantId() {
         return restaurantId;

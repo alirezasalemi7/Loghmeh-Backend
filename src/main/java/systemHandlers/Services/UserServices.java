@@ -1,26 +1,20 @@
 package systemHandlers.Services;
 
 import database.DAO.*;
-import database.UserMapper;
 import exceptions.*;
-import models.Order;
-import models.OrderItem;
-import models.Restaurant;
-import models.User;
+import models.Location;
 import org.apache.commons.lang.RandomStringUtils;
 import restAPI.DTO.Cart.CartDTO;
 import restAPI.DTO.Cart.CartItemDTO;
 import restAPI.DTO.Order.OrderDTO;
 import restAPI.DTO.Order.OrderDetailDTO;
 import restAPI.DTO.Order.OrderItemDTO;
+import restAPI.DTO.Restaurant.SpecialFoodDTO;
 import restAPI.DTO.User.UserProfileDTO;
-import systemHandlers.DataHandler;
 import systemHandlers.Repositories.OrderRepository;
+import systemHandlers.Repositories.RestaurantRepository;
 import systemHandlers.Repositories.UserRepository;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class UserServices {
 
@@ -112,12 +106,102 @@ public class UserServices {
         return cartDTO;
     }
 
-    public void addToCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException{
-
+    public int addToCart(String userId,String foodName,String RestaurantId,boolean special,int count) throws UserDoesNotExistException , RestaurantDoesntExistException ,FoodDoesntExistException ,RestaurantOutOfRangeException, FoodCountIsNegativeException, UnregisteredOrderException{
+        CartDAO cart = UserRepository.getInstance().getUserCart(userId);
+        FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName);
+        UserDAO user = UserRepository.getInstance().getUser(userId);
+        if(!special &&!RestaurantManager.getInstance().isInRange(user.getLocation(),RestaurantManager.getInstance().getRestaurantLocation(RestaurantId))){
+            throw new RestaurantOutOfRangeException();
+        }
+        if(cart.getRestaurantId()==null || RestaurantId.equals(cart.getRestaurantId())){
+            String id = food.getName();
+            if(special){
+                id = id + "@";
+                if(food.getCount()>count){
+                    RestaurantManager.getInstance().setFoodCount(RestaurantId, foodName, food.getCount()-count);
+                }
+                else throw new FoodCountIsNegativeException("Food Count must be positive.");
+            }
+            if(cart.getItems().containsKey(id)){
+                CartItemDAO cartItem = cart.getItems().get(id);
+                cartItem.setCount(cartItem.getCount()+count);
+                cartItem.setCost(cartItem.getCost()+count*food.getPrice());
+                UserRepository.getInstance().updateCartItemToCart(cartItem);
+            }
+            else{
+                CartItemDAO cartItem = new CartItemDAO();
+                cartItem.setCartId(cart.getUserId());
+                cartItem.setFoodName(food.getName());
+                cartItem.setRestaurantId(RestaurantId);
+                cartItem.setCount(count);
+                cartItem.setCost(count*food.getPrice());
+                cartItem.setSpecial(special);
+                UserRepository.getInstance().addCartItemToCart(cartItem);
+            }
+            return (special)?food.getCount()-count:Integer.MAX_VALUE;
+        }
+        else throw new UnregisteredOrderException("You have some orders in your cart.");
     }
 
-    public void removeFromCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException{
-
+    public int removeFromCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException,RestaurantOutOfRangeException,RestaurantDoesntExistException,FoodDoesntExistException,FoodNotExistInCartException{
+        CartDAO cart = UserRepository.getInstance().getUserCart(userId);
+        FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName);
+        UserDAO user = UserRepository.getInstance().getUser(userId);
+        if(!special &&!RestaurantManager.getInstance().isInRange(user.getLocation(),RestaurantManager.getInstance().getRestaurantLocation(RestaurantId))){
+            throw new RestaurantOutOfRangeException();
+        }
+        String id = foodName;
+        if(special){
+            id += "@";
+        }
+        int count = Integer.MAX_VALUE;
+        if(cart.getItems().containsKey(id)){
+            CartItemDAO item = cart.getItems().get(id);
+            if(special && food.isSpecial()){
+                RestaurantManager.getInstance().setFoodCount(RestaurantId, foodName, food.getCount()+1);
+                count = food.getCount()+1;
+                if(item.getCount()==1){
+                    UserRepository.getInstance().removeCartItem(item);
+                    if(cart.getItems().size()==1){
+                        UserRepository.getInstance().emptyCart(userId);
+                    }
+                }
+                else{
+                    item.setCount(item.getCount()-1);
+                    item.setCost(item.getCost()-food.getPrice());
+                    UserRepository.getInstance().updateCartItemToCart(item);
+                }
+            }
+            else if(special && !food.isSpecial()){
+                count = 0;
+                if(item.getCount()==1){
+                    UserRepository.getInstance().removeCartItem(item);
+                    if(cart.getItems().size()==1){
+                        UserRepository.getInstance().emptyCart(userId);
+                    }
+                }
+                else{
+                    item.setCount(item.getCount()-1);
+                    item.setCost(item.getCost()-food.getOldPrice());
+                    UserRepository.getInstance().updateCartItemToCart(item);
+                }
+            }
+            else if (!special && !food.isSpecial()){
+                if(item.getCount()==1){
+                    UserRepository.getInstance().removeCartItem(item);
+                    if(cart.getItems().size()==1){
+                        UserRepository.getInstance().emptyCart(userId);
+                    }
+                }
+                else{
+                    item.setCount(item.getCount()-1);
+                    item.setCost(item.getCost()-food.getPrice());
+                    UserRepository.getInstance().updateCartItemToCart(item);
+                }
+            }
+            return count;
+        }
+        else throw new FoodNotExistInCartException();
     }
 
     public OrderDetailDTO finalizeCart(String userId) throws CartIsEmptyException,UserDoesNotExistException,CreditIsNotEnoughException{
@@ -138,8 +222,10 @@ public class UserServices {
         order.setUserId(userId);
         order.setItems(new ArrayList(cart.getItems().values()));
         OrderRepository.getInstance().addOrder(order);
-        // todo: get restaurant location
-        OrderDeliveryManager.getInstance().addOrderToDeliver(order, null, user.getLocation());
+        try {
+            Location restaurantLocation = RestaurantManager.getInstance().getRestaurantLocation(order.getRestaurantId());
+            OrderDeliveryManager.getInstance().addOrderToDeliver(order, restaurantLocation, user.getLocation());
+        }catch (RestaurantDoesntExistException e){/*never reach here*/}
         return makeOrderDetailDTO(order);
     }
 

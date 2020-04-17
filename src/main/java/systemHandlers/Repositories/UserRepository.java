@@ -1,6 +1,7 @@
 package systemHandlers.Repositories;
 
 import database.DAO.CartDAO;
+import database.DAO.CartItemDAO;
 import database.DAO.UserDAO;
 import database.UserMapper;
 import exceptions.NegativeChargeAmountException;
@@ -27,6 +28,18 @@ public class UserRepository {
         return null;
     }
 
+    public void addCartItemToCart(CartItemDAO item) throws UserDoesNotExistException{
+
+    }
+
+    public void updateCartItemToCart(CartItemDAO item) throws UserDoesNotExistException{
+
+    }
+
+    public void removeCartItem(CartItemDAO item){
+
+    }
+
     public boolean isUserExists(String userId){
         return false;
     }
@@ -35,11 +48,11 @@ public class UserRepository {
 
     }
 
-    public void emptyCart(String userId){
+    public void emptyCart(String userId) throws UserDoesNotExistException{
 
     }
 
-    public CartDAO getUserCart(String userId){
+    public CartDAO getUserCart(String userId) throws UserDoesNotExistException{
         // todo: how to get cart;
         return null;
     }

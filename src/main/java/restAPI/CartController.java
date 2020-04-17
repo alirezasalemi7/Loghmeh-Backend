@@ -38,7 +38,6 @@ public class CartController {
         JsonNode restaurantIdJson = payload.get("restaurant");
         JsonNode specialFoodJson = payload.get("special");
         JsonNode numberOfOrders = payload.get("food_count");
-        ObjectNode answerJson = factory.objectNode();
         if (restaurantIdJson == null || foodNameJson == null || specialFoodJson == null) {
             return new ResponseEntity<>(new ErrorDTO("bad request",40002), HttpStatus.BAD_REQUEST);
         } else {
@@ -46,29 +45,12 @@ public class CartController {
             if(numberOfOrders!=null){
                 count = numberOfOrders.asInt();
             }
-            String foodName = foodNameJson.asText();
-            String restaurantId = restaurantIdJson.asText();
-            Boolean specialFood = specialFoodJson.asBoolean();
             try {
-                Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
-                if (specialFood) {
-                    SpecialFood food = restaurant.getSpecialFoodByName(foodName);
-                    for(int i=0;i<count;i++){
-                        SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
-                    }
-                    food.setCount(food.getCount() - count);
-                    return new ResponseEntity<>(new ChangeInCartSuccess(200,foodName,food.getCount()), HttpStatus.OK);
-                } else {
-                    NormalFood food = restaurant.getNormalFoodByName(foodName);
-                    if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
-                        for(int i=0;i<count;i++){
-                            SystemManager.getInstance().addToCart(food, SystemManager.getInstance().getUser());
-                        }
-                        return new ResponseEntity<>(new ChangeInCartSuccess(200,foodName,Integer.MAX_VALUE), HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>(new ErrorDTO("restaurant not in range",403), HttpStatus.FORBIDDEN);
-                    }
-                }
+                String foodName = foodNameJson.asText();
+                String restaurantId = restaurantIdJson.asText();
+                Boolean specialFood = specialFoodJson.asBoolean();
+                int newCount = UserServices.getInstance().addToCart(userId, foodName, restaurantId, specialFood, count);
+                return new ResponseEntity<>(new ChangeInCartSuccess(200, foodName, newCount), HttpStatus.OK);
             } catch (FoodDoesntExistException e) {
                 return new ResponseEntity<>(new ErrorDTO("food does not exist",40401), HttpStatus.NOT_FOUND);
             } catch (RestaurantDoesntExistException e) {
@@ -77,6 +59,10 @@ public class CartController {
                 return new ResponseEntity<>(new ErrorDTO("unregistered order",40004), HttpStatus.BAD_REQUEST);
             } catch (FoodCountIsNegativeException e) {
                 return new ResponseEntity<>(new ErrorDTO("food count negative",40001), HttpStatus.BAD_REQUEST);
+            } catch (UserDoesNotExistException e){
+                return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
+            } catch (RestaurantOutOfRangeException e){
+                return new ResponseEntity<>(new ErrorDTO("restaurant not in range",403), HttpStatus.FORBIDDEN);
             }
         }
     }
@@ -92,42 +78,23 @@ public class CartController {
         ObjectNode answerJson = factory.objectNode();
         if (restaurantIdJson == null || foodNameJson == null || specialFoodJson == null) {
             return new ResponseEntity<>(new ErrorDTO("bad request",40002), HttpStatus.BAD_REQUEST);
-        } else {
-            try {
-                String foodName = foodNameJson.asText();
-                String restaurantId = restaurantIdJson.asText();
-                boolean specialFood = specialFoodJson.asBoolean();
-                Restaurant restaurant = SystemManager.getInstance().getRestaurantById(restaurantId);
-                User user = SystemManager.getInstance().getUser();
-                int count;
-                if (specialFood) {
-                    try {
-                        SpecialFood food = restaurant.getSpecialFoodByName(foodName);
-                        user.getCart().removeOrder(food);
-                        food.setCount(food.getCount() + 1);
-                        count = food.getCount();
-                    } catch (FoodDoesntExistException e) {
-                        NormalFood food = restaurant.getNormalFoodByName(foodName);
-                        SpecialFood cartFood = (SpecialFood) user.getCart().removeOrder((food.changeToSpecialFood()));
-                        count = cartFood.getCount();
-                    }
-                    return new ResponseEntity<>(new ChangeInCartSuccess(200, foodName, count), HttpStatus.OK);
-                } else {
-                    NormalFood food = restaurant.getNormalFoodByName(foodName);
-                    if (restaurant.getLocation().getDistance(SystemManager.getInstance().getUser().getLocation()) <= 170) {
-                        user.getCart().removeOrder(food);
-                        return new ResponseEntity<>(new ChangeInCartSuccess(200,foodName,Integer.MAX_VALUE), HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>(new ErrorDTO("restaurant not in range",403), HttpStatus.FORBIDDEN);
-                    }
-                }
-            } catch (FoodDoesntExistException e) {
-                return new ResponseEntity<>(new ErrorDTO("food does not exist",40401), HttpStatus.NOT_FOUND);
-            } catch (RestaurantDoesntExistException e) {
-                return new ResponseEntity<>(new ErrorDTO("restaurant does not exist",40402), HttpStatus.NOT_FOUND);
-            } catch (FoodCountIsNegativeException e) {
-                return new ResponseEntity<>(new ErrorDTO("food count negative",40001), HttpStatus.BAD_REQUEST);
-            }
+        }
+        try {
+            String foodName = foodNameJson.asText();
+            String restaurantId = restaurantIdJson.asText();
+            boolean specialFood = specialFoodJson.asBoolean();
+            int count = UserServices.getInstance().removeFromCart(userId, foodName, restaurantId, specialFood);
+            return new ResponseEntity<>(new ChangeInCartSuccess(200, foodName, count), HttpStatus.OK);
+        } catch (FoodDoesntExistException e) {
+            return new ResponseEntity<>(new ErrorDTO("food does not exist",40401), HttpStatus.NOT_FOUND);
+        } catch (RestaurantDoesntExistException e) {
+            return new ResponseEntity<>(new ErrorDTO("restaurant does not exist",40402), HttpStatus.NOT_FOUND);
+        }catch (RestaurantOutOfRangeException e){
+            return new ResponseEntity<>(new ErrorDTO("restaurant not in range",403), HttpStatus.FORBIDDEN);
+        }catch (FoodNotExistInCartException e){
+            return new ResponseEntity<>(new ErrorDTO("food does not exist in cart",40401), HttpStatus.FORBIDDEN);
+        }catch (UserDoesNotExistException e){
+            return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
     }
 
@@ -162,5 +129,4 @@ public class CartController {
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
     }
-
 }

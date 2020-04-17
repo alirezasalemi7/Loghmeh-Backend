@@ -26,11 +26,8 @@ public class UserController {
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNodeFactory factory = JsonNodeFactory.instance;
 
-    private ObjectNode generateError(JsonNodeFactory factory, int status, String description) {
-        ObjectNode errorNode = factory.objectNode();
-        errorNode.put("status", status);
-        errorNode.put("description", description);
-        return errorNode;
+    private ErrorDTO generateError(int status, String description) {
+        return new ErrorDTO(description, status);
     }
 
     @RequestMapping(value = "users/{id}/profile", method = RequestMethod.GET)
@@ -53,19 +50,19 @@ public class UserController {
     ) {
         JsonNode increasedValue = node.get("credit");
         if (increasedValue == null)
-            return new ResponseEntity<>(generateError(factory, 4003, "bad request"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(generateError(4003, "bad request"), HttpStatus.BAD_REQUEST);
         String amount = increasedValue.toString().replace("\"", "");
         if (!amount.matches("(-)?[0-9]+(\\.[0-9]+)?"))
-            return new ResponseEntity<>(generateError(factory, 4002, "amount must be a valid number"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(generateError(4002, "amount must be a valid number"), HttpStatus.BAD_REQUEST);
         try {
             UserServices.getInstance().increaseCredit(userId, Double.parseDouble(amount));
         } catch (NegativeChargeAmountException e) {
-            return new ResponseEntity<>(generateError(factory, 4001, "amount must be a positive number"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(generateError(4001, "amount must be a positive number"), HttpStatus.BAD_REQUEST);
         }
         catch (UserDoesNotExistException e){
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(generateError(factory, 200, "Increased successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(generateError(200, "Increased successfully"), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/users/{id}/orders", method = RequestMethod.GET)
@@ -90,7 +87,7 @@ public class UserController {
         try {
             order = UserServices.getInstance().getOrder(orderId);
         } catch (OrderDoesNotExist orderDoesNotExist) {
-            return new ResponseEntity<>(generateError(factory, 400, orderDoesNotExist.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(generateError(400, orderDoesNotExist.getMessage()), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
