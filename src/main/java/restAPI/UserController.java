@@ -7,10 +7,12 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.NegativeChargeAmountException;
 import exceptions.OrderDoesNotExist;
+import exceptions.UserDoesNotExistException;
 import models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import restAPI.DTO.Error.ErrorDTO;
 import restAPI.DTO.Order.OrderDTO;
 import restAPI.DTO.Order.OrderDetailDTO;
 import restAPI.DTO.User.UserProfileDTO;
@@ -35,9 +37,13 @@ public class UserController {
     public ResponseEntity<Object> getProfileInfo(
             @PathVariable(value = "id") String userId
     ) {
-        User user = SystemManager.getInstance().getUser();
-        UserProfileDTO profileDTO = UserServices.getInstance().getUserProfile(userId);
-        return new ResponseEntity<>(profileDTO, HttpStatus.OK);
+        try {
+            UserProfileDTO profileDTO = UserServices.getInstance().getUserProfile(userId);
+            return new ResponseEntity<>(profileDTO, HttpStatus.OK);
+        }
+        catch (UserDoesNotExistException e){
+            return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "/users/{id}/profile", method = RequestMethod.PUT)
@@ -56,6 +62,9 @@ public class UserController {
         } catch (NegativeChargeAmountException e) {
             return new ResponseEntity<>(generateError(factory, 4001, "amount must be a positive number"), HttpStatus.BAD_REQUEST);
         }
+        catch (UserDoesNotExistException e){
+            return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(generateError(factory, 200, "Increased successfully"), HttpStatus.OK);
     }
 
@@ -63,9 +72,13 @@ public class UserController {
     public ResponseEntity<Object> getAllOrders(
             @PathVariable(value = "id") String userId
     ) {
-        ArrayNode response = factory.arrayNode();
-        ArrayList<OrderDTO> orders = UserServices.getInstance().getAllOrders(userId);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        try {
+            ArrayList<OrderDTO> orders = UserServices.getInstance().getAllOrders(userId);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }
+        catch (UserDoesNotExistException e){
+            return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "users/{id}/orders/{oid}", method = RequestMethod.GET)

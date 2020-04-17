@@ -145,14 +145,22 @@ public class CartController {
         catch (CreditIsNotEnoughException e){
             return new ResponseEntity<>(new ErrorDTO("credit not enough",40002),HttpStatus.BAD_REQUEST);
         }
+        catch (UserDoesNotExistException e){
+            return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value="/cart",method = RequestMethod.GET)
     public ResponseEntity<Object> getCart(
             @PathVariable(value = "id",required = true) String userId)
     {
-        CartDTO cart = UserServices.getInstance().getUserCart(userId);
-        return new ResponseEntity<>(cart,HttpStatus.OK);
+        try {
+            CartDTO cart = UserServices.getInstance().getUserCart(userId);
+            return new ResponseEntity<>(cart,HttpStatus.OK);
+        }
+        catch (UserDoesNotExistException e){
+            return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
+        }
     }
 
 }

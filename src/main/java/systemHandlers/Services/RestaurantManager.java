@@ -7,6 +7,7 @@ import database.DAO.UserDAO;
 import exceptions.FoodDoesntExistException;
 import exceptions.OutOfRangeException;
 import exceptions.RestaurantDoesntExistException;
+import exceptions.UserDoesNotExistException;
 import models.Location;
 import models.Restaurant;
 import restAPI.DTO.Restaurant.*;
@@ -38,7 +39,7 @@ public class RestaurantManager {
         return _foodPartyStartTime;
     }
 
-    public RestaurantListDTO getInRangeRestaurants(String userId) {
+    public RestaurantListDTO getInRangeRestaurants(String userId) throws UserDoesNotExistException {
         ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getAllRestaurants();
         ArrayList<RestaurantInfoDTO> restaurantList = new ArrayList<>();
         UserDAO user = UserRepository.getInstance().getUser(userId);
@@ -50,7 +51,7 @@ public class RestaurantManager {
         return new RestaurantListDTO(restaurantList);
     }
 
-    public RestaurantDTO getNearbyRestaurantById(String restaurantId, String userId) throws RestaurantDoesntExistException, OutOfRangeException {
+    public RestaurantDTO getNearbyRestaurantById(String restaurantId, String userId) throws RestaurantDoesntExistException, UserDoesNotExistException,OutOfRangeException {
         RestaurantDAO restaurant = RestaurantRepository.getInstance().getRestaurantById(restaurantId);
         UserDAO user = UserRepository.getInstance().getUser(userId);
         if (!this.isInRange(user.getLocation(), restaurant.getLocation()))

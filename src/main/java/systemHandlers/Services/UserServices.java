@@ -35,7 +35,7 @@ public class UserServices {
 
     private UserServices(){}
 
-    public UserProfileDTO getUserProfile(String id) {
+    public UserProfileDTO getUserProfile(String id) throws UserDoesNotExistException {
         UserDAO user = UserRepository.getInstance().getUser(id);
         UserProfileDTO dto = new UserProfileDTO();
         dto.setCredit(user.getCredit());
@@ -46,7 +46,7 @@ public class UserServices {
         return dto;
     }
 
-    public void increaseCredit(String userId, Double chargeAmount) throws NegativeChargeAmountException {
+    public void increaseCredit(String userId, Double chargeAmount) throws NegativeChargeAmountException,UserDoesNotExistException {
         if (chargeAmount <= 0) {
             throw new NegativeChargeAmountException("Your charge amount must be positive.");
         }
@@ -70,7 +70,10 @@ public class UserServices {
         return detailDTO;
     }
 
-    public ArrayList<OrderDTO> getAllOrders(String userId){
+    public ArrayList<OrderDTO> getAllOrders(String userId) throws UserDoesNotExistException{
+        if(UserRepository.getInstance().isUserExists(userId)){
+            throw new UserDoesNotExistException();
+        }
         ArrayList<OrderDAO> orders = OrderRepository.getInstance().getOrdersOfUser(userId);
         ArrayList<OrderDTO> orderDTOS = new ArrayList<>();
         for(OrderDAO order:orders){
@@ -88,7 +91,10 @@ public class UserServices {
         return makeOrderDetailDTO(orderDAO);
     }
 
-    public CartDTO getUserCart(String userId){
+    public CartDTO getUserCart(String userId) throws UserDoesNotExistException{
+        if(UserRepository.getInstance().isUserExists(userId)){
+            throw new UserDoesNotExistException();
+        }
         CartDAO cartDAO = UserRepository.getInstance().getUserCart(userId);
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCost(cartDAO.getSumOfPrices());
@@ -106,15 +112,15 @@ public class UserServices {
         return cartDTO;
     }
 
-    public void addToCart(String foodName,String RestaurantId,boolean special){
+    public void addToCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException{
 
     }
 
-    public void removeFromCart(String foodName,String RestaurantId,boolean special){
+    public void removeFromCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException{
 
     }
 
-    public OrderDetailDTO finalizeCart(String userId) throws CartIsEmptyException,CreditIsNotEnoughException{
+    public OrderDetailDTO finalizeCart(String userId) throws CartIsEmptyException,UserDoesNotExistException,CreditIsNotEnoughException{
         UserDAO user = UserRepository.getInstance().getUser(userId);
         CartDAO cart = UserRepository.getInstance().getUserCart(userId);
         if (cart.getItems().size() == 0) {

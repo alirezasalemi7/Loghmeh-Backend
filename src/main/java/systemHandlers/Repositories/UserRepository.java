@@ -4,6 +4,7 @@ import database.DAO.CartDAO;
 import database.DAO.UserDAO;
 import database.UserMapper;
 import exceptions.NegativeChargeAmountException;
+import exceptions.UserDoesNotExistException;
 import models.Cart;
 import models.User;
 
@@ -22,8 +23,12 @@ public class UserRepository {
         return instance;
     }
 
-    public UserDAO getUser(String id) {
+    public UserDAO getUser(String id) throws UserDoesNotExistException {
         return null;
+    }
+
+    public boolean isUserExists(String userId){
+        return false;
     }
 
     public void updateCredit(UserDAO user) throws NegativeChargeAmountException {
