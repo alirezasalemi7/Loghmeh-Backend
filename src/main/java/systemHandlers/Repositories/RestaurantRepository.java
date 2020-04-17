@@ -34,4 +34,8 @@ public class RestaurantRepository {
         return new FoodDAO();
     }
 
+    public ArrayList<FoodDAO> getSpecialFoods() {
+        return new ArrayList<FoodDAO>();
+    }
+
 }

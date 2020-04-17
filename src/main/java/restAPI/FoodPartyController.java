@@ -15,42 +15,37 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import restAPI.DTO.Restaurant.SpecialFoodDTO;
 import systemHandlers.DataHandler;
+import systemHandlers.Services.RestaurantManager;
 import systemHandlers.SystemManager;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @RestController
 public class FoodPartyController {
+
     private JsonNodeFactory factory = JsonNodeFactory.instance;
     private ObjectMapper mapper = new ObjectMapper();
 
+    private ObjectNode generateError(JsonNodeFactory factory, int status, String description) {
+        ObjectNode errorNode = factory.objectNode();
+        errorNode.put("status", status);
+        errorNode.put("description", description);
+        return errorNode;
+    }
+
     @RequestMapping(value = "/foodParty",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllFoods() {
-        ArrayNode nodes = factory.arrayNode();
-        for (Restaurant restaurant : DataHandler.getInstance().getAllRestaurant().values()) {
-            for (SpecialFood food : restaurant.getSpecialMenu().values()) {
-                ObjectNode  node = null;
-                try {
-                    node = (ObjectNode) food.toJsonNode();
-                    node.put("restaurantName", restaurant.getName());
-                    node.put("restaurantId", restaurant.getId());
-                } catch (InvalidToJsonException e) {
-                    ObjectNode errorNode = factory.objectNode();
-                    errorNode.put("status", "500");
-                    errorNode.put("description", "internal server error");
-                    return new ResponseEntity<>(errorNode, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-                nodes.add(node);
-            }
-        }
-        return new ResponseEntity<>(nodes, HttpStatus.OK);
+        ArrayList<SpecialFoodDTO> foods = RestaurantManager.getInstance().getAllSpecialFoods();
+        return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/foodParty/time", method = RequestMethod.GET)
     public ResponseEntity<Object> getFoodPartyTime() {
         ObjectNode node = factory.objectNode();
-        Date start = SystemManager.getInstance().getFoodPartyStartTime();
+        Date start = RestaurantManager.getInstance().getFoodPartyStartTime();
         Date current = new Date();
         long diff = current.getTime() - start.getTime();
         diff = 180000 - diff;
@@ -63,27 +58,11 @@ public class FoodPartyController {
     public ResponseEntity<Object> getSpecialFood(
             @PathVariable(value = "fid") String foodId
     ) {
-        SpecialFood food;
-        for (Restaurant restaurant : DataHandler.getInstance().getAllRestaurant().values()) {
-            try {
-                food = restaurant.getSpecialFoodByName(foodId);
-            } catch (FoodDoesntExistException e) {
-                continue;
-            }
-            try {
-                ObjectNode node = (ObjectNode) food.toJsonNode();
-                node.put("restaurantName", restaurant.getName());
-                node.put("restaurantId", restaurant.getId());
-                return new ResponseEntity<>(node, HttpStatus.OK);
-            } catch (InvalidToJsonException e) {
-                ObjectNode errorNode = factory.objectNode();
-                errorNode.put("status", 500);
-                errorNode.put("description", "internal server error");
-             }
+        try {
+            SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(foodId);
+            return new ResponseEntity<>(food, HttpStatus.OK);
+        } catch (FoodDoesntExistException e) {
+            return new ResponseEntity<>(generateError(factory, 404, "Food doesn't exist"), HttpStatus.NOT_FOUND);
         }
-        ObjectNode errorNode = factory.objectNode();
-        errorNode.put("status", 404);
-        errorNode.put("description", "Food doesn't exist");
-        return new ResponseEntity<>(errorNode, HttpStatus.NOT_FOUND);
     }
 }

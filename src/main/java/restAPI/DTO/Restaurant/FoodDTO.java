@@ -23,4 +23,7 @@ public class FoodDTO {
         this.description = description;
     }
 
+    public String getRestaurantId() {
+        return restaurantId;
+    }
 }

@@ -27,4 +27,8 @@ public class SpecialFoodDTO {
         this.count = count;
         this.oldPrice = oldPrice;
     }
+
+    public String getRestaurantId() {
+        return restaurantId;
+    }
 }

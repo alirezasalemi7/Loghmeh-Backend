@@ -1,20 +1,13 @@
 package restAPI;
 
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.FoodDoesntExistException;
-import exceptions.InvalidToJsonException;
 import exceptions.OutOfRangeException;
 import exceptions.RestaurantDoesntExistException;
-import models.Food;
-import models.NormalFood;
-import models.Restaurant;
-import models.SpecialFood;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +15,7 @@ import restAPI.DTO.Restaurant.FoodDTO;
 import restAPI.DTO.Restaurant.RestaurantDTO;
 import restAPI.DTO.Restaurant.RestaurantListDTO;
 import restAPI.DTO.Restaurant.SpecialFoodDTO;
-import systemHandlers.DataHandler;
 import systemHandlers.Services.RestaurantManager;
-import systemHandlers.SystemManager;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 @RestController
 public class RestaurantController {
@@ -77,7 +65,7 @@ public class RestaurantController {
             @PathVariable(value = "fid",required = true) String foodId
     ){
         try {
-            FoodDTO food = RestaurantManager.getInstance().getFoodById(restaurantId, foodId);
+            FoodDTO food = RestaurantManager.getInstance().getRestaurantFoodById(restaurantId, foodId);
             if (food == null)
                 return new ResponseEntity<>(generateError(factory, 400, "food is not in restaurant menu"), HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(food, HttpStatus.OK);
@@ -92,7 +80,7 @@ public class RestaurantController {
             @PathVariable(value = "fid",required = true) String foodId
     ){
         try {
-            SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(restaurantId, foodId);
+            SpecialFoodDTO food = RestaurantManager.getInstance().getRestaurantSpecialFoodById(restaurantId, foodId);
             if (food == null)
                 return new ResponseEntity<>(generateError(factory, 400, "food is not in restaurant menu"), HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(food, HttpStatus.OK);
