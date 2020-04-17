@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.FoodDoesntExistException;
 import exceptions.OutOfRangeException;
 import exceptions.RestaurantDoesntExistException;
+import exceptions.UserDoesNotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,12 @@ public class RestaurantController {
         JsonNode userId = user.get("id");
         if (userId == null)
             return new ResponseEntity<>(generateError(factory, 400, "user id has not been passed."), HttpStatus.BAD_REQUEST);
-        RestaurantListDTO restaurantList = RestaurantManager.getInstance().getInRangeRestaurants(userId.asText());
+        RestaurantListDTO restaurantList = null;
+        try {
+            restaurantList = RestaurantManager.getInstance().getInRangeRestaurants(userId.asText());
+        } catch (UserDoesNotExistException e) {
+            return new ResponseEntity<>(generateError(factory, 404, e.getMessage()), HttpStatus.OK);
+        }
         return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
 
@@ -55,6 +61,8 @@ public class RestaurantController {
             return new ResponseEntity<>(generateError(factory, 404, "restaurant does not exist"), HttpStatus.NOT_FOUND);
         } catch (OutOfRangeException e) {
             return new ResponseEntity<>(generateError(factory, 403, "restaurant is not in range"), HttpStatus.FORBIDDEN);
+        } catch (UserDoesNotExistException e) {
+            return new ResponseEntity<>(generateError(factory, 404, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -64,7 +72,7 @@ public class RestaurantController {
             @PathVariable(value = "fid",required = true) String foodId
     ){
         try {
-            FoodDTO food = RestaurantManager.getInstance().getRestaurantFoodById(restaurantId, foodId);
+            FoodDTO food = RestaurantManager.getInstance().getFoodById(restaurantId, foodId);
             if (food == null)
                 return new ResponseEntity<>(generateError(factory, 400, "food is not in restaurant menu"), HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(food, HttpStatus.OK);
@@ -79,7 +87,7 @@ public class RestaurantController {
             @PathVariable(value = "fid",required = true) String foodId
     ){
         try {
-            SpecialFoodDTO food = RestaurantManager.getInstance().getRestaurantSpecialFoodById(restaurantId, foodId);
+            SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(restaurantId, foodId);
             if (food == null)
                 return new ResponseEntity<>(generateError(factory, 400, "food is not in restaurant menu"), HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(food, HttpStatus.OK);

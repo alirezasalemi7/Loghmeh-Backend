@@ -15,8 +15,7 @@ public class SpecialFoodDTO {
 
     public SpecialFoodDTO() {}
 
-    public SpecialFoodDTO(String id, String restaurantId, String restaurantName, String logo, Double popularity, String name, Double price, String description, int count, Double oldPrice) {
-        this.id = id;
+    public SpecialFoodDTO(String restaurantId, String restaurantName, String logo, Double popularity, String name, Double price, String description, int count, Double oldPrice) {
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;
         this.logo = logo;

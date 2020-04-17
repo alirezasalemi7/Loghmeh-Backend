@@ -2,7 +2,6 @@ package restAPI.DTO.Restaurant;
 
 public class FoodDTO {
 
-    private String id;
     private String restaurantId;
     private String restaurantName;
     private String logo;

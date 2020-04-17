@@ -11,10 +11,7 @@ import models.Restaurant;
 import models.SpecialFood;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import restAPI.DTO.Restaurant.SpecialFoodDTO;
 import systemHandlers.DataHandler;
 import systemHandlers.Services.RestaurantManager;
@@ -55,10 +52,13 @@ public class FoodPartyController {
 
     @RequestMapping(value = "/foodParty/{fid}", method = RequestMethod.GET)
     public ResponseEntity<Object> getSpecialFood(
-            @PathVariable(value = "fid") String foodId
+            @PathVariable(value = "fid") String foodId,
+            @RequestBody(required = true) JsonNode restaurantId
     ) {
+        if (restaurantId == null)
+            return new ResponseEntity<>(generateError(factory, 400, "Food doesn't exist"), HttpStatus.NOT_FOUND);
         try {
-            SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(foodId);
+            SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(restaurantId.asText(), foodId);
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e) {
             return new ResponseEntity<>(generateError(factory, 404, "Food doesn't exist"), HttpStatus.NOT_FOUND);

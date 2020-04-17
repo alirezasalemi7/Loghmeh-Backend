@@ -4,11 +4,8 @@ import database.DAO.FoodDAO;
 import database.DAO.RestaurantDAO;
 import exceptions.FoodDoesntExistException;
 import exceptions.RestaurantDoesntExistException;
-import models.Restaurant;
-import org.graalvm.compiler.hotspot.stubs.OutOfBoundsExceptionStub;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class RestaurantRepository {
 
@@ -30,7 +27,7 @@ public class RestaurantRepository {
         return new ArrayList<RestaurantDAO>();
     }
 
-    public FoodDAO getFoodById(String foodId) throws FoodDoesntExistException {
+    public FoodDAO getFoodById(String restaurantId, String foodId) throws FoodDoesntExistException {
         return new FoodDAO();
     }
 
@@ -38,11 +35,11 @@ public class RestaurantRepository {
         return new ArrayList<FoodDAO>();
     }
 
-    public void setFoodCount(String foodId, int count) {
+    public void setFoodCount(String restaurantId, String foodId, int count) {
         return;
     }
 
-    public int getFoodCount(String foodId) {
+    public int getFoodCount(String restaurantId, String foodId) {
         return 0;
     }
 

@@ -2,7 +2,6 @@ package database.DAO;
 
 public class FoodDAO {
 
-    private String id;
     private String restaurantId;
     private String restaurantName;
     private String logo;
@@ -12,10 +11,6 @@ public class FoodDAO {
     private String description;
     private int count;
     private Double oldPrice;
-
-    public String getId() {
-        return id;
-    }
 
     public String getRestaurantId() {
         return restaurantId;
@@ -55,8 +50,7 @@ public class FoodDAO {
 
     public FoodDAO() {}
 
-    public FoodDAO(String id, String restaurantId, String restaurantName, String logo, Double popularity, String name, Double price, String description, int count, Double oldPrice) {
-        this.id = id;
+    public FoodDAO(String restaurantId, String restaurantName, String logo, Double popularity, String name, Double price, String description, int count, Double oldPrice) {
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;
         this.logo = logo;

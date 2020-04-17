@@ -1,6 +1,6 @@
 package systemHandlers.Services;
 
-import com.sun.org.apache.bcel.internal.generic.RET;
+
 import database.DAO.FoodDAO;
 import database.DAO.RestaurantDAO;
 import database.DAO.UserDAO;
@@ -9,7 +9,6 @@ import exceptions.OutOfRangeException;
 import exceptions.RestaurantDoesntExistException;
 import exceptions.UserDoesNotExistException;
 import models.Location;
-import models.Restaurant;
 import restAPI.DTO.Restaurant.*;
 import systemHandlers.Repositories.RestaurantRepository;
 import systemHandlers.Repositories.UserRepository;
@@ -59,10 +58,10 @@ public class RestaurantManager {
         HashMap<String, Boolean> menu = restaurant.getMenu();
         ArrayList<FoodDTO> foods = new ArrayList<>();
         for (String foodId : menu.keySet()) {
-            if (menu.get(foodId)) {
+            if (!menu.get(foodId)) { //means its normal food
                 FoodDAO food = null;
                 try {
-                    food = RestaurantRepository.getInstance().getFoodById(foodId);
+                    food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId);
                     foods.add(new FoodDTO(restaurantId, food.getRestaurantName(), food.getLogo()
                             , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription()));
                 } catch (FoodDoesntExistException e) {
@@ -73,29 +72,15 @@ public class RestaurantManager {
         return new RestaurantDTO(new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId()), foods);
     }
 
-    public FoodDTO getRestaurantFoodById(String restaurantId, String foodId) throws FoodDoesntExistException {
-        FoodDTO food = this.getFoodById(foodId);
-        if (food.getRestaurantId().equals(restaurantId))
-            return food;
-        return null;
-    }
-
-    public FoodDTO getFoodById(String foodId) throws FoodDoesntExistException {
-        FoodDAO food = RestaurantRepository.getInstance().getFoodById(foodId);
+    public FoodDTO getFoodById(String restaurantId, String foodId) throws FoodDoesntExistException {
+        FoodDAO food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId);
         return new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo()
                 , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription());
     }
 
-    public SpecialFoodDTO getRestaurantSpecialFoodById(String restaurantId, String foodId) throws FoodDoesntExistException {
-        SpecialFoodDTO food = this.getSpecialFoodById(foodId);
-        if (food.getRestaurantId().equals(restaurantId))
-            return food;
-        return null;
-    }
-
-    public SpecialFoodDTO getSpecialFoodById(String foodId) throws FoodDoesntExistException {
-        FoodDAO food = RestaurantRepository.getInstance().getFoodById(foodId);
-        return new SpecialFoodDTO(food.getId(), food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity()
+    public SpecialFoodDTO getSpecialFoodById(String restaurantId, String foodId) throws FoodDoesntExistException {
+        FoodDAO food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId);
+        return new SpecialFoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity()
                 , food.getName(), food.getPrice(), food.getDescription(), food.getCount(), food.getOldPrice());
     }
 
@@ -103,19 +88,19 @@ public class RestaurantManager {
         return user.getDistance(restaurant) <= 170;
     }
 
-    public void setFoodCount(String foodId, int newCount) {
-        RestaurantRepository.getInstance().setFoodCount(foodId, newCount);
+    public void setFoodCount(String restaurantId, String foodId, int newCount) {
+        RestaurantRepository.getInstance().setFoodCount(restaurantId, foodId, newCount);
     }
 
-    public int getFoodCount(String foodId) {
-        return RestaurantRepository.getInstance().getFoodCount(foodId);
+    public int getFoodCount(String restaurantId, String foodId) {
+        return RestaurantRepository.getInstance().getFoodCount(restaurantId, foodId);
     }
 
     public ArrayList<SpecialFoodDTO> getAllSpecialFoods() {
         ArrayList<FoodDAO> foods = RestaurantRepository.getInstance().getSpecialFoods();
         ArrayList<SpecialFoodDTO> specialFoods = new ArrayList<>();
         for (FoodDAO food : foods)
-            specialFoods.add(new SpecialFoodDTO(food.getId(), food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity()
+            specialFoods.add(new SpecialFoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity()
                     , food.getName(), food.getPrice(), food.getDescription(), food.getCount(), food.getOldPrice()));
         return specialFoods;
     }
