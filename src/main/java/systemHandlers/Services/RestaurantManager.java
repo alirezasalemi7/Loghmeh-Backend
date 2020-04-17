@@ -102,6 +102,14 @@ public class RestaurantManager {
         return user.getDistance(restaurant) <= 170;
     }
 
+    public void setFoodCount(String foodId, int newCount) {
+        RestaurantRepository.getInstance().setFoodCount(foodId, newCount);
+    }
+
+    public int getFoodCount(String foodId) {
+        return RestaurantRepository.getInstance().getFoodCount(foodId);
+    }
+
     public ArrayList<SpecialFoodDTO> getAllSpecialFoods() {
         ArrayList<FoodDAO> foods = RestaurantRepository.getInstance().getSpecialFoods();
         ArrayList<SpecialFoodDTO> specialFoods = new ArrayList<>();

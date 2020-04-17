@@ -38,4 +38,12 @@ public class RestaurantRepository {
         return new ArrayList<FoodDAO>();
     }
 
+    public void setFoodCount(String foodId, int count) {
+        return;
+    }
+
+    public int getFoodCount(String foodId) {
+        return 0;
+    }
+
 }

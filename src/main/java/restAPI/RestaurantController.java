@@ -20,8 +20,7 @@ import systemHandlers.Services.RestaurantManager;
 @RestController
 public class RestaurantController {
 
-    private JsonNodeFactory factory = JsonNodeFactory.instance;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final JsonNodeFactory factory = JsonNodeFactory.instance;
 
     private ObjectNode generateError(JsonNodeFactory factory, int status, String description) {
         ObjectNode errorNode = factory.objectNode();

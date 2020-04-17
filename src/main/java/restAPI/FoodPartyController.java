@@ -26,8 +26,7 @@ import java.util.Date;
 @RestController
 public class FoodPartyController {
 
-    private JsonNodeFactory factory = JsonNodeFactory.instance;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final JsonNodeFactory factory = JsonNodeFactory.instance;
 
     private ObjectNode generateError(JsonNodeFactory factory, int status, String description) {
         ObjectNode errorNode = factory.objectNode();
