@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.FoodDoesntExistException;
 import exceptions.InvalidToJsonException;
+import exceptions.ServerInternalException;
 import models.Restaurant;
 import models.SpecialFood;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,12 @@ public class FoodPartyController {
 
     @RequestMapping(value = "/foodParty",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllFoods() {
-        ArrayList<SpecialFoodDTO> foods = RestaurantManager.getInstance().getAllSpecialFoods();
+        ArrayList<SpecialFoodDTO> foods = null;
+        try {
+            foods = RestaurantManager.getInstance().getAllSpecialFoods();
+        } catch (ServerInternalException e) {
+            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 
@@ -62,6 +68,8 @@ public class FoodPartyController {
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e) {
             return new ResponseEntity<>(generateError(factory, 404, "Food doesn't exist"), HttpStatus.NOT_FOUND);
+        } catch (ServerInternalException e) {
+            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

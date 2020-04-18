@@ -10,6 +10,7 @@ import models.Food;
 import models.Restaurant;
 import models.SpecialFood;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -75,8 +76,15 @@ public class FoodPartyListener implements ServletContextListener {
                 }
                 RestaurantRepository.getInstance().addFoods(newFoods);
                 RestaurantRepository.getInstance().addRestaurants(newRestaurants);
-            } catch (Exception e) {
-                //
+            } catch (ClientProtocolException e) {
+                System.err.println("A protocol error happened.\nexiting...");
+                System.exit(1);
+            } catch (IOException e) {
+                System.err.println("An IO error happened while getting response.\nexiting...");
+                System.exit(1);
+            } catch (ServerInternalException e) {
+                System.err.println("An internal server error happened; database connection has been lost.\nexiting...");
+                System.exit(1);
             }
         }
 

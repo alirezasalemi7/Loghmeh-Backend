@@ -69,13 +69,13 @@ public class RestaurantManager {
         return new RestaurantDTO(new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId()), foods);
     }
 
-    public FoodDTO getFoodById(String restaurantId, String foodId) throws FoodDoesntExistException {
+    public FoodDTO getFoodById(String restaurantId, String foodId) throws FoodDoesntExistException, ServerInternalException {
         FoodDAO food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId);
         return new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo()
                 , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription());
     }
 
-    public SpecialFoodDTO getSpecialFoodById(String restaurantId, String foodId) throws FoodDoesntExistException {
+    public SpecialFoodDTO getSpecialFoodById(String restaurantId, String foodId) throws FoodDoesntExistException, ServerInternalException {
         FoodDAO food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId);
         return new SpecialFoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity()
                 , food.getName(), food.getPrice(), food.getDescription(), food.getCount(), food.getOldPrice());
@@ -85,15 +85,15 @@ public class RestaurantManager {
         return user.getDistance(restaurant) <= 170;
     }
 
-    public void setFoodCount(String restaurantId, String foodId, int newCount) {
+    public void setFoodCount(String restaurantId, String foodId, int newCount) throws ServerInternalException {
         RestaurantRepository.getInstance().setFoodCount(restaurantId, foodId, newCount);
     }
 
-    public int getFoodCount(String restaurantId, String foodId) {
+    public int getFoodCount(String restaurantId, String foodId) throws ServerInternalException {
         return RestaurantRepository.getInstance().getFoodCount(restaurantId, foodId);
     }
 
-    public ArrayList<SpecialFoodDTO> getAllSpecialFoods() {
+    public ArrayList<SpecialFoodDTO> getAllSpecialFoods() throws ServerInternalException {
         ArrayList<FoodDAO> foods = RestaurantRepository.getInstance().getSpecialFoods();
         ArrayList<SpecialFoodDTO> specialFoods = new ArrayList<>();
         for (FoodDAO food : foods)
@@ -102,7 +102,7 @@ public class RestaurantManager {
         return specialFoods;
     }
 
-    public Location getRestaurantLocation(String restaurantId) throws RestaurantDoesntExistException {
+    public Location getRestaurantLocation(String restaurantId) throws RestaurantDoesntExistException, ServerInternalException {
         return RestaurantRepository.getInstance().getRestaurantLocation(restaurantId);
     }
 

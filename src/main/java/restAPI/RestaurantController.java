@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import exceptions.FoodDoesntExistException;
-import exceptions.OutOfRangeException;
-import exceptions.RestaurantDoesntExistException;
-import exceptions.UserDoesNotExistException;
+import exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +39,8 @@ public class RestaurantController {
             restaurantList = RestaurantManager.getInstance().getInRangeRestaurants(userId.asText());
         } catch (UserDoesNotExistException e) {
             return new ResponseEntity<>(generateError(factory, 404, e.getMessage()), HttpStatus.OK);
+        } catch (ServerInternalException e) {
+            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
@@ -63,6 +62,8 @@ public class RestaurantController {
             return new ResponseEntity<>(generateError(factory, 403, "restaurant is not in range"), HttpStatus.FORBIDDEN);
         } catch (UserDoesNotExistException e) {
             return new ResponseEntity<>(generateError(factory, 404, e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (ServerInternalException e) {
+            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -78,6 +79,8 @@ public class RestaurantController {
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e){
             return new ResponseEntity<>(generateError(factory, 404, "food does not exist"), HttpStatus.NOT_FOUND);
+        } catch (ServerInternalException e) {
+            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -93,6 +96,8 @@ public class RestaurantController {
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e) {
             return new ResponseEntity<>(generateError(factory, 403, "food does not exist"), HttpStatus.NOT_FOUND);
+        } catch (ServerInternalException e) {
+            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

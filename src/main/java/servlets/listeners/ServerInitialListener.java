@@ -6,6 +6,7 @@ import database.DAO.FoodDAO;
 import database.DAO.RestaurantDAO;
 import exceptions.InvalidJsonInputException;
 import exceptions.RestaurantIsRegisteredException;
+import exceptions.ServerInternalException;
 import models.NormalFood;
 import models.Restaurant;
 import models.SpecialFood;
@@ -30,7 +31,12 @@ public class ServerInitialListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        fetchFromExternalServer();
+        try {
+            fetchFromExternalServer();
+        } catch (ServerInternalException e) {
+            System.err.println("An internal server error happened. maybe the sql connection is lost.\nexiting...");
+            System.exit(1);
+        }
     }
 
     @Override
@@ -83,7 +89,7 @@ public class ServerInitialListener implements ServletContextListener {
         }
     }
 
-    private void fetchFromExternalServer(){
+    private void fetchFromExternalServer() throws ServerInternalException {
         ArrayList<Restaurant> restaurants = externalServerBodyParser(sendGetRequestToGetDataOnStart());
         HashMap<String, Boolean> systemRestaurants = RestaurantRepository.getInstance().getAllRestaurantIds();
         ArrayList<RestaurantDAO> newRestaurants = new ArrayList<>();
