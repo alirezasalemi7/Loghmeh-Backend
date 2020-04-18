@@ -2,9 +2,7 @@ package database.Mappers;
 
 import database.ConnectionPool;
 import database.DAO.OrderItemDAO;
-import models.OrderItem;
 import org.javatuples.Quartet;
-import org.javatuples.Triplet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

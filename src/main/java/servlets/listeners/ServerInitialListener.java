@@ -28,8 +28,6 @@ import java.util.HashMap;
 @WebListener
 public class ServerInitialListener implements ServletContextListener {
 
-    private SystemManager _system = SystemManager.getInstance();
-
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         fetchFromExternalServer();
@@ -96,7 +94,7 @@ public class ServerInitialListener implements ServletContextListener {
                         , food.getName(), food.getPrice(), food.getDescription()));
             if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
                 newRestaurants.add(new RestaurantDAO(restaurant.getName(), restaurant.getLogoAddress()
-                        , restaurant.getLocation(), restaurant.getId(), null, restaurant.getAveragePopularity()));
+                        , restaurant.getLocation(), restaurant.getId(), null));
         }
         RestaurantRepository.getInstance().addFoods(newFoods);
         RestaurantRepository.getInstance().addRestaurants(newRestaurants);

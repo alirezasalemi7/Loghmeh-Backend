@@ -71,7 +71,7 @@ public class FoodPartyListener implements ServletContextListener {
                                 , food.getName(), food.getPrice(), food.getDescription(), food.getCount(), food.getOldPrice()));
                     if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
                         newRestaurants.add(new RestaurantDAO(restaurant.getName(), restaurant.getLogoAddress()
-                                , restaurant.getLocation(), restaurant.getId(), null, restaurant.getAveragePopularity()));
+                                , restaurant.getLocation(), restaurant.getId(), null));
                 }
                 RestaurantRepository.getInstance().addFoods(newFoods);
                 RestaurantRepository.getInstance().addRestaurants(newRestaurants);
