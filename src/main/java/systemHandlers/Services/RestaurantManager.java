@@ -10,6 +10,7 @@ import restAPI.DTO.Restaurant.*;
 import systemHandlers.Repositories.RestaurantRepository;
 import systemHandlers.Repositories.UserRepository;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public class RestaurantManager {
             if (!menu.get(foodId)) { //means its normal food
                 FoodDAO food = null;
                 try {
-                    food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId);
+                    food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId, false);
                     foods.add(new FoodDTO(restaurantId, food.getRestaurantName(), food.getLogo()
                             , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription()));
                 } catch (FoodDoesntExistException e) {
@@ -70,13 +71,13 @@ public class RestaurantManager {
     }
 
     public FoodDTO getFoodById(String restaurantId, String foodId) throws FoodDoesntExistException, ServerInternalException {
-        FoodDAO food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId);
+        FoodDAO food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId, false);
         return new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo()
                 , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription());
     }
 
     public SpecialFoodDTO getSpecialFoodById(String restaurantId, String foodId) throws FoodDoesntExistException, ServerInternalException {
-        FoodDAO food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId);
+        FoodDAO food = RestaurantRepository.getInstance().getFoodById(restaurantId, foodId, true);
         return new SpecialFoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity()
                 , food.getName(), food.getPrice(), food.getDescription(), food.getCount(), food.getOldPrice());
     }
@@ -85,7 +86,7 @@ public class RestaurantManager {
         return user.getDistance(restaurant) <= 170;
     }
 
-    public void setFoodCount(String restaurantId, String foodId, int newCount) throws ServerInternalException {
+    public void setFoodCount(String restaurantId, String foodId, int newCount) throws ServerInternalException, FoodDoesntExistException {
         RestaurantRepository.getInstance().setFoodCount(restaurantId, foodId, newCount);
     }
 

@@ -107,7 +107,7 @@ public class UserServices {
 
     public int addToCart(String userId,String foodName,String RestaurantId,boolean special,int count) throws UserDoesNotExistException , RestaurantDoesntExistException ,FoodDoesntExistException ,RestaurantOutOfRangeException, FoodCountIsNegativeException, UnregisteredOrderException,ServerInternalException{
         CartDAO cart = UserRepository.getInstance().getUserCart(userId);
-        FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName);
+        FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName, special);
         UserDAO user = UserRepository.getInstance().getUser(userId);
         if(!special &&!RestaurantManager.getInstance().isInRange(user.getLocation(),RestaurantManager.getInstance().getRestaurantLocation(RestaurantId))){
             throw new RestaurantOutOfRangeException();
@@ -148,7 +148,7 @@ public class UserServices {
 
     public int removeFromCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException,RestaurantOutOfRangeException,RestaurantDoesntExistException,FoodDoesntExistException,FoodNotExistInCartException,ServerInternalException{
         CartDAO cart = UserRepository.getInstance().getUserCart(userId);
-        FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName);
+        FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName, special);
         UserDAO user = UserRepository.getInstance().getUser(userId);
         if(!special &&!RestaurantManager.getInstance().isInRange(user.getLocation(),RestaurantManager.getInstance().getRestaurantLocation(RestaurantId))){
             throw new RestaurantOutOfRangeException();

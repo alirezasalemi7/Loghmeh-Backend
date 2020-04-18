@@ -2,11 +2,14 @@ package database.Mappers;
 
 import database.ConnectionPool;
 import database.DAO.FoodDAO;
+import exceptions.FoodDoesntExistException;
 import org.javatuples.Triplet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>> {
 
@@ -49,17 +52,56 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
 
     @Override
     protected FoodDAO getObject(ResultSet rs) throws SQLException {
-        if(rs.next()) {
-            rs.close();
+        if(rs.next())
             return null;
-        }
         FoodDAO food;
         if (rs.getInt("special") == 1)
             food = new FoodDAO(rs.getString("restaurant_id"), rs.getString("restaurant_name"), rs.getString("logo"), rs.getDouble("popularity"), rs.getString("name")
                     , rs.getDouble("price"), rs.getString("description"), rs.getInt("count"), rs.getDouble("old_price"));
         else food = new FoodDAO(rs.getString("restaurant_id"), rs.getString("restaurant_name"), rs.getString("logo"), rs.getDouble("popularity"), rs.getString("name")
                     , rs.getDouble("price"), rs.getString("description"));
-        rs.close();
         return food;
+    }
+
+    public void updateFoodCount(String restaurantId, String foodId, int count) throws SQLException, FoodDoesntExistException {
+        Connection connection = ConnectionPool.getConnection();
+        String query = "update " + tableName + " set count = " + count + " where special = 1 and restaurant_id = \"" + restaurantId + "\" and name = \"" + foodId + "\";";
+        Statement statement = connection.createStatement();
+        if (statement.executeUpdate(query) != 1)
+            throw new FoodDoesntExistException(foodId + " doesn't exist in " + restaurantId);
+        statement.close();
+        connection.close();
+    }
+
+    private String concatValues(ArrayList<FoodDAO> foods) {
+        StringBuilder concatenated = new StringBuilder();
+        for (FoodDAO food : foods)
+            concatenated.append(",(" + food.getRestaurantId() + "," + food.getRestaurantName() + "," + food.getName() + "," + food.getLogo() + "," + food.getPopularity()
+                    + "," + food.getPrice() + "," + food.getDescription() + "," + (food.isSpecial() ? 1 : 0) + "," + food.getCount() + "," + food.getOldPrice() + ")");
+        return concatenated.toString().substring(1);
+    }
+
+    public void insertAllFoods(ArrayList<FoodDAO> foods) throws SQLException {
+        String content = this.concatValues(foods);
+        String query = "insert into " + tableName + "(restaurant_id, restaurant_name, name, logo, popularity, price, description, special, count, old_price) values " + content + ";";
+        Connection connection = ConnectionPool.getConnection();
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
+        statement.close();
+        connection.close();
+    }
+
+    public ArrayList<FoodDAO> getAllSpecialFoods() throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        String query = "select * from " + tableName + " where special = 1;";
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        ArrayList<FoodDAO> foods = new ArrayList<>();
+        while (rs.next())
+            foods.add(getObject(rs));
+        rs.close();
+        statement.close();
+        connection.close();
+        return foods;
     }
 }

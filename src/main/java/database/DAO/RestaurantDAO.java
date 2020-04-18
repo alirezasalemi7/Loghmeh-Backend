@@ -20,13 +20,20 @@ public class RestaurantDAO {
         return id;
     }
 
-    public RestaurantDAO(String name, String logoAddress, Location location, String id, HashMap<String, Boolean> menu) {
+    public RestaurantDAO(String name, String logoAddress, Location location, String id) {
         this.name = name;
         this.logoAddress = logoAddress;
         this.location = location;
         this.id = id;
-        this.menu = menu;
     }
+
+//    public RestaurantDAO(String name, String logoAddress, Location location, String id, HashMap<String, Boolean> menu) {
+//        this.name = name;
+//        this.logoAddress = logoAddress;
+//        this.location = location;
+//        this.id = id;
+//        this.menu = menu;
+//    }
 
     public RestaurantDAO() {}
 
