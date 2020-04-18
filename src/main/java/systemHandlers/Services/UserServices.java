@@ -79,7 +79,7 @@ public class UserServices {
         return orderDTOS;
     }
 
-    public OrderDetailDTO getOrder(String oid) throws OrderDoesNotExist {
+    public OrderDetailDTO getOrder(String oid) throws OrderDoesNotExist,ServerInternalException {
         OrderDAO orderDAO = OrderRepository.getInstance().getOrder(oid);
         return makeOrderDetailDTO(orderDAO);
     }

@@ -2,10 +2,12 @@ package systemHandlers.Services;
 
 import database.DAO.OrderDAO;
 import database.DAO.OrderState;
+import exceptions.ServerInternalException;
 import models.Location;
 import systemHandlers.Domain.OrderTimer;
 import systemHandlers.Repositories.OrderRepository;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -23,8 +25,8 @@ public class OrderDeliveryManager {
 
     private OrderDeliveryManager(){}
 
-    public void updateOrderState(String orderId, OrderState state, Date date){
-        OrderRepository.getInstance().updateOrderState(orderId, state, date);
+    public void updateOrderState(String orderId, OrderState state, Date date) throws ServerInternalException {
+        OrderRepository.getInstance().updateOrderStateAndDate(orderId, state, date);
     }
 
     public void clearOrderTimer(String orderId){

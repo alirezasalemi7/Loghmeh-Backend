@@ -98,6 +98,8 @@ public class UserController {
             order = UserServices.getInstance().getOrder(orderId);
         } catch (OrderDoesNotExist orderDoesNotExist) {
             return new ResponseEntity<>(generateError(400, orderDoesNotExist.getMessage()), HttpStatus.BAD_REQUEST);
+        }catch (ServerInternalException e){
+            return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(order, HttpStatus.OK);
     }

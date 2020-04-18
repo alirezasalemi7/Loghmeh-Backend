@@ -71,8 +71,12 @@ public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,St
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("select * from "+tableName+" where cart_id=\""+id+"\";");
         ArrayList<CartItemDAO> items = new ArrayList<>();
-        while (rs.next()){
-            items.add(getObject(rs));
+        while (true){
+            CartItemDAO temp = getObject(rs);
+            if(temp!=null){
+                items.add(temp);
+            }
+            else break;
         }
         rs.close();
         statement.close();

@@ -15,10 +15,22 @@ import java.sql.SQLException;
 public class UserRepository {
 
     private static UserRepository instance;
+    private UserMapper userMapper;
+    private CartMapper cartMapper;
+    private CartItemMapper cartItemMapper;
 
-    private UserRepository(){}
+    private UserRepository() throws ServerInternalException{
+        try {
+            userMapper = new UserMapper();
+            cartMapper = new CartMapper();
+            cartItemMapper = new CartItemMapper();
+        }
+        catch (SQLException e){
+            throw new  ServerInternalException();
+        }
+    }
 
-    public static UserRepository getInstance(){
+    public static UserRepository getInstance() throws ServerInternalException{
         if(instance==null){
             instance = new UserRepository();
         }
@@ -27,8 +39,7 @@ public class UserRepository {
 
     public UserDAO getUser(String id) throws UserDoesNotExistException, ServerInternalException {
         try {
-            UserMapper mapper = new UserMapper();
-            UserDAO user = mapper.find(id);
+            UserDAO user = userMapper.find(id);
             if(user==null){
                 throw new UserDoesNotExistException();
             }
@@ -40,8 +51,7 @@ public class UserRepository {
 
     public void addCartItemToCart(CartItemDAO item) throws ServerInternalException {
         try {
-            CartItemMapper mapper = new CartItemMapper();
-            mapper.insert(item);
+            cartItemMapper.insert(item);
         }
         catch (SQLException e){
             throw new ServerInternalException();
@@ -50,8 +60,7 @@ public class UserRepository {
 
     public void updateCartItem(CartItemDAO item) throws ServerInternalException {
         try {
-            CartItemMapper mapper = new CartItemMapper();
-            mapper.updateItem(item);
+            cartItemMapper.updateItem(item);
         }
         catch (SQLException e){
             throw new ServerInternalException();
@@ -60,8 +69,7 @@ public class UserRepository {
 
     public void updateCart(CartDAO cart) throws ServerInternalException {
         try {
-            CartMapper mapper = new CartMapper();
-            mapper.updateRestaurantIdOfCart(cart.getUserId(), cart.getUserId());
+            cartMapper.updateRestaurantIdOfCart(cart.getUserId(), cart.getUserId());
         }
         catch (SQLException e){
             throw new ServerInternalException();
@@ -70,8 +78,7 @@ public class UserRepository {
 
     public void removeCartItem(CartItemDAO item) throws ServerInternalException {
         try {
-            CartItemMapper mapper = new CartItemMapper();
-            mapper.delete(new Quartet<>(item.getCartId(), item.getFoodName(), item.getRestaurantId(), item.isSpecial()));
+            cartItemMapper.delete(new Quartet<>(item.getCartId(), item.getFoodName(), item.getRestaurantId(), item.isSpecial()));
         }
         catch (SQLException e){
             throw new ServerInternalException();
@@ -90,8 +97,7 @@ public class UserRepository {
 
     public void updateCredit(UserDAO user) throws ServerInternalException {
         try {
-            UserMapper mapper = new UserMapper();
-            mapper.updateCredit(user.getId(), user.getCredit());
+            userMapper.updateCredit(user.getId(), user.getCredit());
         }catch (SQLException e){
             throw new ServerInternalException();
         }
@@ -99,10 +105,8 @@ public class UserRepository {
 
     public void resetCart(String userId) throws ServerInternalException {
         try {
-            CartMapper mapper = new CartMapper();
-            mapper.resetCart(userId);
-            CartItemMapper itemMapper = new CartItemMapper();
-            itemMapper.RemoveAllItemsOfCart(userId);
+            cartMapper.resetCart(userId);
+            cartItemMapper.RemoveAllItemsOfCart(userId);
         }
         catch (SQLException e){
             throw new ServerInternalException();
@@ -111,8 +115,7 @@ public class UserRepository {
 
     public CartDAO getUserCart(String userId) throws UserDoesNotExistException, ServerInternalException {
         try {
-            CartMapper mapper = new CartMapper();
-            CartDAO cart = mapper.find(userId);
+            CartDAO cart = cartMapper.find(userId);
             if(cart == null){
                 throw new UserDoesNotExistException();
             }
@@ -122,6 +125,4 @@ public class UserRepository {
             throw new ServerInternalException();
         }
     }
-
-
 }

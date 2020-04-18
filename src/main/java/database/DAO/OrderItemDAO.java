@@ -6,6 +6,24 @@ public class OrderItemDAO {
     private String restaurantId;
     private int count;
     private double cost;
+    private String orderId;
+    private boolean special;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public boolean isSpecial() {
+        return special;
+    }
+
+    public void setSpecial(boolean special) {
+        this.special = special;
+    }
 
     public String getFoodName() {
         return foodName;

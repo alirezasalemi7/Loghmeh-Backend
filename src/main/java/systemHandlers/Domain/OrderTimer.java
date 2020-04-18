@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import database.DAO.OrderDAO;
 import database.DAO.OrderState;
+import exceptions.ServerInternalException;
 import models.DeliveryMan;
 import models.Location;
 import org.apache.http.HttpResponse;
@@ -15,6 +16,7 @@ import systemHandlers.Services.OrderDeliveryManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.*;
 
 public class OrderTimer {
@@ -34,8 +36,13 @@ public class OrderTimer {
     private class DeliveryTask extends TimerTask{
         @Override
         public void run() {
-            OrderDeliveryManager.getInstance().updateOrderState(orderId, OrderState.Delivered, arrivalDate);
-            OrderDeliveryManager.getInstance().clearOrderTimer(orderId);
+            try {
+                OrderDeliveryManager.getInstance().updateOrderState(orderId, OrderState.Delivered, arrivalDate);
+                OrderDeliveryManager.getInstance().clearOrderTimer(orderId);
+            }
+            catch (ServerInternalException e){
+                timer.schedule(new DeliveryTask(), 1000);
+            }
         }
     }
 
@@ -44,12 +51,17 @@ public class OrderTimer {
     }
 
     private void changeStateToInRoad(int deliveryTime){
-        timer.schedule(new DeliveryTask(), 1000*deliveryTime);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.SECOND, deliveryTime);
         arrivalDate = calendar.getTime();
-        OrderDeliveryManager.getInstance().updateOrderState(orderId, OrderState.InRoad, arrivalDate);
+        try {
+            OrderDeliveryManager.getInstance().updateOrderState(orderId, OrderState.InRoad, arrivalDate);
+            timer.schedule(new DeliveryTask(), 1000*deliveryTime);
+        }
+        catch (ServerInternalException e){
+            timer.schedule(new FindDeliveryTask(), 30000);
+        }
     }
 
     protected class FindDeliveryTask extends TimerTask {
