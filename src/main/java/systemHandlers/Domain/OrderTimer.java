@@ -33,6 +33,14 @@ public class OrderTimer {
         this.userLocation = userLocation;
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setArrivalDate(Date date){
+        arrivalDate = date;
+    }
+
     private class DeliveryTask extends TimerTask{
         @Override
         public void run() {
@@ -44,6 +52,10 @@ public class OrderTimer {
                 timer.schedule(new DeliveryTask(), 1000);
             }
         }
+    }
+
+    public void setDeliveryTask(long time){
+        timer.schedule(new OrderTimer.DeliveryTask(), time);
     }
 
     public void start(){

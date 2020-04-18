@@ -29,6 +29,10 @@ public class OrderDeliveryManager {
         OrderRepository.getInstance().updateOrderStateAndDate(orderId, state, date);
     }
 
+    public void putOrderTimer(OrderTimer timer){
+        notDeliveredOrders.put(timer.getOrderId(), timer);
+    }
+
     public void clearOrderTimer(String orderId){
         notDeliveredOrders.remove(orderId);
     }
