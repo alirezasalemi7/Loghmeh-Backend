@@ -65,7 +65,8 @@ public class OrderInitializer implements ServletContextListener {
             }
         }
         catch (SQLException e){
-            System.err.println("SQL exception.\nexit.");
+            System.err.println("mySQL exception.\nexit.");
+            System.exit(1);
         }
     }
 

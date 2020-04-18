@@ -22,6 +22,17 @@ public class RestaurantDAO {
         return id;
     }
 
+    public RestaurantDAO(String name, String logoAddress, Location location, String id, HashMap<String, Boolean> menu, double averagePopularity) {
+        this.name = name;
+        this.logoAddress = logoAddress;
+        this.location = location;
+        this.id = id;
+        this.menu = menu;
+        this.averagePopularity = averagePopularity;
+    }
+
+    public RestaurantDAO() {}
+
     public String getName() {
         return name;
     }

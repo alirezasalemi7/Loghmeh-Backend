@@ -3,6 +3,8 @@ package servlets.listeners;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import database.DAO.FoodDAO;
+import database.DAO.RestaurantDAO;
 import exceptions.*;
 import models.Food;
 import models.Restaurant;
@@ -12,6 +14,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import systemHandlers.DataHandler;
+import systemHandlers.Repositories.RestaurantRepository;
+import systemHandlers.Services.RestaurantManager;
 import systemHandlers.SystemManager;
 
 import javax.servlet.ServletContextEvent;
@@ -21,10 +25,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -58,20 +59,22 @@ public class FoodPartyListener implements ServletContextListener {
                     System.err.println("Failed to obtain food Party information from external server. Error code: " + response.getStatusLine().getStatusCode());
                     System.exit(1);
                 }
-                terminatePreviousFoodParty();
-                SystemManager.getInstance().setFoodPartStartTime(java.util.Calendar.getInstance().getTime());
-                HashMap<String, Restaurant> systemRestaurants = DataHandler.getInstance().getAllRestaurant();
+                RestaurantRepository.getInstance().terminatePreviousFoodParty();
+                RestaurantManager.getInstance().setFoodPartyStartTime(Calendar.getInstance().getTime());
+                HashMap<String, Boolean> systemRestaurants = RestaurantRepository.getInstance().getAllRestaurantIds();
+                ArrayList<RestaurantDAO> newRestaurants = new ArrayList<>();
+                ArrayList<FoodDAO> newFoods = new ArrayList<>();
                 ArrayList<Restaurant> restaurants = externalServerBodyParser(getInputString(response.getEntity().getContent()));
                 for (Restaurant restaurant : restaurants) {
-                    Restaurant equivalent = systemRestaurants.getOrDefault(restaurant.getId(), restaurant);
-                    try {
-                        SystemManager.getInstance().addRestaurant(equivalent);
-                    } catch (RestaurantIsRegisteredException e) {
-                        for (SpecialFood food : restaurant.getSpecialMenu().values()) {
-                            equivalent.addFood(food);
-                        }
-                    }
+                    for (SpecialFood food : restaurant.getSpecialMenu().values())
+                        newFoods.add(new FoodDAO(food.getRestaurantId(), restaurant.getName(), food.getImageAddress(), food.getPopularity()
+                                , food.getName(), food.getPrice(), food.getDescription(), food.getCount(), food.getOldPrice()));
+                    if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
+                        newRestaurants.add(new RestaurantDAO(restaurant.getName(), restaurant.getLogoAddress()
+                                , restaurant.getLocation(), restaurant.getId(), null, restaurant.getAveragePopularity()));
                 }
+                RestaurantRepository.getInstance().addFoods(newFoods);
+                RestaurantRepository.getInstance().addRestaurants(newRestaurants);
             } catch (Exception e) {
                 //
             }
@@ -93,7 +96,7 @@ public class FoodPartyListener implements ServletContextListener {
                 JsonNode root = mapper.readTree(jsonBody);
                 if(root.isArray()) {
                     for(JsonNode restaurant : root) {
-                        String utf8 = new String(restaurant.toString().getBytes(),"UTF-8");
+                        String utf8 = new String(restaurant.toString().getBytes(),"UTF_8");
                         Restaurant encodedObject = Restaurant.deserializeFromJson(utf8);
                         restaurants.add(encodedObject);
                     }
@@ -104,22 +107,6 @@ public class FoodPartyListener implements ServletContextListener {
                 System.err.println("invalid input from external server. terminated.");
                 System.exit(1);
                 return null;
-            }
-        }
-
-        private void terminatePreviousFoodParty(){
-            HashMap<String, Restaurant> restaurants = DataHandler.getInstance().getAllRestaurant();
-            for (Map.Entry<String, Restaurant> entry : restaurants.entrySet()) {
-                Restaurant restaurant = entry.getValue();
-                for (SpecialFood food : restaurant.getSpecialMenu().values()) {
-                    try {
-                        restaurant.addFood(food.changeToNormalFood());
-                    } catch (FoodIsRegisteredException e) {
-                        // nothing
-                    } finally {
-                        restaurant.removeFood(food);
-                    }
-                }
             }
         }
 

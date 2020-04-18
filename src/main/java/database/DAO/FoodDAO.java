@@ -9,7 +9,7 @@ public class FoodDAO {
     private String name;
     private Double price;
     private String description;
-    private int count;
+    private Integer count;
     private Double oldPrice;
     private boolean special;
 
@@ -69,6 +69,7 @@ public class FoodDAO {
         this.description = description;
         this.count = count;
         this.oldPrice = oldPrice;
+        this.special = true;
     }
 
     public FoodDAO(String restaurantId, String restaurantName, String logo, Double popularity, String name, Double price, String description) {
@@ -79,5 +80,8 @@ public class FoodDAO {
         this.name = name;
         this.price = price;
         this.description = description;
+        this.special = false;
+        this.count = null;
+        this.oldPrice = null;
     }
 }

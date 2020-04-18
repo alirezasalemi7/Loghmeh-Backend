@@ -4,10 +4,7 @@ package systemHandlers.Services;
 import database.DAO.FoodDAO;
 import database.DAO.RestaurantDAO;
 import database.DAO.UserDAO;
-import exceptions.FoodDoesntExistException;
-import exceptions.OutOfRangeException;
-import exceptions.RestaurantDoesntExistException;
-import exceptions.UserDoesNotExistException;
+import exceptions.*;
 import models.Location;
 import restAPI.DTO.Restaurant.*;
 import systemHandlers.Repositories.RestaurantRepository;
@@ -20,7 +17,7 @@ import java.util.HashMap;
 public class RestaurantManager {
 
     private static RestaurantManager instance;
-    private Date _foodPartyStartTime;
+    private Date foodPartyStartTime;
 
     private RestaurantManager() {}
 
@@ -30,15 +27,15 @@ public class RestaurantManager {
         return instance;
     }
 
-    public void setFoodPartStartTime(Date date){
-        this._foodPartyStartTime = date;
+    public void setFoodPartyStartTime(Date date){
+        this.foodPartyStartTime = date;
     }
 
     public Date getFoodPartyStartTime(){
-        return _foodPartyStartTime;
+        return foodPartyStartTime;
     }
 
-    public RestaurantListDTO getInRangeRestaurants(String userId) throws UserDoesNotExistException {
+    public RestaurantListDTO getInRangeRestaurants(String userId) throws UserDoesNotExistException, ServerInternalException {
         ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getAllRestaurants();
         ArrayList<RestaurantInfoDTO> restaurantList = new ArrayList<>();
         UserDAO user = UserRepository.getInstance().getUser(userId);
@@ -50,7 +47,7 @@ public class RestaurantManager {
         return new RestaurantListDTO(restaurantList);
     }
 
-    public RestaurantDTO getNearbyRestaurantById(String restaurantId, String userId) throws RestaurantDoesntExistException, UserDoesNotExistException,OutOfRangeException {
+    public RestaurantDTO getNearbyRestaurantById(String restaurantId, String userId) throws RestaurantDoesntExistException, UserDoesNotExistException, OutOfRangeException, ServerInternalException {
         RestaurantDAO restaurant = RestaurantRepository.getInstance().getRestaurantById(restaurantId);
         UserDAO user = UserRepository.getInstance().getUser(userId);
         if (!this.isInRange(user.getLocation(), restaurant.getLocation()))
@@ -65,7 +62,7 @@ public class RestaurantManager {
                     foods.add(new FoodDTO(restaurantId, food.getRestaurantName(), food.getLogo()
                             , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription()));
                 } catch (FoodDoesntExistException e) {
-                    //never occurs here
+                    //never reaches here
                 }
             }
         }

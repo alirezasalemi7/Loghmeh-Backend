@@ -2,13 +2,18 @@ package servlets.listeners;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import database.DAO.FoodDAO;
+import database.DAO.RestaurantDAO;
 import exceptions.InvalidJsonInputException;
 import exceptions.RestaurantIsRegisteredException;
+import models.NormalFood;
 import models.Restaurant;
+import models.SpecialFood;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import systemHandlers.Repositories.RestaurantRepository;
 import systemHandlers.SystemManager;
 
 import javax.servlet.ServletContextEvent;
@@ -18,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @WebListener
 public class ServerInitialListener implements ServletContextListener {
@@ -81,14 +87,18 @@ public class ServerInitialListener implements ServletContextListener {
 
     private void fetchFromExternalServer(){
         ArrayList<Restaurant> restaurants = externalServerBodyParser(sendGetRequestToGetDataOnStart());
-        try {
-            for (Restaurant restaurant : restaurants){
-                _system.addRestaurant(restaurant);
-            }
+        HashMap<String, Boolean> systemRestaurants = RestaurantRepository.getInstance().getAllRestaurantIds();
+        ArrayList<RestaurantDAO> newRestaurants = new ArrayList<>();
+        ArrayList<FoodDAO> newFoods = new ArrayList<>();
+        for (Restaurant restaurant : restaurants) {
+            for (NormalFood food : restaurant.getNormalMenu().values())
+                newFoods.add(new FoodDAO(food.getRestaurantId(), restaurant.getName(), food.getImageAddress(), food.getPopularity()
+                        , food.getName(), food.getPrice(), food.getDescription()));
+            if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
+                newRestaurants.add(new RestaurantDAO(restaurant.getName(), restaurant.getLogoAddress()
+                        , restaurant.getLocation(), restaurant.getId(), null, restaurant.getAveragePopularity()));
         }
-        catch (RestaurantIsRegisteredException e){
-            System.err.println("duplicated restaurant from external server. terminate.");
-            System.exit(1);
-        }
+        RestaurantRepository.getInstance().addFoods(newFoods);
+        RestaurantRepository.getInstance().addRestaurants(newRestaurants);
     }
 }
