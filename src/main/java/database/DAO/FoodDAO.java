@@ -68,7 +68,7 @@ public class FoodDAO {
         return description;
     }
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
 
