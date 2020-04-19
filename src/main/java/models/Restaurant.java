@@ -156,7 +156,6 @@ public class Restaurant {
             jsonGenerator.writeStringField("name", _name);
             jsonGenerator.writeObjectField("id", _id);
             jsonGenerator.writeObjectField("logo", _logoAddress);
-//            jsonGenerator.writeStringField("description",_description);
             jsonGenerator.writeObjectField("location", _location);
             jsonGenerator.writeArrayFieldStart("menu");
             for(Food food : foodList){
@@ -204,7 +203,6 @@ public class Restaurant {
                 String name = root.get("name").asText();
                 String id = root.get("id").asText();
                 String logo = root.get("logo").asText();
-//                String description = root.get("description").asText();
                 JsonNode locationNode = root.get("location");
                 ObjectMapper mapper = new ObjectMapper();
                 Location location = mapper.readValue(locationNode.toString(), Location.class);

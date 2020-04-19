@@ -1,17 +1,36 @@
 package database.DAO;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY , getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FoodDAO {
 
     private String restaurantId;
     private String restaurantName;
+    @JsonProperty("image")
     private String logo;
+    @JsonProperty("popularity")
     private Double popularity;
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("price")
     private Double price;
+    @JsonProperty("description")
     private String description;
+    @JsonProperty("count")
     private Integer count;
+    @JsonProperty("oldPrice")
     private Double oldPrice;
     private boolean special;
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
 
     public boolean isSpecial() {
         return special;

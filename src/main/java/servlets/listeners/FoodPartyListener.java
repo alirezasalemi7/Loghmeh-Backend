@@ -104,7 +104,7 @@ public class FoodPartyListener implements ServletContextListener {
                 JsonNode root = mapper.readTree(jsonBody);
                 if(root.isArray()) {
                     for(JsonNode restaurant : root) {
-                        String utf8 = new String(restaurant.toString().getBytes(),"UTF_8");
+                        String utf8 = new String(restaurant.toString().getBytes(),"UTF-8");
                         Restaurant encodedObject = Restaurant.deserializeFromJson(utf8);
                         restaurants.add(encodedObject);
                     }
