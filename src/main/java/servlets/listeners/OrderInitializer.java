@@ -16,17 +16,18 @@ import systemHandlers.Services.RestaurantManager;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+@WebListener
 public class OrderInitializer implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try{
-            OrderMapper mapper = new OrderMapper();
-            ArrayList<OrderDAO> orders = mapper.getNotDeliveredOrders();
+            ArrayList<OrderDAO> orders = OrderRepository.getInstance().getNotDeliveredOrders();
             for (OrderDAO order : orders){
                 if(order.getState()== OrderState.InRoad){
                     try {
@@ -51,7 +52,6 @@ public class OrderInitializer implements ServletContextListener {
                         UserDAO user = UserRepository.getInstance().getUser(order.getUserId());
                         Location restaurantLocation = RestaurantManager.getInstance().getRestaurantLocation(order.getRestaurantId());
                         OrderDeliveryManager.getInstance().addOrderToDeliver(order, restaurantLocation, user.getLocation());
-
                     }
                     catch (RestaurantDoesntExistException e){
                         //never reach
@@ -60,12 +60,12 @@ public class OrderInitializer implements ServletContextListener {
                         System.exit(1);
                     }
                     catch (UserDoesNotExistException e){/*never reach*/}
-
                 }
             }
         }
-        catch (SQLException e){
+        catch (ServerInternalException e){
             System.err.println("mySQL exception.\nexit.");
+            e.printStackTrace();
             System.exit(1);
         }
     }
