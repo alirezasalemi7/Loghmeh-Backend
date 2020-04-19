@@ -21,6 +21,7 @@ public class OrderRepository {
             orderMapper = new OrderMapper();
         }
         catch (SQLException e){
+            System.err.println(e.getMessage());
             throw new ServerInternalException();
         }
     }

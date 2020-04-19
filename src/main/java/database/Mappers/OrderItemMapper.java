@@ -14,7 +14,7 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
 
     private String tableName = "Order_items";
 
-    OrderItemMapper() throws SQLException{
+    public OrderItemMapper() throws SQLException{
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.execute(

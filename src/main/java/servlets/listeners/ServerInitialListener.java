@@ -103,7 +103,7 @@ public class ServerInitialListener implements ServletContextListener {
             if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
                 newRestaurants.add(restaurant);
         }
-        RestaurantRepository.getInstance().addFoods(newFoods);
         RestaurantRepository.getInstance().addRestaurants(newRestaurants);
+        RestaurantRepository.getInstance().addFoods(newFoods);
     }
 }
