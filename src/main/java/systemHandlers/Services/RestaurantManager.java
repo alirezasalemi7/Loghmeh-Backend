@@ -46,13 +46,12 @@ public class RestaurantManager {
     }
 
     public RestaurantDTO getNearbyRestaurantById(String restaurantId, String userId) throws RestaurantDoesntExistException, UserDoesNotExistException, OutOfRangeException, ServerInternalException {
-        RestaurantDAO restaurant = RestaurantRepository.getInstance().getRestaurantById(restaurantId);
         UserDAO user = UserRepository.getInstance().getUser(userId);
+        RestaurantDAO restaurant = RestaurantRepository.getInstance().getRestaurantById(restaurantId);
         if (!this.isInRange(user.getLocation(), restaurant.getLocation()))
             throw new OutOfRangeException("Restaurant " + restaurant.getName() + "is not in range.");
         ArrayList<FoodDTO> foods = new ArrayList<>();
-        ArrayList<FoodDAO> menu = RestaurantRepository.getInstance().getNormalFoods(restaurantId);
-        for (FoodDAO food : menu) {
+        for (FoodDAO food : restaurant.getMenu()) {
             foods.add(new FoodDTO(restaurantId, food.getRestaurantName(), food.getLogo()
                     , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription()));
         }

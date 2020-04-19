@@ -41,6 +41,7 @@ public class RestaurantRepository {
             RestaurantDAO restaurant = restaurantMapper.find(restaurantId);
             if (restaurant == null)
                 throw new RestaurantDoesntExistException("Restaurant does not exist.");
+            restaurant.setMenu(this.getNormalFoods(restaurantId));
             return restaurant;
         } catch (SQLException e) {
             throw new ServerInternalException();
@@ -125,7 +126,7 @@ public class RestaurantRepository {
         }
     }
 
-    public ArrayList<FoodDAO> getNormalFoods(String restaurantId) throws ServerInternalException {
+    private ArrayList<FoodDAO> getNormalFoods(String restaurantId) throws ServerInternalException {
         try {
             return foodMapper.getNormalFoods(restaurantId);
         } catch (SQLException e) {
