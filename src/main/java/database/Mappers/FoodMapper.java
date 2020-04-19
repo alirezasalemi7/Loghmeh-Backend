@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>> {
 
@@ -63,14 +64,43 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         return food;
     }
 
-    public void updateFoodCount(String restaurantId, String foodId, int count) throws SQLException, FoodDoesntExistException {
+    private void runQuery(String query) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String query = "update " + tableName + " set count = " + count + " where special = 1 and restaurant_id = \"" + restaurantId + "\" and name = \"" + foodId + "\";";
         Statement statement = connection.createStatement();
-        if (statement.executeUpdate(query) != 1)
-            throw new FoodDoesntExistException(foodId + " doesn't exist in " + restaurantId);
+        statement.executeUpdate(query);
         statement.close();
         connection.close();
+    }
+
+    public HashMap<String, Boolean> getNormalFoodIds(String restaurantId) throws SQLException {
+        String query = "select name from " + tableName + " where restaurant_id = \"" + restaurantId + "\" and special = 0;";
+        Connection connection = ConnectionPool.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        HashMap<String, Boolean> ids = new HashMap<>();
+        while(rs.next())
+            ids.put(rs.getString("name"), true);
+        statement.close();
+        connection.close();
+        return ids;
+    }
+
+    public ArrayList<FoodDAO> getNormalFoods(String restaurantId) throws SQLException {
+        String query = "select * from " + tableName + " where restaurant_id = \"" + restaurantId + "\" and special = 0;";
+        Connection connection = ConnectionPool.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        ArrayList<FoodDAO> foods = new ArrayList<>();
+        while(rs.next())
+            foods.add(this.getObject(rs));
+        statement.close();
+        connection.close();
+        return foods;
+    }
+
+    public void updateFoodCount(String restaurantId, String foodId, int count) throws SQLException {
+        String query = "update " + tableName + " set count = " + count + " where special = 1 and restaurant_id = \"" + restaurantId + "\" and name = \"" + foodId + "\";";
+        this.runQuery(query);
     }
 
     private String concatValues(ArrayList<FoodDAO> foods) {
@@ -84,11 +114,17 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
     public void insertAllFoods(ArrayList<FoodDAO> foods) throws SQLException {
         String content = this.concatValues(foods);
         String query = "insert into " + tableName + "(restaurant_id, restaurant_name, name, logo, popularity, price, description, special, count, old_price) values " + content + ";";
-        Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(query);
-        statement.close();
-        connection.close();
+        this.runQuery(query);
+    }
+
+    public void changeSpecialFoodsToNormal() throws SQLException {
+        String query = "update " + tableName + " set price = old_price, count = null, old_price = null, special = 0 where special = 1;";
+        this.runQuery(query);
+    }
+
+    public void deleteRedundantSpecialFoods() throws SQLException {
+        String query = "delete F.* from " + tableName + " F, " + tableName + " F1 where ((F.special = 1) and (F1.special = 0) and (F.name = F1.name) and (F.restaurant_id = F1.restaurant_id));";
+        this.runQuery(query);
     }
 
     public ArrayList<FoodDAO> getAllSpecialFoods() throws SQLException {

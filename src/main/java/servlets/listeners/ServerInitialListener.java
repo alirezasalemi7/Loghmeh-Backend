@@ -95,9 +95,11 @@ public class ServerInitialListener implements ServletContextListener {
         ArrayList<RestaurantDAO> newRestaurants = new ArrayList<>();
         ArrayList<FoodDAO> newFoods = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
+            HashMap<String, Boolean> restaurantFoods = RestaurantRepository.getInstance().getNormalFoodIds(restaurant.getId());
             for (NormalFood food : restaurant.getNormalMenu().values())
-                newFoods.add(new FoodDAO(food.getRestaurantId(), restaurant.getName(), food.getImageAddress(), food.getPopularity()
-                        , food.getName(), food.getPrice(), food.getDescription()));
+                if (!restaurantFoods.getOrDefault(food.getName(), false))
+                    newFoods.add(new FoodDAO(food.getRestaurantId(), restaurant.getName(), food.getImageAddress(), food.getPopularity()
+                            , food.getName(), food.getPrice(), food.getDescription()));
             if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
                 newRestaurants.add(new RestaurantDAO(restaurant.getName(), restaurant.getLogoAddress()
                         , restaurant.getLocation(), restaurant.getId()));

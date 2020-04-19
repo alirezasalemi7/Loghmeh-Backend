@@ -82,7 +82,7 @@ public class RestaurantRepository {
         }
     }
 
-    public void setFoodCount(String restaurantId, String foodId, int count) throws FoodDoesntExistException, ServerInternalException {
+    public void setFoodCount(String restaurantId, String foodId, int count) throws ServerInternalException {
         try {
             foodMapper.updateFoodCount(restaurantId, foodId, count);
         } catch (SQLException e) {
@@ -108,8 +108,29 @@ public class RestaurantRepository {
         }
     }
 
-    public void terminatePreviousFoodParty() {
-        return;
+    public void terminatePreviousFoodParty() throws ServerInternalException {
+        try {
+            foodMapper.deleteRedundantSpecialFoods();
+            foodMapper.changeSpecialFoodsToNormal();
+        } catch (SQLException e) {
+            throw new ServerInternalException();
+        }
+    }
+
+    public HashMap<String, Boolean> getNormalFoodIds(String restaurantId) throws ServerInternalException {
+        try {
+            return foodMapper.getNormalFoodIds(restaurantId);
+        } catch (SQLException e) {
+            throw new ServerInternalException();
+        }
+    }
+
+    public ArrayList<FoodDAO> getNormalFoods(String restaurantId) throws ServerInternalException {
+        try {
+            return foodMapper.getNormalFoods(restaurantId);
+        } catch (SQLException e) {
+            throw new ServerInternalException();
+        }
     }
 
     public void addFoods(ArrayList<FoodDAO> foods) throws ServerInternalException {
