@@ -34,8 +34,12 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
                 ");";
         Statement stmt = connection.createStatement();
         stmt.execute(createTable);
-        stmt.close();
-        connection.close();
+        if(stmt!=null && !stmt.isClosed()){
+            stmt.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
     @Override
@@ -70,8 +74,12 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.executeUpdate(query);
-        statement.close();
-        connection.close();
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
     public HashMap<String, Boolean> getNormalFoodIds(String restaurantId) throws SQLException {
@@ -82,8 +90,15 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         HashMap<String, Boolean> ids = new HashMap<>();
         while(rs.next())
             ids.put(rs.getString("name"), true);
-        statement.close();
-        connection.close();
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
         return ids;
     }
 
@@ -95,8 +110,15 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         ArrayList<FoodDAO> foods = new ArrayList<>();
         while(rs.next())
             foods.add(this.getObject(rs));
-        statement.close();
-        connection.close();
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
         return foods;
     }
 
@@ -137,9 +159,15 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         ArrayList<FoodDAO> foods = new ArrayList<>();
         while (rs.next())
             foods.add(getObject(rs));
-        rs.close();
-        statement.close();
-        connection.close();
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
         return foods;
     }
 }

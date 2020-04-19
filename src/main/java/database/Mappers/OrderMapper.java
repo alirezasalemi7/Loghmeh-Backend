@@ -75,6 +75,9 @@ public class OrderMapper extends Mapper<OrderDAO,String> {
 
     @Override
     protected OrderDAO getObject(ResultSet rs) throws SQLException {
+        if(!rs.next()){
+            return null;
+        }
         OrderDAO dao = new OrderDAO();
         dao.setUserId(rs.getString("user_id"));
         dao.setRestaurantId(rs.getString("restaurant_id"));
@@ -98,8 +101,13 @@ public class OrderMapper extends Mapper<OrderDAO,String> {
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("select * from "+tableName+" where user_id=\""+uid+"\";");
         ArrayList<OrderDAO> items = new ArrayList<>();
-        while (rs.next())
-            items.add(getObject(rs));
+        while (true){
+            OrderDAO temp = getObject(rs);
+            if(temp!=null){
+                items.add(temp);
+            }
+            else break;
+        }
         rs.close();
         statement.close();
         connection.close();
@@ -111,8 +119,13 @@ public class OrderMapper extends Mapper<OrderDAO,String> {
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("select * from "+tableName+" where state!=\""+OrderState.Delivered.toString()+"\";");
         ArrayList<OrderDAO> items = new ArrayList<>();
-        while (rs.next())
-            items.add(getObject(rs));
+        while (true){
+            OrderDAO temp = getObject(rs);
+            if(temp!=null){
+                items.add(temp);
+            }
+            else break;
+        }
         rs.close();
         statement.close();
         connection.close();

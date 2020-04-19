@@ -15,7 +15,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import systemHandlers.Repositories.RestaurantRepository;
-import systemHandlers.SystemManager;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

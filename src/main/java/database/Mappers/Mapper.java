@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public abstract class Mapper<T, I> implements IMapper<T, I> {
 
@@ -20,12 +21,11 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
 
     @Override
     public T find(I id) throws SQLException {
-        try {
-            Connection connection = ConnectionPool.getConnection();
-            PreparedStatement stmt = connection.prepareStatement(getFindStatement(id));
+        try (
+                Connection connection = ConnectionPool.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(getFindStatement(id))
+        ) {
             ResultSet rs = stmt.executeQuery();
-            if (!rs.next())
-                return null;
             T object = getObject(rs);
             rs.close();
             stmt.close();

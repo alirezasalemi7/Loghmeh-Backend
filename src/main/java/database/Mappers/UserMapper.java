@@ -29,8 +29,12 @@ public class UserMapper extends Mapper<UserDAO,String> {
                         "locy int not null"+
                         ");"
         );
-        statement.close();
-        connection.close();
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
     @Override
@@ -70,8 +74,12 @@ public class UserMapper extends Mapper<UserDAO,String> {
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.executeQuery("update "+tableName+ "set credit="+credit+"where id=\""+id+"\";");
-        statement.close();
-        connection.close();
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
 }

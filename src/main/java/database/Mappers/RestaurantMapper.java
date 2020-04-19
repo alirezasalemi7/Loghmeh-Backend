@@ -27,8 +27,12 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
                 ");";
         Statement stmt = connection.createStatement();
         stmt.execute(createTable);
-        stmt.close();
-        connection.close();
+        if(stmt!=null && !stmt.isClosed()){
+            stmt.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
     @Override
@@ -68,8 +72,12 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.executeUpdate(query);
-        statement.close();
-        connection.close();
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
     public ArrayList<RestaurantDAO> getAllRestaurantsInfo() throws SQLException {
@@ -80,9 +88,15 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
         while (rs.next())
             restaurants.add(getObject(rs));
-        rs.close();
-        statement.close();
-        connection.close();
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
         return restaurants;
     }
 
@@ -94,9 +108,15 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         HashMap<String, Boolean> ids = new HashMap<>();
         while (rs.next())
             ids.put(rs.getString("id"), true);
-        rs.close();
-        stmt.close();
-        connection.close();
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(stmt!=null && !stmt.isClosed()){
+            stmt.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
         return ids;
     }
 

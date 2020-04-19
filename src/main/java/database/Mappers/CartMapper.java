@@ -27,8 +27,12 @@ public class CartMapper extends Mapper<CartDAO, String> {
                         "foreign key(id) REFERENCES Users(id)"+
                         ");"
         );
-        statement.close();
-        connection.close();
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
     @Override
@@ -76,16 +80,24 @@ public class CartMapper extends Mapper<CartDAO, String> {
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.executeQuery("update "+tableName+" set restaurant_id = \""+restaurantId+"\" where cart_id=\""+cartId+"\";");
-        statement.close();
-        connection.close();
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
     public void resetCart(String id) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         statement.executeQuery("update "+tableName+" set restaurant_id = null where cart_id=\""+id+"\";");
-        statement.close();
-        connection.close();
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
     }
 
 }

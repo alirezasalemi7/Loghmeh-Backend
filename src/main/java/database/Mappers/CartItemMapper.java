@@ -53,6 +53,9 @@ public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,St
 
     @Override
     protected CartItemDAO getObject(ResultSet rs) throws SQLException {
+        if(!rs.next()){
+            return null;
+        }
         CartItemDAO cartItem = new CartItemDAO();
         cartItem.setCost(rs.getDouble("cost"));
         cartItem.setCount(rs.getInt("count"));
@@ -68,8 +71,13 @@ public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,St
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("select * from "+tableName+" where cart_id=\""+id+"\";");
         ArrayList<CartItemDAO> items = new ArrayList<>();
-        while (rs.next())
-            items.add(getObject(rs));
+        while (true){
+            CartItemDAO temp = getObject(rs);
+            if(temp!=null){
+                items.add(temp);
+            }
+            else break;
+        }
         rs.close();
         statement.close();
         connection.close();
