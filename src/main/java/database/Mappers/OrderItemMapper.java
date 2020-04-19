@@ -51,9 +51,6 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
 
     @Override
     protected OrderItemDAO getObject(ResultSet rs) throws SQLException {
-        if(!rs.next()){
-            return null;
-        }
         OrderItemDAO dao = new OrderItemDAO();
         dao.setOrderId(rs.getString("order_id"));
         dao.setFoodName(rs.getString("food_name"));
@@ -69,13 +66,8 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("select * from "+tableName+" where order_id=\""+id+"\";");
         ArrayList<OrderItemDAO> items = new ArrayList<>();
-        while (true){
-            OrderItemDAO temp = getObject(rs);
-            if(temp!=null){
-                items.add(temp);
-            }
-            else break;
-        }
+        while (rs.next())
+            items.add(getObject(rs));
         rs.close();
         statement.close();
         connection.close();

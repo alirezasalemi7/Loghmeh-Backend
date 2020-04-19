@@ -12,6 +12,30 @@ public class FoodDTO {
 
     public FoodDTO() {}
 
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public FoodDTO(String restaurantId, String restaurantName, String logo, Double popularity, String name, Double price, String description) {
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;

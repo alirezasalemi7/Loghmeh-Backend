@@ -52,7 +52,7 @@ public class RestaurantManager {
             throw new OutOfRangeException("Restaurant " + restaurant.getName() + "is not in range.");
         ArrayList<FoodDTO> foods = new ArrayList<>();
         for (FoodDAO food : restaurant.getMenu()) {
-            foods.add(new FoodDTO(restaurantId, food.getRestaurantName(), food.getLogo()
+            foods.add(new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo()
                     , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription()));
         }
         return new RestaurantDTO(new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId()), foods);

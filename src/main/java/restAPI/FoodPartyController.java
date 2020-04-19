@@ -1,22 +1,16 @@
 package restAPI;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.FoodDoesntExistException;
-import exceptions.InvalidToJsonException;
 import exceptions.ServerInternalException;
-import models.Restaurant;
-import models.SpecialFood;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import restAPI.DTO.Error.ErrorDTO;
 import restAPI.DTO.Restaurant.SpecialFoodDTO;
-import systemHandlers.DataHandler;
 import systemHandlers.Services.RestaurantManager;
-import systemHandlers.SystemManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,20 +20,13 @@ public class FoodPartyController {
 
     private final JsonNodeFactory factory = JsonNodeFactory.instance;
 
-    private ObjectNode generateError(JsonNodeFactory factory, int status, String description) {
-        ObjectNode errorNode = factory.objectNode();
-        errorNode.put("status", status);
-        errorNode.put("description", description);
-        return errorNode;
-    }
-
     @RequestMapping(value = "/foodParty",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllFoods() {
         ArrayList<SpecialFoodDTO> foods = null;
         try {
             foods = RestaurantManager.getInstance().getAllSpecialFoods();
         } catch (ServerInternalException e) {
-            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorDTO("internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }
@@ -62,14 +49,14 @@ public class FoodPartyController {
             @RequestBody(required = true) JsonNode restaurantId
     ) {
         if (restaurantId == null)
-            return new ResponseEntity<>(generateError(factory, 400, "Food doesn't exist"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorDTO("restaurant doesn't exist", 400), HttpStatus.NOT_FOUND);
         try {
             SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(restaurantId.asText(), foodId);
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e) {
-            return new ResponseEntity<>(generateError(factory, 404, "Food doesn't exist"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorDTO("Food doesn't exist", 404), HttpStatus.NOT_FOUND);
         } catch (ServerInternalException e) {
-            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorDTO("internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

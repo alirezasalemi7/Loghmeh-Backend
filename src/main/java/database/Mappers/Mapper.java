@@ -26,6 +26,8 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
                 PreparedStatement stmt = connection.prepareStatement(getFindStatement(id))
         ) {
             ResultSet rs = stmt.executeQuery();
+            if(!rs.next())
+                return null;
             T object = getObject(rs);
             rs.close();
             stmt.close();

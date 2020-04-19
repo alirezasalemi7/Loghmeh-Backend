@@ -7,8 +7,8 @@ public class ErrorDTO {
 
     ErrorDTO(){}
 
-    public ErrorDTO(String description,int error){
-        this.status = error;
+    public ErrorDTO(String description,int status){
+        this.status = status;
         this.description = description;
     }
 

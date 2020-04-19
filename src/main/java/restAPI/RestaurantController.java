@@ -2,13 +2,11 @@ package restAPI;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import restAPI.DTO.Error.ErrorDTO;
 import restAPI.DTO.Restaurant.FoodDTO;
 import restAPI.DTO.Restaurant.RestaurantDTO;
 import restAPI.DTO.Restaurant.RestaurantListDTO;
@@ -18,29 +16,21 @@ import systemHandlers.Services.RestaurantManager;
 @RestController
 public class RestaurantController {
 
-    private final JsonNodeFactory factory = JsonNodeFactory.instance;
-
-    private ObjectNode generateError(JsonNodeFactory factory, int status, String description) {
-        ObjectNode errorNode = factory.objectNode();
-        errorNode.put("status", status);
-        errorNode.put("description", description);
-        return errorNode;
-    }
-
     @RequestMapping(value = "/restaurants",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllRestaurants(
             @RequestBody(required = true) JsonNode user
     ){
         JsonNode userId = user.get("id");
         if (userId == null)
-            return new ResponseEntity<>(generateError(factory, 400, "user id has not been passed."), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
         RestaurantListDTO restaurantList = null;
         try {
             restaurantList = RestaurantManager.getInstance().getInRangeRestaurants(userId.asText());
         } catch (UserDoesNotExistException e) {
-            return new ResponseEntity<>(generateError(factory, 404, e.getMessage()), HttpStatus.OK);
+            return new ResponseEntity<>(new ErrorDTO(e.getMessage(), 404), HttpStatus.OK);
         } catch (ServerInternalException e) {
-            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorDTO("internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
@@ -52,18 +42,19 @@ public class RestaurantController {
     ){
         JsonNode userId = user.get("id");
         if (userId == null)
-            return new ResponseEntity<>(generateError(factory, 400, "user id has not been passed."), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
         try {
             RestaurantDTO restaurant = RestaurantManager.getInstance().getNearbyRestaurantById(restaurantId, userId.asText());
             return new ResponseEntity<>(restaurant, HttpStatus.OK);
         } catch (RestaurantDoesntExistException e) {
-            return new ResponseEntity<>(generateError(factory, 404, "restaurant does not exist"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorDTO("restaurant does not exist", 404), HttpStatus.NOT_FOUND);
         } catch (OutOfRangeException e) {
-            return new ResponseEntity<>(generateError(factory, 403, "restaurant is not in range"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(new ErrorDTO("restaurant is not in range", 403), HttpStatus.FORBIDDEN);
         } catch (UserDoesNotExistException e) {
-            return new ResponseEntity<>(generateError(factory, 404, e.getMessage()), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorDTO(e.getMessage(), 404), HttpStatus.NOT_FOUND);
         } catch (ServerInternalException e) {
-            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorDTO("internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -75,12 +66,12 @@ public class RestaurantController {
         try {
             FoodDTO food = RestaurantManager.getInstance().getFoodById(restaurantId, foodId);
             if (food == null)
-                return new ResponseEntity<>(generateError(factory, 400, "food is not in restaurant menu"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ErrorDTO("food is not in restaurant menu", 400), HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e){
-            return new ResponseEntity<>(generateError(factory, 404, "food does not exist"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorDTO("food does not exist", 404), HttpStatus.NOT_FOUND);
         } catch (ServerInternalException e) {
-            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorDTO("internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -92,12 +83,12 @@ public class RestaurantController {
         try {
             SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(restaurantId, foodId);
             if (food == null)
-                return new ResponseEntity<>(generateError(factory, 400, "food is not in restaurant menu"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ErrorDTO("food is not in restaurant menu", 400), HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e) {
-            return new ResponseEntity<>(generateError(factory, 403, "food does not exist"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorDTO("food does not exist", 403), HttpStatus.NOT_FOUND);
         } catch (ServerInternalException e) {
-            return new ResponseEntity<>(generateError(factory, 500, "internal server error occured"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorDTO("internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

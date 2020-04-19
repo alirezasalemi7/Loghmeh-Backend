@@ -15,6 +15,42 @@ public class SpecialFoodDTO {
 
     public SpecialFoodDTO() {}
 
+    public String getId() {
+        return id;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public Double getOldPrice() {
+        return oldPrice;
+    }
+
     public SpecialFoodDTO(String restaurantId, String restaurantName, String logo, Double popularity, String name, Double price, String description, int count, Double oldPrice) {
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;
