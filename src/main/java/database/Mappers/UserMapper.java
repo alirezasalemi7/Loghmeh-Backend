@@ -53,9 +53,6 @@ public class UserMapper extends Mapper<UserDAO,String> {
 
     @Override
     protected UserDAO getObject(ResultSet rs) throws SQLException {
-        if(!rs.next()){
-            return null;
-        }
         UserDAO dao = new UserDAO();
         dao.setName(rs.getString("name"));
         dao.setFamily(rs.getString("family"));

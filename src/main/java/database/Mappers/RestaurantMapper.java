@@ -50,9 +50,8 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
 
     @Override
     protected RestaurantDAO getObject(ResultSet rs) throws SQLException {
-        if (!rs.next())
-            return null;
-        return new RestaurantDAO(rs.getString("name"), rs.getString("logo"), new Location(rs.getInt("locx"), rs.getInt("locy")), rs.getString("id"));
+        return new RestaurantDAO(rs.getString("name"), rs.getString("logo")
+                , new Location(rs.getInt("locx"), rs.getInt("locy")), rs.getString("id"));
     }
 
     private String concatValues(ArrayList<RestaurantDAO> restaurants) {

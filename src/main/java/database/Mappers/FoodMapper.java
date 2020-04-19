@@ -57,8 +57,6 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
 
     @Override
     protected FoodDAO getObject(ResultSet rs) throws SQLException {
-        if(rs.next())
-            return null;
         FoodDAO food;
         if (rs.getInt("special") == 1)
             food = new FoodDAO(rs.getString("restaurant_id"), rs.getString("restaurant_name"), rs.getString("logo"), rs.getDouble("popularity"), rs.getString("name")

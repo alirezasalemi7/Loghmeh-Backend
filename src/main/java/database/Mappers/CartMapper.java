@@ -50,9 +50,6 @@ public class CartMapper extends Mapper<CartDAO, String> {
 
     @Override
     protected CartDAO getObject(ResultSet rs) throws SQLException {
-        if(!rs.next()){
-            return null;
-        }
         CartDAO cart = new CartDAO();
         String restaurant_id = rs.getString("restaurant_id");
         if(rs.wasNull()){
