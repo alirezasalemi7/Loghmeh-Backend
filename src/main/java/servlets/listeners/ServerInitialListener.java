@@ -35,6 +35,7 @@ public class ServerInitialListener implements ServletContextListener {
             fetchFromExternalServer();
         } catch (ServerInternalException e) {
             System.err.println("An internal server error happened. maybe the sql connection is lost.\nexiting...");
+            e.printStackTrace();
             System.exit(1);
         }
     }

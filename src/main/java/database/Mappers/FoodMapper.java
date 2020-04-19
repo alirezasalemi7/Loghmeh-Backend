@@ -32,6 +32,10 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
                 "    primary key (restaurant_id, name, special),\n" +
                 "    foreign key (restaurant_id) references Restaurants(id) on delete cascade\n" +
                 ");";
+        Statement stmt = connection.createStatement();
+        stmt.execute(createTable);
+        stmt.close();
+        connection.close();
     }
 
     @Override
@@ -106,8 +110,8 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
     private String concatValues(ArrayList<FoodDAO> foods) {
         StringBuilder concatenated = new StringBuilder();
         for (FoodDAO food : foods)
-            concatenated.append(",(" + food.getRestaurantId() + "," + food.getRestaurantName() + "," + food.getName() + "," + food.getLogo() + "," + food.getPopularity()
-                    + "," + food.getPrice() + "," + food.getDescription() + "," + (food.isSpecial() ? 1 : 0) + "," + food.getCount() + "," + food.getOldPrice() + ")");
+            concatenated.append(",(\"" + food.getRestaurantId() + "\",\"" + food.getRestaurantName() + "\",\"" + food.getName() + "\",\"" + food.getLogo() + "\"," + food.getPopularity()
+                    + "," + food.getPrice() + ",\"" + food.getDescription() + "\"," + (food.isSpecial() ? 1 : 0) + "," + food.getCount() + "," + food.getOldPrice() + ")");
         return concatenated.toString().substring(1);
     }
 

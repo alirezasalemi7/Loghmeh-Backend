@@ -26,6 +26,7 @@ public class RestaurantRepository {
             foodMapper = new FoodMapper();
             restaurantMapper = new RestaurantMapper();
         } catch (SQLException e) {
+            System.err.println(e.getMessage());
             throw new ServerInternalException();
         }
     }
@@ -146,6 +147,7 @@ public class RestaurantRepository {
         try {
             restaurantMapper.insertAllRestaurants(restaurants);
         } catch (SQLException e) {
+            System.err.println(e.getMessage());
             throw new ServerInternalException();
         }
     }

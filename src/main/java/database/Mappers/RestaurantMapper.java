@@ -23,7 +23,7 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
                 "   name varchar(100) not null,\n" +
                 "   logo varchar(255) not null,\n" +
                 "   locx int not null,\n" +
-                "   locy int not null,\n" +
+                "   locy int not null\n" +
                 ");";
         Statement stmt = connection.createStatement();
         stmt.execute(createTable);
@@ -58,8 +58,8 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
     private String concatValues(ArrayList<RestaurantDAO> restaurants) {
         StringBuilder result = new StringBuilder();
         for (RestaurantDAO restaurant : restaurants)
-            result.append(",(" + restaurant.getId() + "," + restaurant.getName() + "," + restaurant.getLogoAddress()
-                    + "," + restaurant.getLocation().getX() + "," + restaurant.getLocation().getY() + ")");
+            result.append(",(\"" + restaurant.getId() + "\",\"" + restaurant.getName() + "\",\"" + restaurant.getLogoAddress()
+                    + "\"," + restaurant.getLocation().getX() + "," + restaurant.getLocation().getY() + ")");
         return result.toString().substring(1);
     }
 

@@ -71,8 +71,8 @@ public class FoodPartyListener implements ServletContextListener {
                     if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
                         newRestaurants.add(restaurant);
                 }
-                RestaurantRepository.getInstance().addFoods(newFoods);
                 RestaurantRepository.getInstance().addRestaurants(newRestaurants);
+                RestaurantRepository.getInstance().addFoods(newFoods);
             } catch (ClientProtocolException e) {
                 System.err.println("A protocol error happened.\nexiting...");
                 System.exit(1);
@@ -80,6 +80,7 @@ public class FoodPartyListener implements ServletContextListener {
                 System.err.println("An IO error happened while getting response.\nexiting...");
                 System.exit(1);
             } catch (ServerInternalException e) {
+                e.printStackTrace();
                 System.err.println("An internal server error happened; database connection has been lost.\nexiting...");
                 System.exit(1);
             }
