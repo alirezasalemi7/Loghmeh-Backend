@@ -68,15 +68,15 @@ public class ServerInitialListener implements ServletContextListener {
         }
     }
 
-    private ArrayList<Restaurant> externalServerBodyParser(String jsonBody){
+    private ArrayList<RestaurantDAO> externalServerBodyParser(String jsonBody){
         ObjectMapper mapper = new ObjectMapper();
-        ArrayList<Restaurant> restaurants = new ArrayList<>();
+        ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
         try {
             JsonNode root = mapper.readTree(jsonBody);
             if(root.isArray()){
                 for(JsonNode restaurant : root){
                     String utf8 = new String(restaurant.toString().getBytes(),"UTF-8");
-                    Restaurant encodedObject = Restaurant.deserializeFromJson(utf8);
+                    RestaurantDAO encodedObject = RestaurantDAO.deserializeFromJson(utf8);
                     restaurants.add(encodedObject);
                 }
             }
@@ -90,19 +90,17 @@ public class ServerInitialListener implements ServletContextListener {
     }
 
     private void fetchFromExternalServer() throws ServerInternalException {
-        ArrayList<Restaurant> restaurants = externalServerBodyParser(sendGetRequestToGetDataOnStart());
+        ArrayList<RestaurantDAO> restaurants = externalServerBodyParser(sendGetRequestToGetDataOnStart());
         HashMap<String, Boolean> systemRestaurants = RestaurantRepository.getInstance().getAllRestaurantIds();
         ArrayList<RestaurantDAO> newRestaurants = new ArrayList<>();
         ArrayList<FoodDAO> newFoods = new ArrayList<>();
-        for (Restaurant restaurant : restaurants) {
+        for (RestaurantDAO restaurant : restaurants) {
             HashMap<String, Boolean> restaurantFoods = RestaurantRepository.getInstance().getNormalFoodIds(restaurant.getId());
-            for (NormalFood food : restaurant.getNormalMenu().values())
+            for (FoodDAO food : restaurant.getMenu())
                 if (!restaurantFoods.getOrDefault(food.getName(), false))
-                    newFoods.add(new FoodDAO(food.getRestaurantId(), restaurant.getName(), food.getImageAddress(), food.getPopularity()
-                            , food.getName(), food.getPrice(), food.getDescription()));
+                    newFoods.add(food);
             if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
-                newRestaurants.add(new RestaurantDAO(restaurant.getName(), restaurant.getLogoAddress()
-                        , restaurant.getLocation(), restaurant.getId()));
+                newRestaurants.add(restaurant);
         }
         RestaurantRepository.getInstance().addFoods(newFoods);
         RestaurantRepository.getInstance().addRestaurants(newRestaurants);

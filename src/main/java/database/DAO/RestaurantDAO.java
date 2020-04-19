@@ -22,6 +22,15 @@ public class RestaurantDAO {
     private String logoAddress;
     private Location location;
     private String id;
+    private ArrayList<FoodDAO> menu;
+
+    public ArrayList<FoodDAO> getMenu() {
+        return menu;
+    }
+
+    public void setMenu(ArrayList<FoodDAO> menu) {
+        this.menu = menu;
+    }
 
     public Location getLocation() {
         return location;
@@ -80,6 +89,7 @@ public class RestaurantDAO {
 
                 }
                 else throw new JsonParseException(jsonParser, "invalid menu");
+                restaurant.setMenu(foods);
                 return restaurant;
             }
             catch (NullPointerException e){

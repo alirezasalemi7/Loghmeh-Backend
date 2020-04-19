@@ -65,14 +65,11 @@ public class FoodPartyListener implements ServletContextListener {
                 HashMap<String, Boolean> systemRestaurants = RestaurantRepository.getInstance().getAllRestaurantIds();
                 ArrayList<RestaurantDAO> newRestaurants = new ArrayList<>();
                 ArrayList<FoodDAO> newFoods = new ArrayList<>();
-                ArrayList<Restaurant> restaurants = externalServerBodyParser(getInputString(response.getEntity().getContent()));
-                for (Restaurant restaurant : restaurants) {
-                    for (SpecialFood food : restaurant.getSpecialMenu().values())
-                        newFoods.add(new FoodDAO(food.getRestaurantId(), restaurant.getName(), food.getImageAddress(), food.getPopularity()
-                                , food.getName(), food.getPrice(), food.getDescription(), food.getCount(), food.getOldPrice()));
+                ArrayList<RestaurantDAO> restaurants = externalServerBodyParser(getInputString(response.getEntity().getContent()));
+                for (RestaurantDAO restaurant : restaurants) {
+                    newFoods.addAll(restaurant.getMenu());
                     if (!systemRestaurants.getOrDefault(restaurant.getId(), false))
-                        newRestaurants.add(new RestaurantDAO(restaurant.getName(), restaurant.getLogoAddress()
-                                , restaurant.getLocation(), restaurant.getId()));
+                        newRestaurants.add(restaurant);
                 }
                 RestaurantRepository.getInstance().addFoods(newFoods);
                 RestaurantRepository.getInstance().addRestaurants(newRestaurants);
@@ -97,15 +94,15 @@ public class FoodPartyListener implements ServletContextListener {
             return input.toString();
         }
 
-        private ArrayList<Restaurant> externalServerBodyParser(String jsonBody){
+        private ArrayList<RestaurantDAO> externalServerBodyParser(String jsonBody){
             ObjectMapper mapper = new ObjectMapper();
-            ArrayList<Restaurant> restaurants = new ArrayList<>();
+            ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
             try {
                 JsonNode root = mapper.readTree(jsonBody);
                 if(root.isArray()) {
                     for(JsonNode restaurant : root) {
                         String utf8 = new String(restaurant.toString().getBytes(),"UTF-8");
-                        Restaurant encodedObject = Restaurant.deserializeFromJson(utf8);
+                        RestaurantDAO encodedObject = RestaurantDAO.deserializeFromJson(utf8);
                         restaurants.add(encodedObject);
                     }
                 }
