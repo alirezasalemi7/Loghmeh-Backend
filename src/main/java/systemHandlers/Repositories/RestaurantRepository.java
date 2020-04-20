@@ -82,6 +82,24 @@ public class RestaurantRepository {
         }
     }
 
+    public ArrayList<FoodDAO> getFoodsMatchNameInRange(int pageNumber,int pageSize,Location location,String name) throws ServerInternalException {
+        try {
+            return foodMapper.getFoodsMatchNameInUserRange(name,location, 170, pageNumber, pageSize);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new ServerInternalException();
+        }
+    }
+
+    public ArrayList<FoodDAO> getFoodsMatchNameAndRestaurantNameInRange(int pageNumber,int pageSize,Location location,String foodName,String restaurantName) throws ServerInternalException {
+        try {
+            return foodMapper.getFoodsMatchNameAndRestaurantNameInUserRange(foodName, restaurantName, location, 170, pageNumber, pageSize);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new ServerInternalException();
+        }
+    }
+
     public FoodDAO getFoodById(String restaurantId, String foodId, Boolean isSpecial) throws FoodDoesntExistException, ServerInternalException {
         try {
             FoodDAO food = foodMapper.find(new Triplet<>(restaurantId, foodId, isSpecial));

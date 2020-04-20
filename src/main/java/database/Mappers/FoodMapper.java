@@ -178,7 +178,29 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         Connection connection = ConnectionPool.getConnection();
         String query = "select * from " + tableName + " where special = 0 and name like \"%"+name+"%\" and " +
                 "(select POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) from Restaurants " +
-                "where id = restaurant_id) <= "+(range*range)+" order by name asc limit "+(pageNumber*pageSize)+","+(pageSize)+";";
+                " where id = restaurant_id) <= "+(range*range)+" order by name asc limit "+(pageNumber*pageSize)+","+(pageSize)+";";
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        ArrayList<FoodDAO> foods = new ArrayList<>();
+        while (rs.next())
+            foods.add(getObject(rs));
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
+        return foods;
+    }
+
+    public ArrayList<FoodDAO> getFoodsMatchNameAndRestaurantNameInUserRange(String foodName,String restaurantName, Location location, double range,int pageNumber,int pageSize) throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        String query = "select * from " + tableName + " where special = 0 and name like \"%"+foodName+"%\" and " +
+                " restaurant_name like \"%"+restaurantName+"%\" and (select POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) from Restaurants " +
+                " where id = restaurant_id) <= "+(range*range)+" order by name asc limit "+(pageNumber*pageSize)+","+(pageSize)+";";
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery(query);
         ArrayList<FoodDAO> foods = new ArrayList<>();
