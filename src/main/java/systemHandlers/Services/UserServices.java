@@ -120,7 +120,7 @@ public class UserServices {
             String id = food.getName();
             if(special){
                 id = id + "@";
-                if(food.getCount()>count){
+                if(food.getCount()>=count){
                     RestaurantManager.getInstance().setFoodCount(RestaurantId, foodName, food.getCount()-count);
                 }
                 else throw new FoodCountIsNegativeException("Food Count must be positive.");
