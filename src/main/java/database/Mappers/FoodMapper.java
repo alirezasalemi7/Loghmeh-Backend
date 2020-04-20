@@ -136,6 +136,8 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
     }
 
     public void insertAllFoods(ArrayList<FoodDAO> foods) throws SQLException {
+        if (foods.size() < 1)
+            return;
         String content = this.concatValues(foods);
         String query = "insert into " + tableName + "(restaurant_id, restaurant_name, name, logo, popularity, price, description, special, count, old_price) values " + content + ";";
         this.runQuery(query);

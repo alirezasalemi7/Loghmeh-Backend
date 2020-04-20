@@ -67,6 +67,8 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
     }
 
     public void insertAllRestaurants(ArrayList<RestaurantDAO> restaurants) throws SQLException {
+        if (restaurants.size() < 1)
+            return;
         String content = this.concatValues(restaurants);
         String query = "insert into " + tableName + "(id, name, logo, locx, locy) values " + content + ";";
         Connection connection = ConnectionPool.getConnection();

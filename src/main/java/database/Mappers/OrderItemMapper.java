@@ -83,6 +83,8 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
     }
 
     public void addAllOrderItems(ArrayList<OrderItemDAO> items) throws SQLException{
+        if (items.size() < 1)
+            return;
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
         String sql = "insert into "+tableName+"(order_id,food_name,restaurant_id,count,special,cost) values "+concatValues(items)+";";
