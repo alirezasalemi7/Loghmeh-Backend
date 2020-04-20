@@ -73,7 +73,7 @@ public class UserMapper extends Mapper<UserDAO,String> {
     public void updateCredit(String id,double credit) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
-        statement.executeQuery("update "+tableName+ "set credit="+credit+"where id=\""+id+"\";");
+        statement.executeUpdate("update "+tableName+ " set credit = "+credit+" where id = \""+id+"\";");
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }

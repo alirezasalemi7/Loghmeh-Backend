@@ -67,6 +67,7 @@ public class UserController {
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
         catch (ServerInternalException e){
+            e.printStackTrace();
             return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(generateError(200, "Increased successfully"), HttpStatus.OK);

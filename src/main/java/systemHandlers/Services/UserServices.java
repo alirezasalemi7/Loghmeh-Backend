@@ -64,7 +64,7 @@ public class UserServices {
     }
 
     public ArrayList<OrderDTO> getAllOrders(String userId) throws UserDoesNotExistException,ServerInternalException{
-        if(UserRepository.getInstance().isUserExists(userId)){
+        if(!UserRepository.getInstance().isUserExists(userId)) {
             throw new UserDoesNotExistException();
         }
         ArrayList<OrderDAO> orders = OrderRepository.getInstance().getOrdersOfUser(userId);
