@@ -46,7 +46,7 @@ public class FoodPartyController {
     @RequestMapping(value = "/foodParty/{fid}", method = RequestMethod.GET)
     public ResponseEntity<Object> getSpecialFood(
             @PathVariable(value = "fid") String foodId,
-            @RequestParam String restaurantId
+            @RequestParam(required = true, value = "restaurant_id") String restaurantId
     ) {
         if (restaurantId == null)
             return new ResponseEntity<>(new ErrorDTO("restaurant doesn't exist", 400), HttpStatus.NOT_FOUND);

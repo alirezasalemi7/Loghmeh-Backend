@@ -23,29 +23,25 @@ public class RestaurantController {
     ){
         if (userId == null)
             return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
-        ArrayList<RestaurantInfoDTO> restaurantList = new ArrayList<>();
         try {
-            restaurantList = RestaurantManager.getInstance().getInRangeRestaurants(userId,pageNumber,pageSize);
+            return new ResponseEntity<>(RestaurantManager.getInstance().getInRangeRestaurants(userId,pageNumber,pageSize), HttpStatus.OK);
         } catch (UserDoesNotExistException e) {
             return new ResponseEntity<>(new ErrorDTO(e.getMessage(), 404), HttpStatus.OK);
         } catch (ServerInternalException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorDTO("internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(restaurantList, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/restaurants/{id}",method = RequestMethod.GET)
     public ResponseEntity<Object> getRestaurant(
             @PathVariable(value = "id") String restaurantId,
-            @RequestBody(required = true) JsonNode user
+            @RequestParam(required = true,value = "user_id") String userId
     ){
-        JsonNode userId = user.get("id");
         if (userId == null)
             return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
         try {
-            RestaurantDTO restaurant = RestaurantManager.getInstance().getNearbyRestaurantById(restaurantId, userId.asText());
-            return new ResponseEntity<>(restaurant, HttpStatus.OK);
+            return new ResponseEntity<>(RestaurantManager.getInstance().getNearbyRestaurantById(restaurantId, userId), HttpStatus.OK);
         } catch (RestaurantDoesntExistException e) {
             return new ResponseEntity<>(new ErrorDTO("restaurant does not exist", 404), HttpStatus.NOT_FOUND);
         } catch (OutOfRangeException e) {
