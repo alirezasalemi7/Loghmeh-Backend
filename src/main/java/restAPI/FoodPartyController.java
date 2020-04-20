@@ -36,8 +36,6 @@ public class FoodPartyController {
         ObjectNode node = factory.objectNode();
         Date start = RestaurantManager.getInstance().getFoodPartyStartTime();
         Date current = new Date();
-        System.out.println(start);
-        System.out.println(current);
         long diff = current.getTime() - start.getTime();
         diff = 180000 - diff;
         node.put("minutes", (int) (diff / (60 * 1000)));
@@ -48,13 +46,12 @@ public class FoodPartyController {
     @RequestMapping(value = "/foodParty/{fid}", method = RequestMethod.GET)
     public ResponseEntity<Object> getSpecialFood(
             @PathVariable(value = "fid") String foodId,
-            @RequestBody(required = true) JsonNode restaurant
+            @RequestParam String restaurantId
     ) {
-        JsonNode restaurantId = restaurant.get("id");
         if (restaurantId == null)
             return new ResponseEntity<>(new ErrorDTO("restaurant doesn't exist", 400), HttpStatus.NOT_FOUND);
         try {
-            SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(restaurantId.asText(), foodId);
+            SpecialFoodDTO food = RestaurantManager.getInstance().getSpecialFoodById(restaurantId, foodId);
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e) {
             return new ResponseEntity<>(new ErrorDTO("Food doesn't exist", 404), HttpStatus.NOT_FOUND);

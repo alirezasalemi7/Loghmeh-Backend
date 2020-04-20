@@ -18,14 +18,13 @@ public class RestaurantController {
 
     @RequestMapping(value = "/restaurants",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllRestaurants(
-            @RequestBody(required = true) JsonNode user
+            @RequestParam String id
     ){
-        JsonNode userId = user.get("id");
-        if (userId == null)
+        if (id == null)
             return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
         RestaurantListDTO restaurantList = null;
         try {
-            restaurantList = RestaurantManager.getInstance().getInRangeRestaurants(userId.asText());
+            restaurantList = RestaurantManager.getInstance().getInRangeRestaurants(id);
         } catch (UserDoesNotExistException e) {
             return new ResponseEntity<>(new ErrorDTO(e.getMessage(), 404), HttpStatus.OK);
         } catch (ServerInternalException e) {
@@ -38,13 +37,12 @@ public class RestaurantController {
     @RequestMapping(value = "/restaurants/{id}",method = RequestMethod.GET)
     public ResponseEntity<Object> getRestaurant(
             @PathVariable(value = "id") String restaurantId,
-            @RequestBody(required = true) JsonNode user
+            @RequestParam String id
     ){
-        JsonNode userId = user.get("id");
-        if (userId == null)
+        if (id == null)
             return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
         try {
-            RestaurantDTO restaurant = RestaurantManager.getInstance().getNearbyRestaurantById(restaurantId, userId.asText());
+            RestaurantDTO restaurant = RestaurantManager.getInstance().getNearbyRestaurantById(restaurantId, id);
             return new ResponseEntity<>(restaurant, HttpStatus.OK);
         } catch (RestaurantDoesntExistException e) {
             return new ResponseEntity<>(new ErrorDTO("restaurant does not exist", 404), HttpStatus.NOT_FOUND);
