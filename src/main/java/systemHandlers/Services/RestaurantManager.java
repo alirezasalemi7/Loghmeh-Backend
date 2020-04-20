@@ -34,7 +34,7 @@ public class RestaurantManager {
         return foodPartyStartTime;
     }
 
-    public RestaurantListDTO getInRangeRestaurants(String userId,int pageNumber,int pageSize) throws UserDoesNotExistException, ServerInternalException {
+    public ArrayList<RestaurantInfoDTO> getInRangeRestaurants(String userId, int pageNumber, int pageSize) throws UserDoesNotExistException, ServerInternalException {
         UserDAO user = UserRepository.getInstance().getUser(userId);
         ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getAllRestaurantsInRange(pageNumber,pageSize,user.getLocation());
         ArrayList<RestaurantInfoDTO> restaurantList = new ArrayList<>();
@@ -43,7 +43,7 @@ public class RestaurantManager {
                 restaurantList.add(new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId()));
             }
         }
-        return new RestaurantListDTO(restaurantList);
+        return restaurantList;
     }
 
     public RestaurantDTO getNearbyRestaurantById(String restaurantId, String userId) throws RestaurantDoesntExistException, UserDoesNotExistException, OutOfRangeException, ServerInternalException {

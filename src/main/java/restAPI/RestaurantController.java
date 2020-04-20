@@ -7,11 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import restAPI.DTO.Error.ErrorDTO;
-import restAPI.DTO.Restaurant.FoodDTO;
-import restAPI.DTO.Restaurant.RestaurantDTO;
-import restAPI.DTO.Restaurant.RestaurantListDTO;
-import restAPI.DTO.Restaurant.SpecialFoodDTO;
+import restAPI.DTO.Restaurant.*;
 import systemHandlers.Services.RestaurantManager;
+
+import java.util.ArrayList;
 
 @RestController
 public class RestaurantController {
@@ -22,7 +21,9 @@ public class RestaurantController {
             @RequestParam(required = true,value = "page_number") int pageNumber,
             @RequestParam(required = true,value = "page_size") int pageSize
     ){
-        RestaurantListDTO restaurantList = null;
+        if (userId == null)
+            return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
+        ArrayList<RestaurantInfoDTO> restaurantList = new ArrayList<>();
         try {
             restaurantList = RestaurantManager.getInstance().getInRangeRestaurants(userId,pageNumber,pageSize);
         } catch (UserDoesNotExistException e) {
