@@ -123,10 +123,11 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         return restaurants;
     }
 
-    public ArrayList<RestaurantDAO> getAllRestaurantsMatchNameAndInRange(String name,double range,Location location) throws SQLException {
+    public ArrayList<RestaurantDAO> getAllRestaurantsMatchNameAndInRange(String name,double range,Location location,int pageNumber,int pageSize) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         String whereClause = "name LIKE \"%"+name+"%\"and POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) <= " + range*range;
-        String query = "select id, name, logo, locx, locy from " + tableName + "where "+whereClause+";";
+        String query = "select id, name, logo, locx, locy from " + tableName + " where "+whereClause+
+                " order by id limit "+(pageNumber*pageSize)+","+(pageSize)+";";
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery(query);
         ArrayList<RestaurantDAO> restaurants = new ArrayList<>();

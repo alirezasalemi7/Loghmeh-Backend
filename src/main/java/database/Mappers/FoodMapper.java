@@ -3,6 +3,7 @@ package database.Mappers;
 import database.ConnectionPool;
 import database.DAO.FoodDAO;
 import exceptions.FoodDoesntExistException;
+import models.Location;
 import org.javatuples.Triplet;
 
 import java.sql.Connection;
@@ -173,9 +174,11 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         return foods;
     }
 
-    public ArrayList<FoodDAO> getFoodsMatchName() throws SQLException {
+    public ArrayList<FoodDAO> getFoodsMatchNameInUserRange(String name, Location location, double range,int pageNumber,int pageSize) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String query = "select * from " + tableName + " where special = 1;";
+        String query = "select * from " + tableName + " where special = 0 and name like \"%"+name+"%\" and " +
+                "(select POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) from Restaurants " +
+                "where id = restaurant_id) <= "+(range*range)+" order by name asc limit "+(pageNumber*pageSize)+","+(pageSize)+";";
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery(query);
         ArrayList<FoodDAO> foods = new ArrayList<>();

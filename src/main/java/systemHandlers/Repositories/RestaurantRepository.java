@@ -69,6 +69,14 @@ public class RestaurantRepository {
         try {
             return restaurantMapper.getAllRestaurantsInRangePageByPage(pageSize, pageNumber, 170, location);
         } catch (SQLException e) {
+            throw new ServerInternalException();
+        }
+    }
+
+    public ArrayList<RestaurantDAO> getRestaurantsMatchNameInRange(int pageNumber,int pageSize,Location location,String name) throws ServerInternalException {
+        try {
+            return restaurantMapper.getAllRestaurantsMatchNameAndInRange(name,170, location, pageNumber, pageSize);
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new ServerInternalException();
         }

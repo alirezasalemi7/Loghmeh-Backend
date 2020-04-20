@@ -7,6 +7,7 @@ import database.DAO.UserDAO;
 import exceptions.*;
 import models.Location;
 import restAPI.DTO.Restaurant.*;
+import restAPI.DTO.searchResults.SearchResultDTO;
 import systemHandlers.Repositories.RestaurantRepository;
 import systemHandlers.Repositories.UserRepository;
 import java.util.ArrayList;
@@ -93,6 +94,20 @@ public class RestaurantManager {
 
     public Location getRestaurantLocation(String restaurantId) throws ServerInternalException, RestaurantDoesntExistException {
         return RestaurantRepository.getInstance().getRestaurantLocation(restaurantId);
+    }
+
+    public SearchResultDTO findRestaurantsByNameMatch(String userId,String name,int pageNumber,int pageSize) throws UserDoesNotExistException,ServerInternalException{
+        UserDAO user = UserRepository.getInstance().getUser(userId);
+        ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getRestaurantsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
+        ArrayList<RestaurantInfoDTO> results = new ArrayList<>();
+        for(RestaurantDAO restaurant : restaurants){
+            RestaurantInfoDTO item = new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId());
+            results.add(item);
+        }
+        SearchResultDTO dto = new SearchResultDTO();
+        dto.setRestaurants(results);
+        dto.setFoods(new ArrayList<>());
+        return dto;
     }
 
 }
