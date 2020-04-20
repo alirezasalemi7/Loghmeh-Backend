@@ -172,4 +172,24 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         }
         return foods;
     }
+
+    public ArrayList<FoodDAO> getFoodsMatchName() throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        String query = "select * from " + tableName + " where special = 1;";
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        ArrayList<FoodDAO> foods = new ArrayList<>();
+        while (rs.next())
+            foods.add(getObject(rs));
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
+        return foods;
+    }
 }

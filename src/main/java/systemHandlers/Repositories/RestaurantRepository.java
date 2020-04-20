@@ -65,6 +65,15 @@ public class RestaurantRepository {
         }
     }
 
+    public ArrayList<RestaurantDAO> getAllRestaurantsInRange(int pageNumber,int pageSize,Location location) throws ServerInternalException {
+        try {
+            return restaurantMapper.getAllRestaurantsInRangePageByPage(pageSize, pageNumber, 170, location);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new ServerInternalException();
+        }
+    }
+
     public FoodDAO getFoodById(String restaurantId, String foodId, Boolean isSpecial) throws FoodDoesntExistException, ServerInternalException {
         try {
             FoodDAO food = foodMapper.find(new Triplet<>(restaurantId, foodId, isSpecial));

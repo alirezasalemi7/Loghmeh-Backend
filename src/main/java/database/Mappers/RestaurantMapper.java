@@ -102,6 +102,48 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         return restaurants;
     }
 
+    public ArrayList<RestaurantDAO> getAllRestaurantsInRangePageByPage(int pageSize,int pageNumber,double range,Location location) throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        String whereClause = " POWER(locx - "+location.getX()+",2)+POWER(locy - "+location.getY()+",2) <= " + range*range;
+        String query = "select id, name, logo, locx, locy from " + tableName + " where "+whereClause+" ORDER by id ASC LIMIT "+pageNumber*pageSize+","+pageSize+";";
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
+        while (rs.next())
+            restaurants.add(getObject(rs));
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
+        return restaurants;
+    }
+
+    public ArrayList<RestaurantDAO> getAllRestaurantsMatchNameAndInRange(String name,double range,Location location) throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        String whereClause = "name LIKE \"%"+name+"%\"and POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) <= " + range*range;
+        String query = "select id, name, logo, locx, locy from " + tableName + "where "+whereClause+";";
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
+        while (rs.next())
+            restaurants.add(getObject(rs));
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
+        return restaurants;
+    }
+
     public HashMap<String, Boolean> getRestaurantsId() throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         String query = "select id from " + tableName + ";";

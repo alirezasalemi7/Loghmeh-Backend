@@ -33,10 +33,10 @@ public class RestaurantManager {
         return foodPartyStartTime;
     }
 
-    public RestaurantListDTO getInRangeRestaurants(String userId) throws UserDoesNotExistException, ServerInternalException {
-        ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getAllRestaurants();
-        ArrayList<RestaurantInfoDTO> restaurantList = new ArrayList<>();
+    public RestaurantListDTO getInRangeRestaurants(String userId,int pageNumber,int pageSize) throws UserDoesNotExistException, ServerInternalException {
         UserDAO user = UserRepository.getInstance().getUser(userId);
+        ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getAllRestaurantsInRange(pageNumber,pageSize,user.getLocation());
+        ArrayList<RestaurantInfoDTO> restaurantList = new ArrayList<>();
         for (RestaurantDAO restaurant : restaurants) {
             if (this.isInRange(user.getLocation(), restaurant.getLocation())) {
                 restaurantList.add(new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId()));
