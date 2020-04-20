@@ -101,11 +101,14 @@ public class RestaurantRepository {
         }
     }
 
-    public Location getRestaurantLocation(String restaurantId) throws ServerInternalException {
+    public Location getRestaurantLocation(String restaurantId) throws ServerInternalException, RestaurantDoesntExistException {
         try {
             RestaurantDAO restaurant = restaurantMapper.find(restaurantId);
+            if (restaurant == null)
+                throw new RestaurantDoesntExistException(restaurantId + "does not exist.");
             return restaurant.getLocation();
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }
@@ -131,6 +134,7 @@ public class RestaurantRepository {
         try {
             return foodMapper.getNormalFoods(restaurantId);
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }

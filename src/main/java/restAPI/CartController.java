@@ -120,6 +120,7 @@ public class CartController {
             return new ResponseEntity<>(new ErrorDTO("user not found", 4040001),HttpStatus.NOT_FOUND);
         }
         catch (ServerInternalException e){
+            e.printStackTrace();
             return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

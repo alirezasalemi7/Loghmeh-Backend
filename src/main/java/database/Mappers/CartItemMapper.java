@@ -79,7 +79,7 @@ public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,St
     public void RemoveAllItemsOfCart(String cartId) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
-        statement.executeQuery("delete from "+tableName+" where cart_id=\""+cartId+"\";");
+        statement.executeUpdate("delete from "+tableName+" where cart_id=\""+cartId+"\";");
         statement.close();
         connection.close();
     }
@@ -87,7 +87,7 @@ public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,St
     public void updateItem(CartItemDAO item) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
-        statement.executeQuery("update "+tableName+" set cost="+ item.getCost() +
+        statement.executeUpdate("update "+tableName+" set cost="+ item.getCost() +
                 ", count="+ item.getCount() +
                 " where cart_id=\""+item.getCartId()+
                 "\" AND food_name=\""+item.getFoodName()+"\" AND restaurant_id=\""+item.getRestaurantId()+

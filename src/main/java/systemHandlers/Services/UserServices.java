@@ -85,7 +85,7 @@ public class UserServices {
     }
 
     public CartDTO getUserCart(String userId) throws UserDoesNotExistException,ServerInternalException{
-        if(UserRepository.getInstance().isUserExists(userId)){
+        if(!UserRepository.getInstance().isUserExists(userId)){
             throw new UserDoesNotExistException();
         }
         CartDAO cartDAO = UserRepository.getInstance().getUserCart(userId);
@@ -207,7 +207,7 @@ public class UserServices {
         else throw new FoodNotExistInCartException();
     }
 
-    public OrderDetailDTO finalizeCart(String userId) throws CartIsEmptyException,UserDoesNotExistException,CreditIsNotEnoughException,ServerInternalException{
+    public OrderDetailDTO finalizeCart(String userId) throws CartIsEmptyException,UserDoesNotExistException,CreditIsNotEnoughException, ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(userId);
         CartDAO cart = UserRepository.getInstance().getUserCart(userId);
         if (cart.getItems().size() == 0) {
@@ -224,11 +224,15 @@ public class UserServices {
         order.setRestaurantId(cart.getRestaurantId());
         order.setUserId(userId);
         order.setItems(new ArrayList(cart.getItems().values()));
+        // TODO: Set restaurant name for order
         OrderRepository.getInstance().addOrder(order);
+        Location restaurantLocation = null;
         try {
-            Location restaurantLocation = RestaurantManager.getInstance().getRestaurantLocation(order.getRestaurantId());
-            OrderDeliveryManager.getInstance().addOrderToDeliver(order, restaurantLocation, user.getLocation());
-        }catch (RestaurantDoesntExistException e){/*never reach here*/}
+            restaurantLocation = RestaurantManager.getInstance().getRestaurantLocation(order.getRestaurantId());
+        } catch (RestaurantDoesntExistException e) {
+            // never reaches here
+        }
+        OrderDeliveryManager.getInstance().addOrderToDeliver(order, restaurantLocation, user.getLocation());
         return makeOrderDetailDTO(order);
     }
 

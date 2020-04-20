@@ -26,6 +26,7 @@ public class UserRepository {
             cartItemMapper = new CartItemMapper();
         }
         catch (SQLException e){
+            e.printStackTrace();
             throw new  ServerInternalException();
         }
     }
@@ -40,11 +41,11 @@ public class UserRepository {
     public UserDAO getUser(String id) throws UserDoesNotExistException, ServerInternalException {
         try {
             UserDAO user = userMapper.find(id);
-            if(user==null){
+            if(user == null)
                 throw new UserDoesNotExistException();
-            }
             return user;
         }catch (SQLException e){
+            e.printStackTrace();
             throw new ServerInternalException();
         }
    }
@@ -54,6 +55,8 @@ public class UserRepository {
             cartItemMapper.insert(item);
         }
         catch (SQLException e){
+            e.printStackTrace();
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }
@@ -63,6 +66,7 @@ public class UserRepository {
             cartItemMapper.updateItem(item);
         }
         catch (SQLException e){
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }
@@ -72,6 +76,7 @@ public class UserRepository {
             cartMapper.updateRestaurantIdOfCart(cart.getUserId(), cart.getUserId());
         }
         catch (SQLException e){
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }
@@ -81,6 +86,7 @@ public class UserRepository {
             cartItemMapper.delete(new Quartet<>(item.getCartId(), item.getFoodName(), item.getRestaurantId(), item.isSpecial()));
         }
         catch (SQLException e){
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }
@@ -99,6 +105,7 @@ public class UserRepository {
         try {
             userMapper.updateCredit(user.getId(), user.getCredit());
         }catch (SQLException e){
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }
@@ -109,6 +116,7 @@ public class UserRepository {
             cartItemMapper.RemoveAllItemsOfCart(userId);
         }
         catch (SQLException e){
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }
@@ -122,6 +130,7 @@ public class UserRepository {
             return cart;
         }
         catch (SQLException e){
+            e.printStackTrace();
             throw new ServerInternalException();
         }
     }

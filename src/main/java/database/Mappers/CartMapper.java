@@ -79,7 +79,7 @@ public class CartMapper extends Mapper<CartDAO, String> {
     public void updateRestaurantIdOfCart(String cartId,String restaurantId) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
-        statement.executeQuery("update "+tableName+" set restaurant_id = \""+restaurantId+"\" where cart_id=\""+cartId+"\";");
+        statement.executeUpdate("update "+tableName+" set restaurant_id = \""+restaurantId+"\" where id=\""+cartId+"\";");
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }
@@ -91,7 +91,7 @@ public class CartMapper extends Mapper<CartDAO, String> {
     public void resetCart(String id) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
-        statement.executeQuery("update "+tableName+" set restaurant_id = null where cart_id=\""+id+"\";");
+        statement.executeUpdate("update "+tableName+" set restaurant_id = null where id=\""+id+"\";");
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }
