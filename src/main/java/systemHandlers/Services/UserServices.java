@@ -75,6 +75,7 @@ public class UserServices {
             dto.setOrderStatus(order.getState());
             dto.setRestaurantName(order.getRestaurantName());
             dto.setDetails(makeOrderDetailDTO(order));
+            orderDTOS.add(dto);
         }
         return orderDTOS;
     }
@@ -148,7 +149,16 @@ public class UserServices {
 
     public int removeFromCart(String userId,String foodName,String RestaurantId,boolean special) throws UserDoesNotExistException,RestaurantOutOfRangeException,RestaurantDoesntExistException,FoodDoesntExistException,FoodNotExistInCartException,ServerInternalException{
         CartDAO cart = UserRepository.getInstance().getUserCart(userId);
-        FoodDAO food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName, special);
+        FoodDAO food = null;
+        if(special){
+            try {
+                food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName, special);
+            }
+            catch (FoodDoesntExistException e){
+                food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName, !special);
+            }
+        }
+        else food = RestaurantRepository.getInstance().getFoodById(RestaurantId, foodName, special);
         UserDAO user = UserRepository.getInstance().getUser(userId);
         if(!special &&!RestaurantManager.getInstance().isInRange(user.getLocation(),RestaurantManager.getInstance().getRestaurantLocation(RestaurantId))){
             throw new RestaurantOutOfRangeException();
@@ -223,15 +233,28 @@ public class UserServices {
         order.setId(RandomStringUtils.randomAlphanumeric(50));
         order.setRestaurantId(cart.getRestaurantId());
         order.setUserId(userId);
-        order.setItems(new ArrayList(cart.getItems().values()));
-        // TODO: Set restaurant name for order
-        OrderRepository.getInstance().addOrder(order);
+        ArrayList<OrderItemDAO> items = new ArrayList<>();
+        for (CartItemDAO item : cart.getItems().values()){
+            OrderItemDAO orderItem = new OrderItemDAO();
+            orderItem.setCount(item.getCount());
+            orderItem.setCost(item.getCost());
+            orderItem.setSpecial(item.isSpecial());
+            orderItem.setOrderId(order.getId());
+            orderItem.setFoodName(item.getFoodName());
+            orderItem.setRestaurantId(item.getRestaurantId());
+            items.add(orderItem);
+        }
+        order.setItems(items);
         Location restaurantLocation = null;
+        RestaurantDAO restaurant = null;
         try {
             restaurantLocation = RestaurantManager.getInstance().getRestaurantLocation(order.getRestaurantId());
+            restaurant = RestaurantRepository.getInstance().getRestaurantById(cart.getRestaurantId());
         } catch (RestaurantDoesntExistException e) {
             // never reaches here
         }
+        order.setRestaurantName(restaurant.getName());
+        OrderRepository.getInstance().addOrder(order);
         OrderDeliveryManager.getInstance().addOrderToDeliver(order, restaurantLocation, user.getLocation());
         return makeOrderDetailDTO(order);
     }

@@ -86,7 +86,7 @@ public class RestaurantController {
                 return new ResponseEntity<>(new ErrorDTO("food is not in restaurant menu", 400), HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(food, HttpStatus.OK);
         } catch (FoodDoesntExistException e) {
-            return new ResponseEntity<>(new ErrorDTO("food does not exist", 403), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorDTO("food does not exist", 404), HttpStatus.NOT_FOUND);
         } catch (ServerInternalException e) {
             return new ResponseEntity<>(new ErrorDTO("internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }

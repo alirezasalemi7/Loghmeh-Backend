@@ -60,6 +60,8 @@ public class OrderRepository {
             orderMapper.insert(order);
         }
         catch (SQLException e){
+            e.printStackTrace();
+            System.err.println(e.getMessage());
             throw new ServerInternalException();
         }
     }

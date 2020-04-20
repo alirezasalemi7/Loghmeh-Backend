@@ -2,7 +2,6 @@ package restAPI.DTO.Restaurant;
 
 public class SpecialFoodDTO {
 
-    private String id;
     private String restaurantId;
     private String restaurantName;
     private String logo;
@@ -14,10 +13,6 @@ public class SpecialFoodDTO {
     private Double oldPrice;
 
     public SpecialFoodDTO() {}
-
-    public String getId() {
-        return id;
-    }
 
     public String getRestaurantName() {
         return restaurantName;

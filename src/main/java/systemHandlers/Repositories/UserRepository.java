@@ -73,7 +73,7 @@ public class UserRepository {
 
     public void updateCart(CartDAO cart) throws ServerInternalException {
         try {
-            cartMapper.updateRestaurantIdOfCart(cart.getUserId(), cart.getUserId());
+            cartMapper.updateRestaurantIdOfCart(cart.getUserId(), cart.getRestaurantId());
         }
         catch (SQLException e){
             e.printStackTrace();

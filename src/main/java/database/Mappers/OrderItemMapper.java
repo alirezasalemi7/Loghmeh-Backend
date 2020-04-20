@@ -77,9 +77,9 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
     private String concatValues(ArrayList<OrderItemDAO> items){
         String concat = "";
         for (OrderItemDAO item : items){
-            concat+="("+item.getOrderId()+","+item.getFoodName()+","+item.getRestaurantId()+","+item.getCount()+","+item.isSpecial()+","+item.getCost()+"),";
+            concat+=",(\""+item.getOrderId()+"\",\""+item.getFoodName()+"\",\""+item.getRestaurantId()+"\","+item.getCount()+","+(item.isSpecial()?1:0)+","+item.getCost()+")";
         }
-        return concat.substring(0, concat.length()-2);
+        return concat.substring(1);
     }
 
     public void addAllOrderItems(ArrayList<OrderItemDAO> items) throws SQLException{
@@ -87,8 +87,8 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
             return;
         Connection connection = ConnectionPool.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "insert into "+tableName+"(order_id,food_name,restaurant_id,count,special,cost) values "+concatValues(items)+";";
-        statement.executeQuery(sql);
+        String sql = "insert into "+tableName+" (order_id,food_name,restaurant_id,count,special,cost) values "+concatValues(items)+";";
+        statement.executeUpdate(sql);
         statement.close();
         connection.close();
     }
