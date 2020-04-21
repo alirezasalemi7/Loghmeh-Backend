@@ -101,9 +101,12 @@ public class RestaurantRepository {
         }
     }
 
-    public ArrayList<FoodDAO> getFoodsMatchNameAndRestaurantNameInRange(int pageNumber,int pageSize,Location location,String foodName,String restaurantName) throws ServerInternalException {
+    public Pair<ArrayList<FoodDAO>,Integer> getFoodsMatchNameAndRestaurantNameInRange(int pageNumber,int pageSize,Location location,String foodName,String restaurantName) throws ServerInternalException {
         try {
-            return foodMapper.getFoodsMatchNameAndRestaurantNameInUserRange(foodName, restaurantName, location, 170, pageNumber, pageSize);
+            ArrayList<FoodDAO> foods = foodMapper.getFoodsMatchNameAndRestaurantNameInUserRange(foodName, restaurantName, location, 170, pageNumber, pageSize);
+            int pageCount = (int)Math.ceil(((double) foodMapper.getFoodsMatchNameAndRestaurantNameInUserRangeCount(foodName, restaurantName, location, 170))/pageSize);
+            Pair<ArrayList<FoodDAO>,Integer> result = new Pair<>(foods,pageCount);
+            return result;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new ServerInternalException();

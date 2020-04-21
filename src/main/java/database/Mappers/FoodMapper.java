@@ -239,4 +239,26 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         }
         return foods;
     }
+
+    public int getFoodsMatchNameAndRestaurantNameInUserRangeCount(String foodName,String restaurantName, Location location, double range) throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        String query = "select count(*) as count from " + tableName + " where special = 0 and name like \"%"+foodName+"%\" and " +
+                " restaurant_name like \"%"+restaurantName+"%\" and (select POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) from Restaurants " +
+                " where id = restaurant_id) <= "+(range*range)+";";
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        int count = 0;
+        while (rs.next())
+            count = rs.getInt("count");
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
+        return count;
+    }
 }
