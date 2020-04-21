@@ -10,15 +10,23 @@ public class SearchResultDTO {
 
     private ArrayList<RestaurantInfoDTO> restaurants;
     private ArrayList<FoodDTO> foods;
-    private int pageCount;
 
-    public int getPageCount() {
-        return pageCount;
+    public SearchResultDTO() {}
+
+    public SearchResultDTO(ArrayList<RestaurantInfoDTO> restaurants, ArrayList<FoodDTO> foods) {
+        this.restaurants = restaurants;
+        this.foods = foods;
     }
 
-    public void setPageCount(int pageCount) {
-        this.pageCount = pageCount;
-    }
+    //    private int pageCount;
+
+//    public int getPageCount() {
+//        return pageCount;
+//    }
+
+//    public void setPageCount(int pageCount) {
+//        this.pageCount = pageCount;
+//    }
 
     public ArrayList<RestaurantInfoDTO> getRestaurants() {
         return restaurants;

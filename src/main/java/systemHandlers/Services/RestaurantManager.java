@@ -104,50 +104,31 @@ public class RestaurantManager {
 
     public SearchResultDTO findRestaurantsByNameMatch(String userId,String name,int pageNumber,int pageSize) throws UserDoesNotExistException,ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(userId);
-        Pair<ArrayList<RestaurantDAO>,Integer> pair = RestaurantRepository.getInstance().getRestaurantsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
-        ArrayList<RestaurantDAO> restaurants = pair.getValue0();
+        ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getRestaurantsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
         ArrayList<RestaurantInfoDTO> results = new ArrayList<>();
-        for(RestaurantDAO restaurant : restaurants){
-            RestaurantInfoDTO item = new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId());
-            results.add(item);
-        }
-        SearchResultDTO dto = new SearchResultDTO();
-        dto.setRestaurants(results);
-        dto.setFoods(new ArrayList<>());
-        dto.setPageCount(pair.getValue1());
-        return dto;
+        for(RestaurantDAO restaurant : restaurants)
+            results.add(new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId()));
+        return new SearchResultDTO(results, new ArrayList<>());
     }
 
     public SearchResultDTO findFoodsByNameMatch(String userId,String name,int pageNumber,int pageSize) throws UserDoesNotExistException,ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(userId);
-        Pair<ArrayList<FoodDAO>,Integer> pair = RestaurantRepository.getInstance().getFoodsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
-        ArrayList<FoodDAO> foods = pair.getValue0();
+        ArrayList<FoodDAO> foods = RestaurantRepository.getInstance().getFoodsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
         ArrayList<FoodDTO> results = new ArrayList<>();
-        for(FoodDAO food : foods){
-            FoodDTO item = new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity(), food.getName(), food.getPrice(), food.getDescription());
-            results.add(item);
-        }
-        SearchResultDTO dto = new SearchResultDTO();
-        dto.setFoods(results);
-        dto.setRestaurants(new ArrayList<>());
-        dto.setPageCount(pair.getValue1());
-        return dto;
+        for(FoodDAO food : foods)
+            results.add(new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo()
+                    , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription()));
+        return new SearchResultDTO(new ArrayList<>(), results);
     }
 
     public SearchResultDTO findFoodsByNameAndRestaurantNameMatch(String userId,String foodName,String restaurantName,int pageNumber,int pageSize) throws UserDoesNotExistException,ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(userId);
-        Pair<ArrayList<FoodDAO>,Integer> pair = RestaurantRepository.getInstance().getFoodsMatchNameAndRestaurantNameInRange(pageNumber, pageSize, user.getLocation(), foodName, restaurantName);
-        ArrayList<FoodDAO> foods = pair.getValue0();
+        ArrayList<FoodDAO> foods = RestaurantRepository.getInstance().getFoodsMatchNameAndRestaurantNameInRange(pageNumber, pageSize, user.getLocation(), foodName, restaurantName);
         ArrayList<FoodDTO> results = new ArrayList<>();
-        for(FoodDAO food : foods){
-            FoodDTO item = new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity(), food.getName(), food.getPrice(), food.getDescription());
-            results.add(item);
-        }
-        SearchResultDTO dto = new SearchResultDTO();
-        dto.setFoods(results);
-        dto.setRestaurants(new ArrayList<>());
-        dto.setPageCount(pair.getValue1());
-        return dto;
+        for(FoodDAO food : foods)
+            results.add(new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo()
+                    , food.getPopularity(), food.getName(), food.getPrice(), food.getDescription()));
+        return new SearchResultDTO(new ArrayList<>(), results);
     }
 
 }
