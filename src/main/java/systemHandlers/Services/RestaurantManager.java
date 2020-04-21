@@ -35,7 +35,7 @@ public class RestaurantManager {
         return foodPartyStartTime;
     }
 
-    public ArrayList<RestaurantInfoDTO> getInRangeRestaurants(String userId, int pageNumber, int pageSize) throws UserDoesNotExistException, ServerInternalException {
+    public AllRestaurantsPageDTO getInRangeRestaurants(String userId, int pageNumber, int pageSize) throws UserDoesNotExistException, ServerInternalException {
         UserDAO user = UserRepository.getInstance().getUser(userId);
         Pair<ArrayList<RestaurantDAO>,Integer> pair = RestaurantRepository.getInstance().getAllRestaurantsInRange(pageNumber,pageSize,user.getLocation());
         ArrayList<RestaurantDAO> restaurants = pair.getValue0();
@@ -45,8 +45,11 @@ public class RestaurantManager {
                 restaurantList.add(new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId()));
             }
         }
-        // todo: how to send page count
-        return restaurantList;
+        AllRestaurantsPageDTO dto = new AllRestaurantsPageDTO();
+        dto.setRestaurants(restaurantList);
+        dto.setTotalPages(pair.getValue1());
+        dto.setCurrentPage(pageNumber);
+        return dto;
     }
 
     public RestaurantDTO getNearbyRestaurantById(String restaurantId, String userId) throws RestaurantDoesntExistException, UserDoesNotExistException, OutOfRangeException, ServerInternalException {
