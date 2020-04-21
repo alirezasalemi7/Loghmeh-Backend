@@ -194,8 +194,8 @@ public class UserServices {
                     }
                 }
                 else{
+                    item.setCost(item.getCost()-(item.getCost()/item.getCount()));
                     item.setCount(item.getCount()-1);
-                    item.setCost(item.getCost()-food.getOldPrice());
                     UserRepository.getInstance().updateCartItem(item);
                 }
             }
