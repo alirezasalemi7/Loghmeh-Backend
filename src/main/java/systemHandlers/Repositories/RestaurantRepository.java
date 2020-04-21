@@ -8,6 +8,7 @@ import exceptions.FoodDoesntExistException;
 import exceptions.RestaurantDoesntExistException;
 import exceptions.ServerInternalException;
 import models.Location;
+import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
 import java.sql.SQLException;
@@ -65,26 +66,35 @@ public class RestaurantRepository {
         }
     }
 
-    public ArrayList<RestaurantDAO> getAllRestaurantsInRange(int pageNumber,int pageSize,Location location) throws ServerInternalException {
+    public Pair<ArrayList<RestaurantDAO>,Integer> getAllRestaurantsInRange(int pageNumber, int pageSize, Location location) throws ServerInternalException {
         try {
-            return restaurantMapper.getAllRestaurantsInRangePageByPage(pageSize, pageNumber, 170, location);
+            ArrayList<RestaurantDAO> restaurants = restaurantMapper.getAllRestaurantsInRangePageByPage(pageSize, pageNumber, 170, location);
+            int pageCount = (int) Math.ceil(((double) restaurantMapper.getAllRestaurantsInRangeCount(170, location)/pageSize));
+            Pair<ArrayList<RestaurantDAO>,Integer> result = new Pair<>(restaurants,pageCount);
+            return result;
         } catch (SQLException e) {
             throw new ServerInternalException();
         }
     }
 
-    public ArrayList<RestaurantDAO> getRestaurantsMatchNameInRange(int pageNumber,int pageSize,Location location,String name) throws ServerInternalException {
+    public Pair<ArrayList<RestaurantDAO>,Integer> getRestaurantsMatchNameInRange(int pageNumber,int pageSize,Location location,String name) throws ServerInternalException {
         try {
-            return restaurantMapper.getAllRestaurantsMatchNameAndInRange(name,170, location, pageNumber, pageSize);
+            ArrayList<RestaurantDAO> restaurants = restaurantMapper.getAllRestaurantsMatchNameAndInRange(name,170, location, pageNumber, pageSize);
+            int pageCount = (int)Math.ceil(((double) restaurantMapper.getAllRestaurantsMatchNameAndInRangeCount(name,170, location))/pageSize);
+            Pair<ArrayList<RestaurantDAO>,Integer> result = new Pair<>(restaurants,pageCount);
+            return result;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new ServerInternalException();
         }
     }
 
-    public ArrayList<FoodDAO> getFoodsMatchNameInRange(int pageNumber,int pageSize,Location location,String name) throws ServerInternalException {
+    public Pair<ArrayList<FoodDAO>,Integer> getFoodsMatchNameInRange(int pageNumber,int pageSize,Location location,String name) throws ServerInternalException {
         try {
-            return foodMapper.getFoodsMatchNameInUserRange(name,location, 170, pageNumber, pageSize);
+            ArrayList<FoodDAO> foods = foodMapper.getFoodsMatchNameInUserRange(name,location, 170, pageNumber, pageSize);;
+            int pageCount = (int)Math.ceil(((double) foodMapper.getFoodsMatchNameInUserRangeCount(name,location, 170))/pageSize);
+            Pair<ArrayList<FoodDAO>,Integer> result = new Pair<>(foods,pageCount);
+            return result;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new ServerInternalException();
@@ -178,6 +188,7 @@ public class RestaurantRepository {
         try {
             foodMapper.insertAllFoods(foods);
         } catch (SQLException e) {
+            System.err.println(e.getMessage());
             throw new ServerInternalException();
         }
     }

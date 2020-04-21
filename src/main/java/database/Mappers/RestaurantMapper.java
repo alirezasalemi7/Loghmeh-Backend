@@ -123,6 +123,27 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         return restaurants;
     }
 
+    public int getAllRestaurantsInRangeCount(double range,Location location) throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        String whereClause = " POWER(locx - "+location.getX()+",2)+POWER(locy - "+location.getY()+",2) <= " + range*range;
+        String query = "select count(*) as count from " + tableName + " where "+whereClause+";";
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        int count = 0;
+        while (rs.next())
+            count = rs.getInt("count");
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
+        return count;
+    }
+
     public ArrayList<RestaurantDAO> getAllRestaurantsMatchNameAndInRange(String name,double range,Location location,int pageNumber,int pageSize) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         String whereClause = "name LIKE \"%"+name+"%\"and POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) <= " + range*range;
@@ -143,6 +164,27 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
             connection.close();
         }
         return restaurants;
+    }
+
+    public int getAllRestaurantsMatchNameAndInRangeCount(String name,double range,Location location) throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        String whereClause = "name LIKE \"%"+name+"%\"and POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) <= " + range*range;
+        String query = "select count(*) as count from " + tableName + " where "+whereClause+";";
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        int count = 0;
+        while (rs.next())
+            count = rs.getInt("count");
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
+        return count;
     }
 
     public HashMap<String, Boolean> getRestaurantsId() throws SQLException {

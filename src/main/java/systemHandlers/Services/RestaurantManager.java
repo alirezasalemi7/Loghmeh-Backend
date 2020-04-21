@@ -6,6 +6,7 @@ import database.DAO.RestaurantDAO;
 import database.DAO.UserDAO;
 import exceptions.*;
 import models.Location;
+import org.javatuples.Pair;
 import restAPI.DTO.Restaurant.*;
 import restAPI.DTO.searchResults.SearchResultDTO;
 import systemHandlers.Repositories.RestaurantRepository;
@@ -36,13 +37,15 @@ public class RestaurantManager {
 
     public ArrayList<RestaurantInfoDTO> getInRangeRestaurants(String userId, int pageNumber, int pageSize) throws UserDoesNotExistException, ServerInternalException {
         UserDAO user = UserRepository.getInstance().getUser(userId);
-        ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getAllRestaurantsInRange(pageNumber,pageSize,user.getLocation());
+        Pair<ArrayList<RestaurantDAO>,Integer> pair = RestaurantRepository.getInstance().getAllRestaurantsInRange(pageNumber,pageSize,user.getLocation());
+        ArrayList<RestaurantDAO> restaurants = pair.getValue0();
         ArrayList<RestaurantInfoDTO> restaurantList = new ArrayList<>();
         for (RestaurantDAO restaurant : restaurants) {
             if (this.isInRange(user.getLocation(), restaurant.getLocation())) {
                 restaurantList.add(new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId()));
             }
         }
+        // todo: how to send page count
         return restaurantList;
     }
 
@@ -98,7 +101,8 @@ public class RestaurantManager {
 
     public SearchResultDTO findRestaurantsByNameMatch(String userId,String name,int pageNumber,int pageSize) throws UserDoesNotExistException,ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(userId);
-        ArrayList<RestaurantDAO> restaurants = RestaurantRepository.getInstance().getRestaurantsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
+        Pair<ArrayList<RestaurantDAO>,Integer> pair = RestaurantRepository.getInstance().getRestaurantsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
+        ArrayList<RestaurantDAO> restaurants = pair.getValue0();
         ArrayList<RestaurantInfoDTO> results = new ArrayList<>();
         for(RestaurantDAO restaurant : restaurants){
             RestaurantInfoDTO item = new RestaurantInfoDTO(restaurant.getName(), restaurant.getLogoAddress(), restaurant.getId());
@@ -107,12 +111,14 @@ public class RestaurantManager {
         SearchResultDTO dto = new SearchResultDTO();
         dto.setRestaurants(results);
         dto.setFoods(new ArrayList<>());
+        dto.setPageCount(pair.getValue1());
         return dto;
     }
 
     public SearchResultDTO findFoodsByNameMatch(String userId,String name,int pageNumber,int pageSize) throws UserDoesNotExistException,ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(userId);
-        ArrayList<FoodDAO> foods = RestaurantRepository.getInstance().getFoodsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
+        Pair<ArrayList<FoodDAO>,Integer> pair = RestaurantRepository.getInstance().getFoodsMatchNameInRange(pageNumber, pageSize, user.getLocation(), name);
+        ArrayList<FoodDAO> foods = pair.getValue0();
         ArrayList<FoodDTO> results = new ArrayList<>();
         for(FoodDAO food : foods){
             FoodDTO item = new FoodDTO(food.getRestaurantId(), food.getRestaurantName(), food.getLogo(), food.getPopularity(), food.getName(), food.getPrice(), food.getDescription());
@@ -121,6 +127,7 @@ public class RestaurantManager {
         SearchResultDTO dto = new SearchResultDTO();
         dto.setFoods(results);
         dto.setRestaurants(new ArrayList<>());
+        dto.setPageCount(pair.getValue1());
         return dto;
     }
 
