@@ -13,7 +13,7 @@ import services.DTO.Error.ErrorDTO;
 import services.DTO.HandShakes.CartSuccessFulFinalize;
 import services.DTO.HandShakes.ChangeInCartSuccess;
 import services.DTO.Order.OrderDetailDTO;
-import business.ServiceManagers.UserServices;
+import business.ServiceManagers.UserManager;
 
 @RestController
 @RequestMapping(value = "/users/{id}")
@@ -42,7 +42,7 @@ public class CartController {
                 String foodName = foodNameJson.asText();
                 String restaurantId = restaurantIdJson.asText();
                 Boolean specialFood = specialFoodJson.asBoolean();
-                int newCount = UserServices.getInstance().addToCart(userId, foodName, restaurantId, specialFood, count);
+                int newCount = UserManager.getInstance().addToCart(userId, foodName, restaurantId, specialFood, count);
                 return new ResponseEntity<>(new ChangeInCartSuccess(200, foodName, newCount), HttpStatus.OK);
             } catch (FoodDoesntExistException e) {
                 return new ResponseEntity<>(new ErrorDTO("food does not exist",40401), HttpStatus.NOT_FOUND);
@@ -78,7 +78,7 @@ public class CartController {
             String foodName = foodNameJson.asText();
             String restaurantId = restaurantIdJson.asText();
             boolean specialFood = specialFoodJson.asBoolean();
-            int count = UserServices.getInstance().removeFromCart(userId, foodName, restaurantId, specialFood);
+            int count = UserManager.getInstance().removeFromCart(userId, foodName, restaurantId, specialFood);
             return new ResponseEntity<>(new ChangeInCartSuccess(200, foodName, count), HttpStatus.OK);
         } catch (FoodDoesntExistException e) {
             return new ResponseEntity<>(new ErrorDTO("food does not exist",40401), HttpStatus.NOT_FOUND);
@@ -100,7 +100,7 @@ public class CartController {
             @PathVariable(value = "id",required = true) String userId)
     {
         try {
-            OrderDetailDTO order = UserServices.getInstance().finalizeCart(userId);
+            OrderDetailDTO order = UserManager.getInstance().finalizeCart(userId);
             return new ResponseEntity<>(new CartSuccessFulFinalize(200,order),HttpStatus.OK);
         }
         catch (CartIsEmptyException e){
@@ -123,7 +123,7 @@ public class CartController {
             @PathVariable(value = "id",required = true) String userId)
     {
         try {
-            CartDTO cart = UserServices.getInstance().getUserCart(userId);
+            CartDTO cart = UserManager.getInstance().getUserCart(userId);
             return new ResponseEntity<>(cart,HttpStatus.OK);
         }
         catch (UserDoesNotExistException e){

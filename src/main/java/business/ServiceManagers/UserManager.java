@@ -15,18 +15,18 @@ import dataAccess.Repositories.RestaurantRepository;
 import dataAccess.Repositories.UserRepository;
 import java.util.ArrayList;
 
-public class UserServices {
+public class UserManager {
 
-    private static UserServices instance;
+    private static UserManager instance;
 
-    public static UserServices getInstance(){
+    public static UserManager getInstance(){
         if(instance==null){
-            instance = new UserServices();
+            instance = new UserManager();
         }
         return instance;
     }
 
-    private UserServices(){}
+    private UserManager(){}
 
     public UserProfileDTO getUserProfile(String id) throws UserDoesNotExistException ,ServerInternalException{
         UserDAO user = UserRepository.getInstance().getUser(id);

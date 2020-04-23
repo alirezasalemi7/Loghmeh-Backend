@@ -14,7 +14,7 @@ import services.DTO.Error.ErrorDTO;
 import services.DTO.Order.OrderDTO;
 import services.DTO.Order.OrderDetailDTO;
 import services.DTO.User.UserProfileDTO;
-import business.ServiceManagers.UserServices;
+import business.ServiceManagers.UserManager;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class UserController {
             @PathVariable(value = "id") String userId
     ) {
         try {
-            UserProfileDTO profileDTO = UserServices.getInstance().getUserProfile(userId);
+            UserProfileDTO profileDTO = UserManager.getInstance().getUserProfile(userId);
             return new ResponseEntity<>(profileDTO, HttpStatus.OK);
         }
         catch (UserDoesNotExistException e){
@@ -55,7 +55,7 @@ public class UserController {
         if (!amount.matches("(-)?[0-9]+(\\.[0-9]+)?"))
             return new ResponseEntity<>(generateError(4002, "amount must be a valid number"), HttpStatus.BAD_REQUEST);
         try {
-            UserServices.getInstance().increaseCredit(userId, Double.parseDouble(amount));
+            UserManager.getInstance().increaseCredit(userId, Double.parseDouble(amount));
         } catch (NegativeChargeAmountException e) {
             return new ResponseEntity<>(generateError(4001, "amount must be a positive number"), HttpStatus.BAD_REQUEST);
         }
@@ -74,7 +74,7 @@ public class UserController {
             @PathVariable(value = "id") String userId
     ) {
         try {
-            ArrayList<OrderDTO> orders = UserServices.getInstance().getAllOrders(userId);
+            ArrayList<OrderDTO> orders = UserManager.getInstance().getAllOrders(userId);
             return new ResponseEntity<>(orders, HttpStatus.OK);
         }
         catch (UserDoesNotExistException e){
@@ -92,7 +92,7 @@ public class UserController {
     ) {
         OrderDetailDTO order;
         try {
-            order = UserServices.getInstance().getOrder(orderId);
+            order = UserManager.getInstance().getOrder(orderId);
         } catch (OrderDoesNotExist orderDoesNotExist) {
             return new ResponseEntity<>(generateError(400, orderDoesNotExist.getMessage()), HttpStatus.BAD_REQUEST);
         }catch (ServerInternalException e){
