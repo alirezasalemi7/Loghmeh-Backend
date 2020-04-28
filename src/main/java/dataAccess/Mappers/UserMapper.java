@@ -4,10 +4,7 @@ import dataAccess.ConnectionPool;
 import dataAccess.DAO.UserDAO;
 import business.Domain.Location;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class UserMapper extends Mapper<UserDAO,String> {
 
@@ -23,6 +20,7 @@ public class UserMapper extends Mapper<UserDAO,String> {
                         "family varchar(100) not null ," +
                         "phone varchar(11) not null ," +
                         "email varchar(240) not null ," +
+                        "password int not null ,"+
                         "id varchar(50) primary key ,"+
                         "credit real not null ," +
                         "locx int not null ," +
@@ -44,9 +42,9 @@ public class UserMapper extends Mapper<UserDAO,String> {
 
     @Override
     protected String getInsertStatement(UserDAO obj) {
-        return "insert into "+tableName+" (name,family,phone,email,id,credit,locx,locy) values ("+
+        return "insert into "+tableName+" (name,family,phone,email,id,credit,locx,locy,password) values ("+
                 "\""+obj.getName()+"\",\""+obj.getFamily()+"\",\""+obj.getPhoneNumber()+"\",\""+
-                obj.getEmail()+"\",\""+ obj.getId()+"\","+obj.getCredit()+","+obj.getLocation().getX()+","+obj.getLocation().getY()+
+                obj.getEmail()+"\",\""+ obj.getId()+"\","+obj.getCredit()+","+obj.getLocation().getX()+","+obj.getLocation().getY()+","+obj.getPassword()+
                 ");";
     }
 
@@ -66,6 +64,7 @@ public class UserMapper extends Mapper<UserDAO,String> {
         Location location = new Location(rs.getInt("locx"), rs.getInt("locy"));
         dao.setLocation(location);
         dao.setId(rs.getString("id"));
+        dao.setPassword(rs.getLong("password"));
         return dao;
     }
 
@@ -80,6 +79,27 @@ public class UserMapper extends Mapper<UserDAO,String> {
         if(connection!=null && !connection.isClosed()){
             connection.close();
         }
+    }
+
+    public UserDAO getUserByEmail(String email) throws SQLException{
+        Connection connection = ConnectionPool.getConnection();
+        PreparedStatement statement = connection.prepareStatement("select * from "+tableName+" where email=?;");
+        statement.setString(1, email);
+        ResultSet rs = statement.executeQuery();
+        if(!rs.next()){
+            return null;
+        }
+        UserDAO user = getObject(rs);
+        if(rs!=null && !rs.isClosed()){
+            rs.close();
+        }
+        if(statement!=null && !statement.isClosed()){
+            statement.close();
+        }
+        if(connection!=null && !connection.isClosed()){
+            connection.close();
+        }
+        return user;
     }
 
 }

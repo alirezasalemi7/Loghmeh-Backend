@@ -11,6 +11,15 @@ public class UserDAO {
     private Double credit;
     private String id;
     private Location location;
+    private long password;
+
+    public long getPassword() {
+        return password;
+    }
+
+    public void setPassword(long password) {
+        this.password = password;
+    }
 
     public String getName() {
         return name;
