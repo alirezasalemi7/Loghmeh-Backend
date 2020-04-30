@@ -4,12 +4,21 @@ public class SignUpDTO {
 
     private String description;
     private int status;
+    private String jwt;
 
     public SignUpDTO(){}
 
     public SignUpDTO(String description,int status){
         this.description = description;
         this.status = status;
+    }
+
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 
     public String getDescription() {

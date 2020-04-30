@@ -35,14 +35,11 @@ public class SignUpController {
         String name = nameJson.asText();
         String family = familyJson.asText();
         try {
-            SignUpManager.getInstance().signUpNewUser(name, family, email, password, phone);
-            return new ResponseEntity<>(new SignUpDTO("successful signUp.",200),HttpStatus.OK);
+            SignUpDTO signUpDTO = SignUpManager.getInstance().signUpNewUser(name, family, email, password, phone);
+            return new ResponseEntity<>(signUpDTO,HttpStatus.OK);
         }
         catch (ServerInternalException e){
             return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        catch (UserAlreadyExistException e){
-            return new ResponseEntity<>(new ErrorDTO("user already exist.",4001), HttpStatus.BAD_REQUEST);
         }
     }
 
