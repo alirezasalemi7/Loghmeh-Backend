@@ -20,22 +20,16 @@ public class SignUpController {
     @RequestMapping(value = "/signup",method = RequestMethod.POST,produces = "application/json")
     ResponseEntity<Object> signUp(
             @RequestBody(required = true) JsonNode payload
-    ){
+    ) {
         JsonNode emailJson = payload.get("email");
         JsonNode passwordJson = payload.get("password");
         JsonNode phoneJson = payload.get("phone");
         JsonNode nameJson = payload.get("name");
         JsonNode familyJson = payload.get("family");
-        if(emailJson==null || phoneJson==null || passwordJson==null || nameJson==null || familyJson==null){
+        if (emailJson == null || phoneJson == null || passwordJson == null || nameJson == null || familyJson == null)
             return new ResponseEntity<>(new ErrorDTO("bad request",400), HttpStatus.BAD_REQUEST);
-        }
-        String email = emailJson.asText();
-        String password = passwordJson.asText();
-        String phone = phoneJson.asText();
-        String name = nameJson.asText();
-        String family = familyJson.asText();
         try {
-            SignUpDTO signUpDTO = SignUpManager.getInstance().signUpNewUser(name, family, email, password, phone);
+            SignUpDTO signUpDTO = SignUpManager.getInstance().signUpNewUser(nameJson.asText(), familyJson.asText(), emailJson.asText(), passwordJson.asText(), phoneJson.asText());
             return new ResponseEntity<>(signUpDTO,HttpStatus.OK);
         }
         catch (ServerInternalException e){

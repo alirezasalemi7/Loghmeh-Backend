@@ -101,12 +101,7 @@ public class AuthenticationManager {
     public LoginDTO authenticateUser(String email,String password) throws ServerInternalException{
         try {
             UserDAO user = UserRepository.getInstance().getUserByEmail(email);
-            if(user.getPassword()==password.hashCode()){
-                return successFulLogin(user);
-            }
-            else{
-                return invalidPasswordOrUsername();
-            }
+            return user.getPassword()==password.hashCode() ? successFulLogin(user) : invalidPasswordOrUsername();
         }
         catch (UserDoesNotExistException e){
             return invalidPasswordOrUsername();
