@@ -32,19 +32,38 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
     }
 
     @Override
-    protected String getFindStatement(Quartet<String,String,String,Boolean> id) {
-        return "select * from "+tableName+" where order_id=\""+id.getValue0()+"\" AND food_name=\""+id.getValue1()+"\" AND restaurant_id=\""+id.getValue2()+"\" AND special="+((id.getValue3())?1:0)+";";
+    protected PreparedStatement getFindStatement(Connection connection, Quartet<String,String,String,Boolean> id) throws SQLException {
+        String query = "select * from "+tableName+" where order_id = ? AND food_name = ? AND restaurant_id = ? AND special = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id.getValue0());
+        statement.setString(2, id.getValue1());
+        statement.setString(3, id.getValue2());
+        statement.setInt(4, id.getValue3() ? 1 : 0);
+        return statement;
     }
 
     @Override
-    protected String getInsertStatement(OrderItemDAO obj) {
-        return "insert into "+tableName+"(order_id,food_name,restaurant_id,count,special,cost) values (" +
-                obj.getOrderId()+","+obj.getFoodName()+","+obj.getRestaurantId()+","+obj.getCount()+","+obj.isSpecial()+","+obj.getCost()+");";
+    protected PreparedStatement getInsertStatement(Connection connection, OrderItemDAO obj) throws SQLException {
+        String query = "insert into "+tableName+"(order_id, food_name, restaurant_id, count, special, cost) values (?, ?, ?, ?, ?, ?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, obj.getOrderId());
+        statement.setString(2, obj.getFoodName());
+        statement.setString(3, obj.getRestaurantId());
+        statement.setInt(4, obj.getCount());
+        statement.setInt(5, obj.isSpecial() ? 1 : 0);
+        statement.setDouble(6, obj.getCost());
+        return statement;
     }
 
     @Override
-    protected String getDeleteStatement(Quartet<String,String,String,Boolean> id) {
-        return "delete from "+tableName+" where order_id=\""+id.getValue0()+"\" AND food_name=\""+id.getValue1()+"\" AND restaurant_id=\""+id.getValue2()+"\" AND special="+((id.getValue3())?1:0)+";";
+    protected PreparedStatement getDeleteStatement(Connection connection, Quartet<String, String, String, Boolean> id) throws SQLException {
+        String query = "delete from "+tableName+" where order_id = ? AND food_name = ? AND restaurant_id = ? AND special = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id.getValue0());
+        statement.setString(2, id.getValue1());
+        statement.setString(3, id.getValue2());
+        statement.setInt(4, id.getValue3() ? 1 : 0);
+        return statement;
     }
 
     @Override

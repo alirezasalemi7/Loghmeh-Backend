@@ -9,11 +9,11 @@ import java.sql.SQLException;
 
 public abstract class Mapper<T, I> implements IMapper<T, I> {
 
-    abstract protected String getFindStatement(I id);
+    abstract protected PreparedStatement getFindStatement(Connection connection, I id) throws SQLException;
 
-    abstract protected String getInsertStatement(T obj);
+    abstract protected PreparedStatement getInsertStatement(Connection connection, T obj) throws SQLException;
 
-    abstract protected String getDeleteStatement(I id);
+    abstract protected PreparedStatement getDeleteStatement(Connection connection, I id) throws SQLException;
 
     abstract protected T getObject(ResultSet rs) throws SQLException;
 
@@ -22,7 +22,7 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
     public T find(I id) throws SQLException {
         try (
                 Connection connection = ConnectionPool.getConnection();
-                PreparedStatement stmt = connection.prepareStatement(getFindStatement(id))
+                PreparedStatement stmt = getFindStatement(connection, id)
         ) {
             ResultSet rs = stmt.executeQuery();
             if(!rs.next())
@@ -44,7 +44,7 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
     public void insert(T obj) throws SQLException {
         try (
                 Connection connection = ConnectionPool.getConnection();
-                PreparedStatement stmt = connection.prepareStatement(getInsertStatement(obj))
+                PreparedStatement stmt = getInsertStatement(connection, obj)
                 ) {
             stmt.executeUpdate();
             stmt.close();
@@ -58,7 +58,7 @@ public abstract class Mapper<T, I> implements IMapper<T, I> {
     public void delete(I id) throws SQLException {
         try (
                 Connection connection = ConnectionPool.getConnection();
-                PreparedStatement stmt = connection.prepareStatement(getDeleteStatement(id))
+                PreparedStatement stmt = getDeleteStatement(connection, id)
                 ) {
             stmt.executeUpdate();
             stmt.close();

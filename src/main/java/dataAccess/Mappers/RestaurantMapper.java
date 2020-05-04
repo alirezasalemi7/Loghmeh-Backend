@@ -33,20 +33,31 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
     }
 
     @Override
-    protected String getFindStatement(String id) {
-        return "select * from " + tableName + " where id = \"" + id + "\";";
+    protected PreparedStatement getFindStatement(Connection connection, String id) throws SQLException {
+        String query = "select * from " + tableName + " where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
     @Override
-    protected String getInsertStatement(RestaurantDAO obj) {
-        return "insert into " + tableName + "(id, name, logo, locx, locy) " +
-                "values (\"" + obj.getId() + "\", \"" + obj.getName() + "\", \"" + obj.getLogoAddress() +
-                 "\", " + obj.getLocation().getX() + ", " + obj.getLocation().getY() + ");";
+    protected PreparedStatement getInsertStatement(Connection connection, RestaurantDAO obj) throws SQLException {
+        String query = "insert into " + tableName + "(id, name, logo, locx, locy) " + "values (?, ?, ?, ?, ?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, obj.getId());
+        statement.setString(2, obj.getName());
+        statement.setString(3, obj.getLogoAddress());
+        statement.setDouble(4, obj.getLocation().getX());
+        statement.setDouble(5, obj.getLocation().getY());
+        return statement;
     }
 
     @Override
-    protected String getDeleteStatement(String id) {
-        return "delete from " + tableName + " where id = \"" + id + "\";";
+    protected PreparedStatement getDeleteStatement(Connection connection, String id) throws SQLException {
+        String query = "delete from " + tableName + " where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
     @Override

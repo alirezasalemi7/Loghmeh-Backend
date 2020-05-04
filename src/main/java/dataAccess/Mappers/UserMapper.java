@@ -37,21 +37,35 @@ public class UserMapper extends Mapper<UserDAO,String> {
     }
 
     @Override
-    protected String getFindStatement(String id) {
-        return "select * from "+tableName+" where id=\""+id+"\";";
+    protected PreparedStatement getFindStatement(Connection connection, String id) throws SQLException {
+        String query = "select * from " + tableName + " where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
     @Override
-    protected String getInsertStatement(UserDAO obj) {
-        return "insert into "+tableName+" (name,family,phone,email,id,credit,locx,locy,password) values ("+
-                "\""+obj.getName()+"\",\""+obj.getFamily()+"\",\""+obj.getPhoneNumber()+"\",\""+
-                obj.getEmail()+"\",\""+ obj.getId()+"\","+obj.getCredit()+","+obj.getLocation().getX()+","+obj.getLocation().getY()+","+obj.getPassword()+
-                ");";
+    protected PreparedStatement getInsertStatement(Connection connection, UserDAO obj) throws SQLException {
+        String query = "insert into "+tableName+" (name,family,phone,email,id,credit,locx,locy,password) values (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, obj.getName());
+        statement.setString(2, obj.getFamily());
+        statement.setString(3, obj.getPhoneNumber());
+        statement.setString(4, obj.getEmail());
+        statement.setString(5, obj.getId());
+        statement.setDouble(6, obj.getCredit());
+        statement.setDouble(7, obj.getLocation().getX());
+        statement.setDouble(8, obj.getLocation().getY());
+        statement.setLong(9, obj.getPassword());
+        return statement;
     }
 
     @Override
-    protected String getDeleteStatement(String id) {
-        return "delete from "+tableName+" where id=\""+id+"\";";
+    protected PreparedStatement getDeleteStatement(Connection connection, String id) throws SQLException {
+        String query = "delete from " + tableName + " where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
     @Override

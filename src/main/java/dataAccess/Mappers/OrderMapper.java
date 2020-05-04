@@ -33,13 +33,18 @@ public class OrderMapper extends Mapper<OrderDAO,String> {
     }
 
     @Override
-    protected String getFindStatement(String id) {
-        return "select * from "+tableName+" where id=\""+id+"\";";
+    protected PreparedStatement getFindStatement(Connection connection, String id) throws SQLException {
+        String query = "select * from " + tableName + " where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
 
     @Override
-    protected String getInsertStatement(OrderDAO obj) {
+    protected PreparedStatement getInsertStatement(Connection connection, OrderDAO obj) throws SQLException {
+//        String query = null;
+//        PreparedStatement statement = connection.prepareStatement(query);
         return null;
     }
 
@@ -67,8 +72,10 @@ public class OrderMapper extends Mapper<OrderDAO,String> {
     }
 
     @Override
-    protected String getDeleteStatement(String id) {
-        return "delete from "+tableName+" where id=\""+id+"\";";
+    protected PreparedStatement getDeleteStatement(Connection connection, String id) throws SQLException {
+        String query = "delete from " + tableName + " where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        return statement;
     }
 
     @Override

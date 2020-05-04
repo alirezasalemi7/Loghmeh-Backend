@@ -33,20 +33,28 @@ public class CartMapper extends Mapper<CartDAO, String> {
     }
 
     @Override
-    protected String getFindStatement(String id) {
-        return "select * from "+tableName+" where id=\""+id+"\";";
+    protected PreparedStatement getFindStatement(Connection connection, String id) throws SQLException {
+        String query = "select * from "+tableName+" where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
     @Override
-    protected String getInsertStatement(CartDAO obj) {
-        return "insert into "+tableName+" (id,restaurant_id) values (\"" +
-                obj.getUserId() + "\",\"" + obj.getRestaurantId()+
-                "\");";
+    protected PreparedStatement getInsertStatement(Connection connection, CartDAO obj) throws SQLException {
+        String query = "insert into " + tableName + " (id, restaurant_id) values (?, ?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, obj.getUserId());
+        statement.setString(2, obj.getRestaurantId());
+        return statement;
     }
 
     @Override
-    protected String getDeleteStatement(String id) {
-        return "delete from "+tableName+" where id=\""+id+"\";";
+    protected PreparedStatement getDeleteStatement(Connection connection, String id) throws SQLException {
+        String query = "delete from " + tableName + " where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
     @Override

@@ -41,20 +41,40 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
     }
 
     @Override
-    protected String getFindStatement(Triplet<String, String, Boolean> id) {
-        return "select * from " + tableName + " where restaurant_id = \"" + id.getValue0() + "\" and name = \"" + id.getValue1() + "\" and special = " + (id.getValue2() ? 1 : 0) + ";";
+    protected PreparedStatement getFindStatement(Connection connection, Triplet<String, String, Boolean> id) throws SQLException {
+        String query = "select * from " + tableName + " where restaurant_id = ? and name = ? and special = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id.getValue0());
+        statement.setString(2, id.getValue1());
+        statement.setInt(3, id.getValue2() ? 1 : 0);
+        return statement;
     }
 
     @Override
-    protected String getInsertStatement(FoodDAO obj) {
-        return "insert into " + tableName + "(restaurant_id, restaurant_name, name, logo, popularity, price, description, special, count, old_price) \n" +
-                "\tvalues (\"" + obj.getRestaurantId() + "\", \"" + obj.getRestaurantName() + "\", \"" + obj.getName() + "\", \"" + obj.getLogo() + "\", " + obj.getPopularity()
-                    + ", " + obj.getPrice() + ", \"" + obj.getDescription() + "\", " + (obj.isSpecial() ? 1 : 0) + ", " + obj.getCount() + ", " + obj.getOldPrice() + ");";
+    protected PreparedStatement getInsertStatement(Connection connection, FoodDAO obj) throws SQLException {
+        String query = "insert into " + tableName + "(restaurant_id, restaurant_name, name, logo, popularity, price, description, special, count, old_price) \n" + "\tvalues (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, obj.getRestaurantId());
+        statement.setString(2, obj.getRestaurantName());
+        statement.setString(3, obj.getName());
+        statement.setString(4, obj.getLogo());
+        statement.setDouble(5, obj.getPopularity());
+        statement.setDouble(6, obj.getPrice());
+        statement.setString(7, obj.getDescription());
+        statement.setInt(8, obj.isSpecial() ? 1 : 0);
+        statement.setInt(9, obj.getCount());
+        statement.setDouble(10, obj.getOldPrice());
+        return statement;
     }
 
     @Override
-    protected String getDeleteStatement(Triplet<String, String, Boolean> id) {
-        return "delete from Foods where restaurant_id = \"" + id.getValue0() + "\" and name = \" " + id.getValue1() + " \" and special = " + (id.getValue2() ? 1 : 0) + ";";
+    protected PreparedStatement getDeleteStatement(Connection connection, Triplet<String, String, Boolean> id) throws SQLException {
+        String query = "delete from Foods where restaurant_id = ? and name = ? and special = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id.getValue0());
+        statement.setString(2, id.getValue1());
+        statement.setInt(3, id.getValue2() ? 1 : 0);
+        return statement;
     }
 
     @Override
