@@ -4,10 +4,7 @@ import dataAccess.ConnectionPool;
 import dataAccess.DAO.CartDAO;
 import dataAccess.DAO.CartItemDAO;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -77,9 +74,12 @@ public class CartMapper extends Mapper<CartDAO, String> {
     }
 
     public void updateRestaurantIdOfCart(String cartId,String restaurantId) throws SQLException{
+        String query = "update " + tableName + " set restaurant_id = ? where id = ?;";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("update "+tableName+" set restaurant_id = \""+restaurantId+"\" where id=\""+cartId+"\";");
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, restaurantId);
+        statement.setString(2, cartId);
+        statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }
@@ -89,9 +89,11 @@ public class CartMapper extends Mapper<CartDAO, String> {
     }
 
     public void resetCart(String id) throws SQLException{
+        String query = "update " + tableName + " set restaurant_id = null where id = ?;";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("update "+tableName+" set restaurant_id = null where id=\""+id+"\";");
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        statement.executeUpdate(query);
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }

@@ -93,8 +93,9 @@ public class OrderMapper extends Mapper<OrderDAO,String> {
 
     public ArrayList<OrderDAO> getUserOrders(String uid) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery("select * from "+tableName+" where user_id=\""+uid+"\";");
+        PreparedStatement statement = connection.prepareStatement("select * from " + tableName + " where user_id = ?;");
+        statement.setString(1, uid);
+        ResultSet rs = statement.executeQuery();
         ArrayList<OrderDAO> items = new ArrayList<>();
         while (rs.next())
             items.add(getObject(rs));
@@ -106,8 +107,9 @@ public class OrderMapper extends Mapper<OrderDAO,String> {
 
     public ArrayList<OrderDAO> getNotDeliveredOrders() throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery("select * from "+tableName+" where state!=\""+OrderState.Delivered.toString()+"\";");
+        PreparedStatement statement = connection.prepareStatement("select * from " + tableName + " where state != ?;");
+        statement.setString(1, OrderState.Delivered.toString());
+        ResultSet rs = statement.executeQuery();
         ArrayList<OrderDAO> items = new ArrayList<>();
         while (rs.next())
             items.add(getObject(rs));
@@ -119,7 +121,7 @@ public class OrderMapper extends Mapper<OrderDAO,String> {
 
     public void updateStateAndDate(String oid, OrderState state, Date date) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
-        PreparedStatement statement = connection.prepareStatement("update "+tableName+" set state=? , delivery_time=? where id=?;");
+        PreparedStatement statement = connection.prepareStatement("update " + tableName + " set state = ? , delivery_time = ? where id = ?;");
         statement.setString(1, state.toString());
         statement.setTimestamp(2, new Timestamp(date.getTime()));
         statement.setString(3, oid);

@@ -4,10 +4,7 @@ import dataAccess.ConnectionPool;
 import dataAccess.DAO.RestaurantDAO;
 import business.Domain.Location;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -72,8 +69,8 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         String content = this.concatValues(restaurants);
         String query = "insert into " + tableName + "(id, name, logo, locx, locy) values " + content + ";";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }
@@ -85,8 +82,8 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
     public ArrayList<RestaurantDAO> getAllRestaurantsInfo() throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         String query = "select id, name, logo, locx, locy from " + tableName + ";";
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet rs = statement.executeQuery();
         ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
         while (rs.next())
             restaurants.add(getObject(rs));
@@ -104,10 +101,14 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
 
     public ArrayList<RestaurantDAO> getAllRestaurantsInRangePageByPage(int pageSize,int pageNumber,double range,Location location) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String whereClause = " POWER(locx - "+location.getX()+",2)+POWER(locy - "+location.getY()+",2) <= " + range*range;
-        String query = "select id, name, logo, locx, locy from " + tableName + " where "+whereClause+" ORDER by id ASC LIMIT "+pageNumber*pageSize+","+pageSize+";";
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(query);
+        String query = "select id, name, logo, locx, locy from " + tableName + " where POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ? ORDER by id ASC LIMIT ?, ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setDouble(1, location.getX());
+        statement.setDouble(2, location.getY());
+        statement.setDouble(3, range * range);
+        statement.setInt(4, pageNumber * pageSize);
+        statement.setInt(5, pageNumber);
+        ResultSet rs = statement.executeQuery();
         ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
         while (rs.next())
             restaurants.add(getObject(rs));
@@ -125,10 +126,12 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
 
     public int getAllRestaurantsInRangeCount(double range,Location location) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String whereClause = " POWER(locx - "+location.getX()+",2)+POWER(locy - "+location.getY()+",2) <= " + range*range;
-        String query = "select count(*) as count from " + tableName + " where "+whereClause+";";
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(query);
+        String query = "select count(*) as count from " + tableName + " where POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setDouble(1, location.getX());
+        statement.setDouble(2, location.getY());
+        statement.setDouble(3, range * range);
+        ResultSet rs = statement.executeQuery();
         int count = 0;
         while (rs.next())
             count = rs.getInt("count");
@@ -146,11 +149,15 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
 
     public ArrayList<RestaurantDAO> getAllRestaurantsMatchNameAndInRange(String name,double range,Location location,int pageNumber,int pageSize) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String whereClause = "name LIKE \"%"+name+"%\"and POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) <= " + range*range;
-        String query = "select id, name, logo, locx, locy from " + tableName + " where "+whereClause+
-                " order by id limit "+(pageNumber*pageSize)+","+(pageSize)+";";
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(query);
+        String query = "select id, name, logo, locx, locy from " + tableName + " where name LIKE %?% and POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ? order by id limit ?, ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, name);
+        statement.setDouble(2, location.getX());
+        statement.setDouble(3, location.getY());
+        statement.setDouble(4, range * range);
+        statement.setInt(5, pageNumber * pageSize);
+        statement.setInt(6, pageNumber);
+        ResultSet rs = statement.executeQuery();
         ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
         while (rs.next())
             restaurants.add(getObject(rs));
@@ -168,10 +175,13 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
 
     public int getAllRestaurantsMatchNameAndInRangeCount(String name,double range,Location location) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String whereClause = "name LIKE \"%"+name+"%\"and POWER(locx-"+location.getX()+",2)+POWER(locy-"+location.getY()+",2) <= " + range*range;
-        String query = "select count(*) as count from " + tableName + " where "+whereClause+";";
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(query);
+        String query = "select count(*) as count from " + tableName + " where name LIKE %?% and POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, name);
+        statement.setDouble(2, location.getX());
+        statement.setDouble(3, location.getY());
+        statement.setDouble(4, range * range);
+        ResultSet rs = statement.executeQuery();
         int count = 0;
         while (rs.next())
             count = rs.getInt("count");
@@ -190,8 +200,8 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
     public HashMap<String, Boolean> getRestaurantsId() throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         String query = "select id from " + tableName + ";";
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery(query);
+        PreparedStatement stmt = connection.prepareStatement(query);
+        ResultSet rs = stmt.executeQuery();
         HashMap<String, Boolean> ids = new HashMap<>();
         while (rs.next())
             ids.put(rs.getString("id"), true);

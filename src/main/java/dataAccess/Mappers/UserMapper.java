@@ -5,6 +5,7 @@ import dataAccess.DAO.UserDAO;
 import business.Domain.Location;
 
 import java.sql.*;
+import java.util.Queue;
 
 public class UserMapper extends Mapper<UserDAO,String> {
 
@@ -68,17 +69,16 @@ public class UserMapper extends Mapper<UserDAO,String> {
         return dao;
     }
 
-
     public void updateCredit(String id,double credit) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("update "+tableName+ " set credit = "+credit+" where id = \""+id+"\";");
-        if(statement!=null && !statement.isClosed()){
+        PreparedStatement statement = connection.prepareStatement("update " + tableName + " set credit = ? where id = ?;");
+        statement.setDouble(1, credit);
+        statement.setString(2, id);
+        statement.executeUpdate();
+        if(statement!=null && !statement.isClosed())
             statement.close();
-        }
-        if(connection!=null && !connection.isClosed()){
+        if(connection!=null && !connection.isClosed())
             connection.close();
-        }
     }
 
     public UserDAO getUserByEmail(String email) throws SQLException{

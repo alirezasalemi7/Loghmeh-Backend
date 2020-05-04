@@ -4,11 +4,9 @@ import dataAccess.ConnectionPool;
 import dataAccess.DAO.OrderItemDAO;
 import org.javatuples.Quartet;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,String,Boolean>> {
 
@@ -63,8 +61,9 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
 
     public ArrayList<OrderItemDAO> getAllItemsOfOrder(String id) throws SQLException{
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery("select * from "+tableName+" where order_id=\""+id+"\";");
+        PreparedStatement statement = connection.prepareStatement("select * from " + tableName + " where order_id = ?;");
+        statement.setString(1, id);
+        ResultSet rs = statement.executeQuery();
         ArrayList<OrderItemDAO> items = new ArrayList<>();
         while (rs.next())
             items.add(getObject(rs));
@@ -85,10 +84,10 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
     public void addAllOrderItems(ArrayList<OrderItemDAO> items) throws SQLException{
         if (items.size() < 1)
             return;
+        String query = "insert into "+tableName+" (order_id,food_name,restaurant_id,count,special,cost) values "+concatValues(items)+";";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        String sql = "insert into "+tableName+" (order_id,food_name,restaurant_id,count,special,cost) values "+concatValues(items)+";";
-        statement.executeUpdate(sql);
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.executeUpdate();
         statement.close();
         connection.close();
     }
