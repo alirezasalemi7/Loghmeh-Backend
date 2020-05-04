@@ -92,20 +92,36 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
         return items;
     }
 
-    private String concatValues(ArrayList<OrderItemDAO> items){
-        String concat = "";
-        for (OrderItemDAO item : items){
-            concat+=",(\""+item.getOrderId()+"\",\""+item.getFoodName()+"\",\""+item.getRestaurantId()+"\","+item.getCount()+","+(item.isSpecial()?1:0)+","+item.getCost()+")";
+    private String createStatement(int size, int length) {
+        StringBuilder concatenated = new StringBuilder("(?");
+        for (int i = 1; i < length; i++)
+            concatenated.append(", ?");
+        concatenated.append(")");
+        for (int i = 1; i < size; i++) {
+            concatenated.append(", (?");
+            for (int j = 1; j < length; j++) {
+                concatenated.append(", ?");
+            }
+            concatenated.append(")");
         }
-        return concat.substring(1);
+        return concatenated.toString();
     }
 
     public void addAllOrderItems(ArrayList<OrderItemDAO> items) throws SQLException{
         if (items.size() < 1)
             return;
-        String query = "insert into "+tableName+" (order_id,food_name,restaurant_id,count,special,cost) values "+concatValues(items)+";";
+        String query = "insert into " + tableName + " (order_id,food_name,restaurant_id,count,special,cost) values " + createStatement(items.size(), 6) + ";";
         Connection connection = ConnectionPool.getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
+        for (int i = 0; i < items.size(); i++) {
+            statement.setString(i + 1, items.get(i).getOrderId());
+            statement.setString(i + 2, items.get(i).getFoodName());
+            statement.setString(i + 3, items.get(i).getRestaurantId());
+            statement.setInt(i + 4, items.get(i).getCount());
+            statement.setInt(i + 5, items.get(i).isSpecial() ? 1 : 0);
+            statement.setDouble(i + 6, items.get(i).getCost());
+
+        }
         statement.executeUpdate();
         statement.close();
         connection.close();

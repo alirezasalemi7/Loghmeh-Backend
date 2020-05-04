@@ -144,21 +144,40 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
             connection.close();
     }
 
-    private String concatValues(ArrayList<FoodDAO> foods) {
-        StringBuilder concatenated = new StringBuilder();
-        for (FoodDAO food : foods)
-            concatenated.append(",(\"" + food.getRestaurantId() + "\",\"" + food.getRestaurantName() + "\",\"" + food.getName() + "\",\"" + food.getLogo() + "\"," + food.getPopularity()
-                    + "," + food.getPrice() + ",\"" + food.getDescription() + "\"," + (food.isSpecial() ? 1 : 0) + "," + food.getCount() + "," + food.getOldPrice() + ")");
-        return concatenated.toString().substring(1);
+    private String createStatement(int size, int length) {
+        StringBuilder concatenated = new StringBuilder("(?");
+        for (int i = 1; i < length; i++)
+            concatenated.append(", ?");
+        concatenated.append(")");
+        for (int i = 1; i < size; i++) {
+            concatenated.append(", (?");
+            for (int j = 1; j < length; j++) {
+                concatenated.append(", ?");
+            }
+            concatenated.append(")");
+        }
+        return concatenated.toString();
     }
 
     public void insertAllFoods(ArrayList<FoodDAO> foods) throws SQLException {
         if (foods.size() < 1)
             return;
-        String content = this.concatValues(foods);
-        String query = "insert into " + tableName + "(restaurant_id, restaurant_name, name, logo, popularity, price, description, special, count, old_price) values " + content + ";";
+        String query = "insert into " + tableName + "(restaurant_id, restaurant_name, name, logo, popularity, price, description, special, count, old_price) values " + this.createStatement(foods.size(), 10) + ";";
         Connection connection = ConnectionPool.getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
+        for (int i = 0; i < foods.size(); i++) {
+            statement.setString(i + 1, foods.get(i).getRestaurantId());
+            statement.setString(i + 2, foods.get(i).getRestaurantName());
+            statement.setString(i + 3, foods.get(i).getName());
+            statement.setString(i + 4, foods.get(i).getLogo());
+            statement.setDouble(i + 5, foods.get(i).getPopularity());
+            statement.setDouble(i + 6, foods.get(i).getPrice());
+            statement.setString(i + 7, foods.get(i).getDescription());
+            statement.setInt(i + 8, foods.get(i).isSpecial() ? 1 : 0);
+            statement.setInt(i + 9, foods.get(i).getCount());
+            statement.setDouble(i + 10, foods.get(i).getOldPrice());
+
+        }
         statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){
             statement.close();

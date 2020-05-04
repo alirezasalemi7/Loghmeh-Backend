@@ -66,21 +66,34 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
                 , new Location(rs.getInt("locx"), rs.getInt("locy")), rs.getString("id"));
     }
 
-    private String concatValues(ArrayList<RestaurantDAO> restaurants) {
-        StringBuilder result = new StringBuilder();
-        for (RestaurantDAO restaurant : restaurants)
-            result.append(",(\"" + restaurant.getId() + "\",\"" + restaurant.getName() + "\",\"" + restaurant.getLogoAddress()
-                    + "\"," + restaurant.getLocation().getX() + "," + restaurant.getLocation().getY() + ")");
-        return result.toString().substring(1);
+    private String createStatement(int size, int length) {
+        StringBuilder concatenated = new StringBuilder("(?");
+        for (int i = 1; i < length; i++)
+            concatenated.append(", ?");
+        concatenated.append(")");
+        for (int i = 1; i < size; i++) {
+            concatenated.append(", (?");
+            for (int j = 1; j < length; j++) {
+                concatenated.append(", ?");
+            }
+            concatenated.append(")");
+        }
+        return concatenated.toString();
     }
 
     public void insertAllRestaurants(ArrayList<RestaurantDAO> restaurants) throws SQLException {
         if (restaurants.size() < 1)
             return;
-        String content = this.concatValues(restaurants);
-        String query = "insert into " + tableName + "(id, name, logo, locx, locy) values " + content + ";";
+        String query = "insert into " + tableName + "(id, name, logo, locx, locy) values " + this.createStatement(restaurants.size(), 5) + ";";
         Connection connection = ConnectionPool.getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
+        for (int i = 0; i < restaurants.size(); i++) {
+            statement.setString(i + 1, restaurants.get(i).getId());
+            statement.setString(i + 2, restaurants.get(i).getName());
+            statement.setString(i + 3, restaurants.get(i).getLogoAddress());
+            statement.setDouble(i + 4, restaurants.get(i).getLocation().getX());
+            statement.setDouble(i + 5, restaurants.get(i).getLocation().getY());
+        }
         statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){
             statement.close();
