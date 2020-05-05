@@ -166,16 +166,16 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         Connection connection = ConnectionPool.getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
         for (int i = 0; i < foods.size(); i++) {
-            statement.setString(i + 1, foods.get(i).getRestaurantId());
-            statement.setString(i + 2, foods.get(i).getRestaurantName());
-            statement.setString(i + 3, foods.get(i).getName());
-            statement.setString(i + 4, foods.get(i).getLogo());
-            statement.setDouble(i + 5, foods.get(i).getPopularity());
-            statement.setDouble(i + 6, foods.get(i).getPrice());
-            statement.setString(i + 7, foods.get(i).getDescription());
-            statement.setInt(i + 8, foods.get(i).isSpecial() ? 1 : 0);
-            statement.setInt(i + 9, foods.get(i).getCount());
-            statement.setDouble(i + 10, foods.get(i).getOldPrice());
+            statement.setString(10*i + 1, foods.get(i).getRestaurantId());
+            statement.setString(10*i + 2, foods.get(i).getRestaurantName());
+            statement.setString(10*i + 3, foods.get(i).getName());
+            statement.setString(10*i + 4, foods.get(i).getLogo());
+            statement.setDouble(10*i + 5, foods.get(i).getPopularity());
+            statement.setDouble(10*i + 6, foods.get(i).getPrice());
+            statement.setString(10*i + 7, foods.get(i).getDescription());
+            statement.setInt(10*i + 8, foods.get(i).isSpecial() ? 1 : 0);
+            statement.setInt(10*i + 9, foods.get(i).getCount());
+            statement.setDouble(10*i + 10, foods.get(i).getOldPrice());
 
         }
         statement.executeUpdate();

@@ -41,6 +41,10 @@ public class UserRepository {
     public void AddUser(UserDAO user) throws ServerInternalException{
         try {
             userMapper.insert(user);
+            CartDAO cart = new CartDAO();
+            cart.setRestaurantId(null);
+            cart.setUserId(user.getId());
+            cartMapper.insert(cart);
         }catch (SQLException e){
             e.printStackTrace();
             throw new ServerInternalException();

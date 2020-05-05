@@ -8,7 +8,9 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import dataAccess.DAO.UserDAO;
 import dataAccess.Repositories.UserRepository;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import services.DTO.Login.LoginDTO;
 
@@ -27,9 +29,13 @@ public class AuthenticationManager {
     private ArrayList<String> excludedPath = new ArrayList<>();
     private final String AUTH_TOKEN = "Authorization";
     private final String AUTH_TOKEN_PREFIX = "Bearer ";
-    private final String SECRET_KEY = "loghme";
+    private final String SECRET_KEY = "loghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghme";
     private final ArrayList<String> clientIds = new ArrayList<>();
     private SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
+    public SecretKey getKey() {
+        return key;
+    }
 
     public ArrayList<String> getExcludedPath() {
         return excludedPath;
@@ -41,10 +47,6 @@ public class AuthenticationManager {
 
     public String getAUTH_TOKEN_PREFIX() {
         return AUTH_TOKEN_PREFIX;
-    }
-
-    public String getSECRET_KEY() {
-        return SECRET_KEY;
     }
 
     private AuthenticationManager(){
@@ -68,8 +70,9 @@ public class AuthenticationManager {
                 .setExpiration(calendar.getTime())
                 .setIssuedAt(new Date())
                 .setIssuer("loghme/login")
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .claim("userId", user.getId())
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         return jwt;
     }

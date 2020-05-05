@@ -16,6 +16,7 @@ import services.DTO.Order.OrderDetailDTO;
 import services.DTO.User.UserProfileDTO;
 import business.ServiceManagers.UserManager;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 @RestController
@@ -27,10 +28,11 @@ public class UserController {
         return new ErrorDTO(description, status);
     }
 
-    @RequestMapping(value = "users/{id}/profile", method = RequestMethod.GET,produces = "application/json")
+    @RequestMapping(value = "users/profile", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> getProfileInfo(
-            @PathVariable(value = "id") String userId
+            HttpServletRequest request
     ) {
+        String userId = (String) request.getAttribute("userId");
         try {
             UserProfileDTO profileDTO = UserManager.getInstance().getUserProfile(userId);
             return new ResponseEntity<>(profileDTO, HttpStatus.OK);
@@ -43,11 +45,12 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/users/{id}/profile", method = RequestMethod.PUT,produces = "application/json")
+    @RequestMapping(value = "/users/profile", method = RequestMethod.PUT,produces = "application/json")
     public ResponseEntity<Object> addCredit(
-            @PathVariable(value = "id") String userId,
+            HttpServletRequest request,
             @RequestBody (required = true) JsonNode node
     ) {
+        String userId = (String) request.getAttribute("userId");
         JsonNode increasedValue = node.get("credit");
         if (increasedValue == null)
             return new ResponseEntity<>(generateError(4003, "bad request"), HttpStatus.BAD_REQUEST);
@@ -69,10 +72,11 @@ public class UserController {
         return new ResponseEntity<>(generateError(200, "Increased successfully"), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/{id}/orders", method = RequestMethod.GET,produces = "application/json")
+    @RequestMapping(value = "/users/orders", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> getAllOrders(
-            @PathVariable(value = "id") String userId
+            HttpServletRequest request
     ) {
+        String userId = (String) request.getAttribute("userId");
         try {
             ArrayList<OrderDTO> orders = UserManager.getInstance().getAllOrders(userId);
             return new ResponseEntity<>(orders, HttpStatus.OK);
@@ -85,12 +89,13 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "users/{id}/orders/{oid}", method = RequestMethod.GET,produces = "application/json")
+    @RequestMapping(value = "users/orders/{oid}", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> getOrder(
-            @PathVariable(value = "id") String userId,
+            HttpServletRequest request,
             @PathVariable(value = "oid") String orderId
     ) {
         OrderDetailDTO order;
+        String userId = (String) request.getAttribute("userId");
         try {
             order = UserManager.getInstance().getOrder(orderId);
         } catch (OrderDoesNotExist orderDoesNotExist) {

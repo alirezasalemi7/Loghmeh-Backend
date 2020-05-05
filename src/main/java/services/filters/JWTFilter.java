@@ -32,19 +32,19 @@ public class JWTFilter implements Filter {
             }
             try {
                 Claims claims = Jwts.parserBuilder()
-                        .requireSubject("userId")
-                        .requireSubject("iat")
-                        .requireSubject("iss")
-                        .requireSubject("exp")
-                        .setSigningKey(AuthenticationManager.getInstance().getSECRET_KEY())
+                        .setSigningKey(AuthenticationManager.getInstance().getKey())
                         .build()
                         .parseClaimsJws(jwtToken.replace(AuthenticationManager.getInstance().getAUTH_TOKEN_PREFIX(), ""))
                         .getBody();
                 String userId = (String) claims.get("userId");
+                if(userId==null){
+                    throw new JwtException("user id not found");
+                }
                 request.setAttribute("userId", userId);
                 filterChain.doFilter(servletRequest, servletResponse);
             }
             catch (JwtException e){
+                System.err.println(e.getMessage());
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_FORBIDDEN);
             }
             catch (NullPointerException e){
