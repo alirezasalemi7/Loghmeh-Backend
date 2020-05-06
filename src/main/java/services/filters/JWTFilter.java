@@ -26,6 +26,7 @@ public class JWTFilter implements Filter {
         }
         else {
             String jwtToken = request.getHeader(AuthenticationManager.getInstance().getAUTH_TOKEN());
+            System.err.println(jwtToken);
             if(jwtToken==null || !jwtToken.startsWith(AuthenticationManager.getInstance().getAUTH_TOKEN_PREFIX())){
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
@@ -38,6 +39,7 @@ public class JWTFilter implements Filter {
                         .getBody();
                 String userId = (String) claims.get("userId");
                 if(userId==null){
+                    System.err.println("here");
                     throw new JwtException("user id not found");
                 }
                 request.setAttribute("userId", userId);
