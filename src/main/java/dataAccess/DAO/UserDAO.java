@@ -13,6 +13,19 @@ public class UserDAO {
     private Location location;
     private long password;
 
+    public UserDAO() {}
+
+    public UserDAO(String name, String family, String phoneNumber, String email, Double credit, String id, Location location, long password) {
+        this.name = name;
+        this.family = family;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.credit = credit;
+        this.id = id;
+        this.location = location;
+        this.password = password;
+    }
+
     public long getPassword() {
         return password;
     }

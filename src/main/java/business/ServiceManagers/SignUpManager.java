@@ -27,21 +27,13 @@ public class SignUpManager {
             UserDAO user = UserRepository.getInstance().getUserByEmail(email);
             SignUpDTO signUpDTO = new SignUpDTO("user already exists.",1);
             return signUpDTO;
-        }catch (UserDoesNotExistException e){}
-        UserDAO newUser = new UserDAO();
-        newUser.setName(firstName);
-        newUser.setFamily(lastName);
-        newUser.setCredit(0.0);
-        newUser.setPhoneNumber(phoneNumber);
-        newUser.setEmail(email);
-        newUser.setLocation(new Location(0, 0));
-        newUser.setId(RandomStringUtils.randomAlphanumeric(50));
-        newUser.setPassword(password.hashCode());
-        UserRepository.getInstance().AddUser(newUser);
-        SignUpDTO signUpDTO = new SignUpDTO("successful signUp.",1);
-        String jwt = AuthenticationManager.getInstance().authenticateUser(newUser.getEmail(), password).getJwt();
-        signUpDTO.setJwt(jwt);
-        return signUpDTO;
+        } catch (UserDoesNotExistException e) {
+            UserRepository.getInstance().AddUser(new UserDAO(firstName, lastName, phoneNumber, email, 0.0, RandomStringUtils.randomAlphanumeric(50), new Location(0, 0), password.hashCode()));
+            SignUpDTO signUpDTO = new SignUpDTO("successful signUp.", 1);
+            String jwt = AuthenticationManager.getInstance().authenticateUser(email, password).getJwt();
+            signUpDTO.setJwt(jwt);
+            return signUpDTO;
+        }
     }
 
 }
