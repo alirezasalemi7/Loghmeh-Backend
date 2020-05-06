@@ -88,11 +88,11 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         Connection connection = ConnectionPool.getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
         for (int i = 0; i < restaurants.size(); i++) {
-            statement.setString(i + 1, restaurants.get(i).getId());
-            statement.setString(i + 2, restaurants.get(i).getName());
-            statement.setString(i + 3, restaurants.get(i).getLogoAddress());
-            statement.setDouble(i + 4, restaurants.get(i).getLocation().getX());
-            statement.setDouble(i + 5, restaurants.get(i).getLocation().getY());
+            statement.setString(5 * i + 1, restaurants.get(i).getId());
+            statement.setString(5 * i + 2, restaurants.get(i).getName());
+            statement.setString(5 * i + 3, restaurants.get(i).getLogoAddress());
+            statement.setDouble(5 * i + 4, restaurants.get(i).getLocation().getX());
+            statement.setDouble(5 * i + 5, restaurants.get(i).getLocation().getY());
         }
         statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){

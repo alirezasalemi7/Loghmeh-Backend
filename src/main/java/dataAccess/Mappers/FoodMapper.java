@@ -61,9 +61,15 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
         statement.setDouble(5, obj.getPopularity());
         statement.setDouble(6, obj.getPrice());
         statement.setString(7, obj.getDescription());
-        statement.setInt(8, obj.isSpecial() ? 1 : 0);
-        statement.setInt(9, obj.getCount());
-        statement.setDouble(10, obj.getOldPrice());
+        if (obj.isSpecial()) {
+            statement.setInt(8, 1);
+            statement.setInt(9, obj.getCount());
+            statement.setDouble(10, obj.getOldPrice());
+        } else {
+            statement.setInt(8, 0);
+            statement.setNull(9, Types.NULL);
+            statement.setNull(10, Types.NULL);
+        }
         return statement;
     }
 
@@ -173,10 +179,15 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
             statement.setDouble(10*i + 5, foods.get(i).getPopularity());
             statement.setDouble(10*i + 6, foods.get(i).getPrice());
             statement.setString(10*i + 7, foods.get(i).getDescription());
-            statement.setInt(10*i + 8, foods.get(i).isSpecial() ? 1 : 0);
-            statement.setInt(10*i + 9, foods.get(i).getCount());
-            statement.setDouble(10*i + 10, foods.get(i).getOldPrice());
-
+            if (foods.get(i).isSpecial()) {
+                statement.setInt(10*i + 8, 1);
+                statement.setInt(10*i + 9, foods.get(i).getCount());
+                statement.setDouble(10*i + 10, foods.get(i).getOldPrice());
+            } else {
+                statement.setInt(10*i + 8, 0);
+                statement.setNull(10*i + 9, Types.NULL);
+                statement.setNull(10*i + 10, Types.NULL);
+            }
         }
         statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){

@@ -148,6 +148,7 @@ public class RestaurantRepository {
             foodMapper.deleteRedundantSpecialFoods();
             foodMapper.changeSpecialFoodsToNormal();
         } catch (SQLException e) {
+            System.err.println(e.getMessage());
             throw new ServerInternalException();
         }
     }
