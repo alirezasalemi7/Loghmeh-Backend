@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import services.DTO.Error.ErrorDTO;
+import services.DTO.Login.LoginDTO;
 
 @RestController
 public class LoginController {
@@ -23,7 +24,8 @@ public class LoginController {
         if (email == null || password == null)
             return new ResponseEntity<>(new ErrorDTO("username or password is not sent", 400), HttpStatus.BAD_REQUEST);
         try {
-            return new ResponseEntity<>(AuthenticationManager.getInstance().authenticateUser(email.asText(), password.asText()), HttpStatus.OK);
+            LoginDTO result = AuthenticationManager.getInstance().authenticateUser(email.asText(), password.asText());
+            return new ResponseEntity<>(result, (result.getStatus() == 1) ? HttpStatus.OK : HttpStatus.FORBIDDEN);
         } catch (ServerInternalException e) {
             return new ResponseEntity<>(new ErrorDTO("an internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -37,7 +39,8 @@ public class LoginController {
         if (token == null)
             return new ResponseEntity<>(new ErrorDTO("token is not sent", 400), HttpStatus.BAD_REQUEST);
         try {
-            return new ResponseEntity<>(AuthenticationManager.getInstance().googleAuthenticationVerifier(token.asText()), HttpStatus.OK);
+            LoginDTO result = AuthenticationManager.getInstance().googleAuthenticationVerifier(token.asText());
+            return new ResponseEntity<>(result, (result.getStatus() == 1) ? HttpStatus.OK : HttpStatus.FORBIDDEN);
         } catch (ServerInternalException e) {
             return new ResponseEntity<>(new ErrorDTO("an internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }

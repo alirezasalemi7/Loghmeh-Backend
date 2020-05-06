@@ -27,12 +27,14 @@ public class SignUpController {
         JsonNode nameJson = payload.get("name");
         JsonNode familyJson = payload.get("family");
         if (emailJson == null || phoneJson == null || passwordJson == null || nameJson == null || familyJson == null)
-            return new ResponseEntity<>(new ErrorDTO("bad request",400), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ErrorDTO("bad request",4001), HttpStatus.BAD_REQUEST);
         try {
-            SignUpDTO signUpDTO = SignUpManager.getInstance().signUpNewUser(nameJson.asText(), familyJson.asText(), emailJson.asText(), passwordJson.asText(), phoneJson.asText());
-            return new ResponseEntity<>(signUpDTO,HttpStatus.OK);
-        }
-        catch (ServerInternalException e){
+            SignUpDTO result = SignUpManager.getInstance().signUpNewUser(nameJson.asText(), familyJson.asText(), emailJson.asText(), passwordJson.asText(), phoneJson.asText());
+            if (result.getStatus() == 0)
+                return new ResponseEntity<>(new ErrorDTO("user already signed up",4002), HttpStatus.BAD_REQUEST);
+            else
+                return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (ServerInternalException e) {
             return new ResponseEntity<>(new ErrorDTO("server error",500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

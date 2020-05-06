@@ -120,7 +120,7 @@ public class AuthenticationManager {
                     UserDAO user = UserRepository.getInstance().getUserByEmail(googleIdToken.getPayload().getEmail());
                     return successFulLogin(user);
                 }
-                catch (UserDoesNotExistException e){
+                catch (UserDoesNotExistException e) {
                     GoogleIdToken.Payload payload = googleIdToken.getPayload();
                     LoginDTO dto = new LoginDTO();
                     dto.setStatus(3);
