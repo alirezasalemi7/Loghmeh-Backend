@@ -173,9 +173,9 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
 
     public ArrayList<RestaurantDAO> getAllRestaurantsMatchNameAndInRange(String name,double range,Location location,int pageNumber,int pageSize) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String query = "select id, name, logo, locx, locy from " + tableName + " where name LIKE %?% and POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ? order by id limit ?, ?;";
+        String query = "select id, name, logo, locx, locy from " + tableName + " where name LIKE ? and POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ? order by id limit ?, ?;";
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, name);
+        statement.setString(1, "%" + name + "%");
         statement.setDouble(2, location.getX());
         statement.setDouble(3, location.getY());
         statement.setDouble(4, range * range);
@@ -199,9 +199,9 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
 
     public int getAllRestaurantsMatchNameAndInRangeCount(String name,double range,Location location) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String query = "select count(*) as count from " + tableName + " where name LIKE %?% and POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ?;";
+        String query = "select count(*) as count from " + tableName + " where name LIKE ? and POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ?;";
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, name);
+        statement.setString(1, "%" + name + "%");
         statement.setDouble(2, location.getX());
         statement.setDouble(3, location.getY());
         statement.setDouble(4, range * range);

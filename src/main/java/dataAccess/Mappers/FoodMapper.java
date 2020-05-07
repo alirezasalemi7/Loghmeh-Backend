@@ -246,10 +246,9 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
 
     public ArrayList<FoodDAO> getFoodsMatchNameInUserRange(String name, Location location, double range, int pageNumber, int pageSize) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String query = "select * from " + tableName + " where special = 0 and name like %?% and " +
-                "(select POWER(locx - ? ,2)+POWER(locy - ? ,2) from Restaurants where id = restaurant_id) <= ? order by name asc limit ?, ?;";
+        String query = "select * from " + tableName + " where special = 0 and name like ? and (select POWER(locx - ? ,2)+POWER(locy - ? ,2) from Restaurants where id = restaurant_id) <= ? order by name asc limit ?, ?;";
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, name);
+        statement.setString(1, "%" + name + "%");
         statement.setDouble(2, location.getX());
         statement.setDouble(3, location.getY());
         statement.setDouble(4, range * range);
@@ -270,10 +269,10 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
 
     public int getFoodsMatchNameInUserRangeCount(String name, Location location, double range) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String query = "select count(*) as count from " + tableName + " where special = 0 and name like %?% and " +
+        String query = "select count(*) as count from " + tableName + " where special = 0 and name like ? and " +
                 "(select POWER(locx-?,2)+POWER(locy-?,2) from Restaurants where id = restaurant_id) <= ?;";
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, name);
+        statement.setString(1, "%" + name + "%");
         statement.setDouble(2, location.getX());
         statement.setDouble(3, location.getY());
         statement.setDouble(4, range * range);
@@ -295,12 +294,12 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
 
     public ArrayList<FoodDAO> getFoodsMatchNameAndRestaurantNameInUserRange(String foodName,String restaurantName, Location location, double range,int pageNumber,int pageSize) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String query = "select * from " + tableName + " where special = 0 and name like %?% and " +
-                " restaurant_name like %?% and (select POWER(locx - ?, 2) + POWER(locy - ?, 2) from Restaurants " +
+        String query = "select * from " + tableName + " where special = 0 and name like ? and " +
+                " restaurant_name like ? and (select POWER(locx - ?, 2) + POWER(locy - ?, 2) from Restaurants " +
                 " where id = restaurant_id) <= ? order by name asc limit ?, ?;";
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, foodName);
-        statement.setString(2, restaurantName);
+        statement.setString(1, "%" + foodName + "%");
+        statement.setString(2, "%" + restaurantName + "%");
         statement.setDouble(3, location.getX());
         statement.setDouble(4, location.getY());
         statement.setDouble(5, range * range);
@@ -324,12 +323,12 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
 
     public int getFoodsMatchNameAndRestaurantNameInUserRangeCount(String foodName,String restaurantName, Location location, double range) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
-        String query = "select count(*) as count from " + tableName + " where special = 0 and name like %?% and " +
-                " restaurant_name like %?% and (select POWER(locx - ?, 2) + POWER(locy - ?, 2) from Restaurants " +
+        String query = "select count(*) as count from " + tableName + " where special = 0 and name like ? and " +
+                " restaurant_name like ? and (select POWER(locx - ?, 2) + POWER(locy - ?, 2) from Restaurants " +
                 " where id = restaurant_id) <= ?;";
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, foodName);
-        statement.setString(2, restaurantName);
+        statement.setString(1, "%" + foodName + "%");
+        statement.setString(2, "%" + restaurantName + "%");
         statement.setDouble(3, location.getX());
         statement.setDouble(4, location.getY());
         statement.setDouble(5, range * range);
