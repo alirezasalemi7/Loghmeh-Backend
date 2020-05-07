@@ -123,7 +123,7 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         return restaurants;
     }
 
-    public ArrayList<RestaurantDAO> getAllRestaurantsInRangePageByPage(int pageSize,int pageNumber,double range,Location location) throws SQLException {
+    public ArrayList<RestaurantDAO> getAllRestaurantsInRangePageByPage(int pageSize, int pageNumber, double range, Location location) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         String query = "select id, name, logo, locx, locy from " + tableName + " where POWER(locx - ?, 2) + POWER(locy - ?, 2) <= ? ORDER by id ASC LIMIT ?, ?;";
         PreparedStatement statement = connection.prepareStatement(query);
@@ -131,7 +131,7 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         statement.setDouble(2, location.getY());
         statement.setDouble(3, range * range);
         statement.setInt(4, pageNumber * pageSize);
-        statement.setInt(5, pageNumber);
+        statement.setInt(5, pageSize);
         ResultSet rs = statement.executeQuery();
         ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
         while (rs.next())
@@ -180,7 +180,7 @@ public class RestaurantMapper extends Mapper<RestaurantDAO, String> {
         statement.setDouble(3, location.getY());
         statement.setDouble(4, range * range);
         statement.setInt(5, pageNumber * pageSize);
-        statement.setInt(6, pageNumber);
+        statement.setInt(6, pageSize);
         ResultSet rs = statement.executeQuery();
         ArrayList<RestaurantDAO> restaurants = new ArrayList<>();
         while (rs.next())

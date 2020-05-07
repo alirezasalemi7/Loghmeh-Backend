@@ -247,8 +247,7 @@ public class FoodMapper extends Mapper<FoodDAO, Triplet<String, String, Boolean>
     public ArrayList<FoodDAO> getFoodsMatchNameInUserRange(String name, Location location, double range, int pageNumber, int pageSize) throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         String query = "select * from " + tableName + " where special = 0 and name like %?% and " +
-                "(select POWER(locx - ? ,2)+POWER(locy - ? ,2) from Restaurants " +
-                " where id = restaurant_id) <= ? order by name asc limit ?, ?;";
+                "(select POWER(locx - ? ,2)+POWER(locy - ? ,2) from Restaurants where id = restaurant_id) <= ? order by name asc limit ?, ?;";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, name);
         statement.setDouble(2, location.getX());
