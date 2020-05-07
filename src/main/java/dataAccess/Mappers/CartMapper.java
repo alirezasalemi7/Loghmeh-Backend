@@ -101,7 +101,7 @@ public class CartMapper extends Mapper<CartDAO, String> {
         Connection connection = ConnectionPool.getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setString(1, id);
-        statement.executeUpdate(query);
+        statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }
