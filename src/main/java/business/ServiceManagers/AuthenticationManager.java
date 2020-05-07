@@ -53,6 +53,7 @@ public class AuthenticationManager {
         this.excludedPath.add("/login");
         this.excludedPath.add("/signup");
         clientIds.add("953204279771-ghbm16m0rob8432b7r9q33ikfrjgvtn0.apps.googleusercontent.com");
+        clientIds.add("374722365724-35cvu2uu7paad1851169lc1ni134drl3.apps.googleusercontent.com");
     }
 
     public static AuthenticationManager getInstance(){
