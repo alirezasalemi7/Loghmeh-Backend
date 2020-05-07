@@ -52,7 +52,8 @@ public class AuthenticationManager {
     private AuthenticationManager(){
         this.excludedPath.add("/login");
         this.excludedPath.add("/signup");
-        clientIds.add("953204279771-ghbm16m0rob8432b7r9q33ikfrjgvtn0.apps.googleusercontent.com");
+        this.excludedPath.add("/login/google");
+        clientIds.add("953204279771-dipc7ijoelj0hto82ttmt0qrvpsi69l5.apps.googleusercontent.com");
         clientIds.add("374722365724-35cvu2uu7paad1851169lc1ni134drl3.apps.googleusercontent.com");
     }
 

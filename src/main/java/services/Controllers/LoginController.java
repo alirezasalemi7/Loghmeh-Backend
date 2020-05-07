@@ -4,6 +4,7 @@ import business.ServiceManagers.AuthenticationManager;
 import business.exceptions.ServerInternalException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class LoginController {
         }
     }
 
-    @RequestMapping(value = "/login/google", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/login/google", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,method = RequestMethod.POST, produces = "application/json")
     ResponseEntity<Object> loginWithGoogle(
             @RequestBody(required = true) JsonNode payload
     ) {
