@@ -2,6 +2,7 @@ package business.ServiceManagers;
 
 import business.exceptions.ServerInternalException;
 import business.exceptions.UserDoesNotExistException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -20,10 +21,7 @@ import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 public class AuthenticationManager {
 
@@ -34,7 +32,6 @@ public class AuthenticationManager {
     private final String SECRET_KEY = "loghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghmeloghme";
     private final ArrayList<String> clientIds = new ArrayList<>();
     private SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-    private GoogleIdTokenVerifier verifier;
 
     public SecretKey getKey() {
         return key;
@@ -57,7 +54,6 @@ public class AuthenticationManager {
         this.excludedPath.add("/signup");
         this.excludedPath.add("/login/google");
         clientIds.add("C08yGjgMlWx7l99fOAkM7eQE");
-//        clientIds.add("374722365724-35cvu2uu7paad1851169lc1ni134drl3.apps.googleusercontent.com");
     }
 
     public static AuthenticationManager getInstance(){
@@ -117,36 +113,23 @@ public class AuthenticationManager {
     }
 
     public LoginDTO googleAuthenticationVerifier(String token) throws ServerInternalException {
-        try {
-            if(verifier==null){
-               verifier = new GoogleIdTokenVerifier
-                       .Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance())
-                       .setAudience(clientIds)
-                       .build();
+        JsonNode result = GoogleVerifier.verify(token);
+        if(result!=null){
+            try {
+                UserDAO user = UserRepository.getInstance().getUserByEmail(result.get("email").asText());
+                return successFulLogin(user);
             }
-            GoogleIdToken googleIdToken = verifier.verify(token);
-            if(googleIdToken!=null){
-                try {
-                    UserDAO user = UserRepository.getInstance().getUserByEmail(googleIdToken.getPayload().getEmail());
-                    return successFulLogin(user);
-                }
-                catch (UserDoesNotExistException e) {
-                    GoogleIdToken.Payload payload = googleIdToken.getPayload();
-                    LoginDTO dto = new LoginDTO();
-                    dto.setStatus(4);
-                    dto.setDescription("should make account.");
-                    dto.setEmail(payload.getEmail());
-                    dto.setFamily((String) payload.get("family_name"));
-                    dto.setName((String) payload.get("name"));
-                    return dto;
-                }
-            }
-            else{
-                return invalidGoogleAuth();
+            catch (UserDoesNotExistException e) {
+                LoginDTO dto = new LoginDTO();
+                dto.setStatus(4);
+                dto.setDescription("should make account.");
+                dto.setEmail(result.get("email").asText());
+                dto.setFamily(result.get("family_name").asText());
+                dto.setName(result.get("given_name").asText());
+                return dto;
             }
         }
-        catch (GeneralSecurityException | IOException e){
-            System.err.println(e.getMessage());
+        else{
             return invalidGoogleAuth();
         }
     }
