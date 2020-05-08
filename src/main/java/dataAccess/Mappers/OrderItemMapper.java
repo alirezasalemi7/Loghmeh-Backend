@@ -114,12 +114,12 @@ public class OrderItemMapper extends Mapper<OrderItemDAO, Quartet<String,String,
         Connection connection = ConnectionPool.getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
         for (int i = 0; i < items.size(); i++) {
-            statement.setString(i + 1, items.get(i).getOrderId());
-            statement.setString(i + 2, items.get(i).getFoodName());
-            statement.setString(i + 3, items.get(i).getRestaurantId());
-            statement.setInt(i + 4, items.get(i).getCount());
-            statement.setInt(i + 5, items.get(i).isSpecial() ? 1 : 0);
-            statement.setDouble(i + 6, items.get(i).getCost());
+            statement.setString(6*i + 1, items.get(i).getOrderId());
+            statement.setString(6*i + 2, items.get(i).getFoodName());
+            statement.setString(6*i + 3, items.get(i).getRestaurantId());
+            statement.setInt(6*i + 4, items.get(i).getCount());
+            statement.setInt(6*i + 5, items.get(i).isSpecial() ? 1 : 0);
+            statement.setDouble(6*i + 6, items.get(i).getCost());
 
         }
         statement.executeUpdate();
