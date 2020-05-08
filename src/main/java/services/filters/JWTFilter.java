@@ -26,7 +26,6 @@ public class JWTFilter implements Filter {
         }
         else {
             String jwtToken = request.getHeader(AuthenticationManager.getInstance().getAUTH_TOKEN());
-//            System.err.println("JWT Token: " + jwtToken);
             if(jwtToken==null || !jwtToken.startsWith(AuthenticationManager.getInstance().getAUTH_TOKEN_PREFIX())){
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
@@ -46,11 +45,11 @@ public class JWTFilter implements Filter {
                 filterChain.doFilter(servletRequest, servletResponse);
             }
             catch (JwtException e){
-                System.err.println(e.getMessage());
+//                System.err.println(e.getMessage());
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_FORBIDDEN);
             }
             catch (NullPointerException e){
-                System.err.println(e.getMessage());
+//                System.err.println(e.getMessage());
             }
         }
     }

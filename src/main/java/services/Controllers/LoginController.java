@@ -6,12 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import services.DTO.Error.ErrorDTO;
 import services.DTO.Login.LoginDTO;
+
+import java.util.HashMap;
 
 @RestController
 public class LoginController {
@@ -34,13 +33,13 @@ public class LoginController {
 
     @RequestMapping(value = "/login/google", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,method = RequestMethod.POST, produces = "application/json")
     ResponseEntity<Object> loginWithGoogle(
-            @RequestBody(required = true) JsonNode payload
+            @RequestParam HashMap<String,String> payload
     ) {
-        JsonNode token = payload.get("token");
+        String token = payload.getOrDefault("token", null);
         if (token == null)
             return new ResponseEntity<>(new ErrorDTO("token is not sent", 400), HttpStatus.BAD_REQUEST);
         try {
-            LoginDTO result = AuthenticationManager.getInstance().googleAuthenticationVerifier(token.asText());
+            LoginDTO result = AuthenticationManager.getInstance().googleAuthenticationVerifier(token);
             return new ResponseEntity<>(result, (result.getStatus() == 1) ? HttpStatus.OK : HttpStatus.FORBIDDEN);
         } catch (ServerInternalException e) {
             return new ResponseEntity<>(new ErrorDTO("an internal server error occurred", 500), HttpStatus.INTERNAL_SERVER_ERROR);
