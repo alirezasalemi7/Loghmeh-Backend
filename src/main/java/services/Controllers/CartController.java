@@ -15,8 +15,10 @@ import services.DTO.HandShakes.ChangeInCartSuccess;
 import services.DTO.Order.OrderDetailDTO;
 import business.ServiceManagers.UserManager;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
-@RequestMapping(value = "/users/{id}")
+@RequestMapping(value = "/users")
 public class CartController {
 
     private JsonNodeFactory factory = JsonNodeFactory.instance;
@@ -24,13 +26,14 @@ public class CartController {
 
     @RequestMapping(value="/cart",method = RequestMethod.PUT,produces = "application/json")
     public ResponseEntity<Object> addToCart(
-            @PathVariable(value = "id",required = true) String userId,
+            HttpServletRequest request,
             @RequestBody (required = true) JsonNode payload)
     {
         JsonNode foodNameJson = payload.get("food");
         JsonNode restaurantIdJson = payload.get("restaurant");
         JsonNode specialFoodJson = payload.get("special");
         JsonNode numberOfOrders = payload.get("food_count");
+        String userId = (String) request.getAttribute("userId");
         if (restaurantIdJson == null || foodNameJson == null || specialFoodJson == null) {
             return new ResponseEntity<>(new ErrorDTO("bad request",40002), HttpStatus.BAD_REQUEST);
         } else {
@@ -64,13 +67,13 @@ public class CartController {
 
     @RequestMapping(value="/cart",method = RequestMethod.DELETE,produces = "application/json")
     public ResponseEntity<Object> removeFromCart(
-            @PathVariable(value = "id",required = true) String userId,
+            HttpServletRequest request,
             @RequestBody (required = true) JsonNode payload)
     {
         JsonNode foodNameJson = payload.get("food");
         JsonNode restaurantIdJson = payload.get("restaurant");
         JsonNode specialFoodJson = payload.get("special");
-        ObjectNode answerJson = factory.objectNode();
+        String userId = (String) request.getAttribute("userId");
         if (restaurantIdJson == null || foodNameJson == null || specialFoodJson == null) {
             return new ResponseEntity<>(new ErrorDTO("bad request",40002), HttpStatus.BAD_REQUEST);
         }
@@ -97,8 +100,9 @@ public class CartController {
 
     @RequestMapping(value="/cart",method = RequestMethod.POST,produces = "application/json")
     public ResponseEntity<Object> finalize(
-            @PathVariable(value = "id",required = true) String userId)
+            HttpServletRequest request)
     {
+        String userId = (String) request.getAttribute("userId");
         try {
             OrderDetailDTO order = UserManager.getInstance().finalizeCart(userId);
             return new ResponseEntity<>(new CartSuccessFulFinalize(200,order),HttpStatus.OK);
@@ -120,8 +124,9 @@ public class CartController {
 
     @RequestMapping(value="/cart",method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> getCart(
-            @PathVariable(value = "id",required = true) String userId)
+            HttpServletRequest request)
     {
+        String userId = (String) request.getAttribute("userId");
         try {
             CartDTO cart = UserManager.getInstance().getUserCart(userId);
             return new ResponseEntity<>(cart,HttpStatus.OK);

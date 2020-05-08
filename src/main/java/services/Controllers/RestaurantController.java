@@ -9,15 +9,18 @@ import services.DTO.Error.ErrorDTO;
 import services.DTO.Restaurant.*;
 import business.ServiceManagers.RestaurantManager;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 public class RestaurantController {
 
     @RequestMapping(value = "/restaurants",method = RequestMethod.GET)
     public ResponseEntity<Object> getAllRestaurants(
-            @RequestParam(required = true,value = "user_id") String userId,
+            HttpServletRequest request,
             @RequestParam(required = true,value = "page_number") int pageNumber,
             @RequestParam(required = true,value = "page_size") int pageSize
     ){
+        String userId = (String) request.getAttribute("userId");
         if (userId == null)
             return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
         try {
@@ -33,8 +36,9 @@ public class RestaurantController {
     @RequestMapping(value = "/restaurants/{id}",method = RequestMethod.GET)
     public ResponseEntity<Object> getRestaurant(
             @PathVariable(value = "id") String restaurantId,
-            @RequestParam(required = true,value = "user_id") String userId
+            HttpServletRequest request
     ){
+        String userId = (String) request.getAttribute("userId");
         if (userId == null)
             return new ResponseEntity<>(new ErrorDTO("user id has not been passed.", 400), HttpStatus.BAD_REQUEST);
         try {

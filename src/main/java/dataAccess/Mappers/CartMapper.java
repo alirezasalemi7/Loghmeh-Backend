@@ -4,10 +4,7 @@ import dataAccess.ConnectionPool;
 import dataAccess.DAO.CartDAO;
 import dataAccess.DAO.CartItemDAO;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,20 +33,28 @@ public class CartMapper extends Mapper<CartDAO, String> {
     }
 
     @Override
-    protected String getFindStatement(String id) {
-        return "select * from "+tableName+" where id=\""+id+"\";";
+    protected PreparedStatement getFindStatement(Connection connection, String id) throws SQLException {
+        String query = "select * from "+tableName+" where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
     @Override
-    protected String getInsertStatement(CartDAO obj) {
-        return "insert into "+tableName+" (id,restaurant_id) values (\"" +
-                obj.getUserId() + "\",\"" + obj.getRestaurantId()+
-                "\");";
+    protected PreparedStatement getInsertStatement(Connection connection, CartDAO obj) throws SQLException {
+        String query = "insert into " + tableName + " (id, restaurant_id) values (?, ?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, obj.getUserId());
+        statement.setString(2, obj.getRestaurantId());
+        return statement;
     }
 
     @Override
-    protected String getDeleteStatement(String id) {
-        return "delete from "+tableName+" where id=\""+id+"\";";
+    protected PreparedStatement getDeleteStatement(Connection connection, String id) throws SQLException {
+        String query = "delete from " + tableName + " where id = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        return statement;
     }
 
     @Override
@@ -77,9 +82,12 @@ public class CartMapper extends Mapper<CartDAO, String> {
     }
 
     public void updateRestaurantIdOfCart(String cartId,String restaurantId) throws SQLException{
+        String query = "update " + tableName + " set restaurant_id = ? where id = ?;";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("update "+tableName+" set restaurant_id = \""+restaurantId+"\" where id=\""+cartId+"\";");
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, restaurantId);
+        statement.setString(2, cartId);
+        statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }
@@ -89,9 +97,11 @@ public class CartMapper extends Mapper<CartDAO, String> {
     }
 
     public void resetCart(String id) throws SQLException{
+        String query = "update " + tableName + " set restaurant_id = null where id = ?;";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("update "+tableName+" set restaurant_id = null where id=\""+id+"\";");
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        statement.executeUpdate();
         if(statement!=null && !statement.isClosed()){
             statement.close();
         }

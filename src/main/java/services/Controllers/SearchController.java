@@ -12,16 +12,19 @@ import services.DTO.Error.ErrorDTO;
 import services.DTO.searchResults.SearchResultDTO;
 import business.ServiceManagers.RestaurantManager;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 public class SearchController {
 
     @RequestMapping(value = "search/restaurants", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> searchByRestaurantName(
-            @RequestParam(required = true,value = "user_id") String userId,
+            HttpServletRequest request,
             @RequestParam(required = true,value = "restaurant_name") String restaurantName,
             @RequestParam(required = true,value = "page_number") int pageNumber,
             @RequestParam(required = true,value = "page_size") int pageSize
     ){
+        String userId = (String) request.getAttribute("userId");
         try {
             SearchResultDTO result = RestaurantManager.getInstance().findRestaurantsByNameMatch(userId, restaurantName, pageNumber, pageSize);
             return new ResponseEntity<>(result,HttpStatus.OK);
@@ -36,11 +39,12 @@ public class SearchController {
 
     @RequestMapping(value = "search/foods", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> searchByFoodName(
-            @RequestParam(required = true,value = "user_id") String userId,
+            HttpServletRequest request,
             @RequestParam(required = true,value = "food_name") String foodName,
             @RequestParam(required = true,value = "page_number") int pageNumber,
             @RequestParam(required = true,value = "page_size") int pageSize
     ){
+        String userId = (String) request.getAttribute("userId");
         try {
             SearchResultDTO result = RestaurantManager.getInstance().findFoodsByNameMatch(userId, foodName, pageNumber, pageSize);
             return new ResponseEntity<>(result,HttpStatus.OK);
@@ -55,12 +59,13 @@ public class SearchController {
 
     @RequestMapping(value = "search/foods_and_restaurants", method = RequestMethod.GET,produces = "application/json")
     public ResponseEntity<Object> searchByFoodNameAndRestaurantName(
-            @RequestParam(required = true,value = "user_id") String userId,
+            HttpServletRequest request,
             @RequestParam(required = true,value = "food_name") String foodName,
             @RequestParam(required = true,value = "restaurant_name") String restaurantName,
             @RequestParam(required = true,value = "page_number") int pageNumber,
             @RequestParam(required = true,value = "page_size") int pageSize
     ){
+        String userId = (String) request.getAttribute("userId");
         try {
             SearchResultDTO result = RestaurantManager.getInstance().findFoodsByNameAndRestaurantNameMatch(userId, foodName, restaurantName, pageNumber, pageSize);
             return new ResponseEntity<>(result,HttpStatus.OK);

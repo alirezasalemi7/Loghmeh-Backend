@@ -38,6 +38,19 @@ public class UserRepository {
         return instance;
     }
 
+    public void AddUser(UserDAO user) throws ServerInternalException{
+        try {
+            userMapper.insert(user);
+            CartDAO cart = new CartDAO();
+            cart.setRestaurantId(null);
+            cart.setUserId(user.getId());
+            cartMapper.insert(cart);
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new ServerInternalException();
+        }
+    }
+
     public UserDAO getUser(String id) throws UserDoesNotExistException, ServerInternalException {
         try {
             UserDAO user = userMapper.find(id);
@@ -130,6 +143,18 @@ public class UserRepository {
             return cart;
         }
         catch (SQLException e){
+            e.printStackTrace();
+            throw new ServerInternalException();
+        }
+    }
+
+    public UserDAO getUserByEmail(String email) throws UserDoesNotExistException,ServerInternalException{
+        try {
+            UserDAO user = userMapper.getUserByEmail(email);
+            if(user == null)
+                throw new UserDoesNotExistException();
+            return user;
+        }catch (SQLException e){
             e.printStackTrace();
             throw new ServerInternalException();
         }

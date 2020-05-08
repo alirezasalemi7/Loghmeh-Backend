@@ -3,10 +3,8 @@ package dataAccess.Mappers;
 import dataAccess.ConnectionPool;
 import dataAccess.DAO.CartItemDAO;
 import org.javatuples.Quartet;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.util.ArrayList;
 
 public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,String,Boolean>> {
@@ -33,22 +31,38 @@ public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,St
     }
 
     @Override
-    protected String getFindStatement(Quartet<String,String,String,Boolean> id) {
-        return "select * from "+tableName+" where cart_id=\""+id.getValue0()+
-                "\" AND food_name=\""+id.getValue1()+"\" AND restaurant_id=\""+id.getValue2()+
-                "\" AND special="+((id.getValue3())?1:0)+";";
+    protected PreparedStatement getFindStatement(Connection connection, Quartet<String,String,String,Boolean> id) throws SQLException {
+        String query = "select * from " + tableName + " where cart_id = ? AND food_name = ? AND restaurant_id= ? AND special = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id.getValue0());
+        statement.setString(2, id.getValue1());
+        statement.setString(3, id.getValue2());
+        statement.setInt(4, (id.getValue3())?1:0);
+        return statement;
     }
 
     @Override
-    protected String getInsertStatement(CartItemDAO obj) {
-        return "insert into "+tableName+"(cart_id,food_name,restaurant_id,count,special,cost) values (\"" +
-                obj.getCartId()+"\",\""+obj.getFoodName()+"\",\""+obj.getRestaurantId()+
-                "\","+obj.getCount()+","+((obj.isSpecial())?1:0)+","+obj.getCost()+");";
+    protected PreparedStatement getInsertStatement(Connection connection, CartItemDAO obj) throws SQLException{
+        String query = "insert into "+tableName+"(cart_id,food_name,restaurant_id,count,special,cost) values (?, ?, ?, ?, ?, ?);";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, obj.getCartId());
+        statement.setString(2, obj.getFoodName());
+        statement.setString(3, obj.getRestaurantId());
+        statement.setInt(4, obj.getCount());
+        statement.setInt(5, obj.isSpecial() ? 1 : 0);
+        statement.setDouble(6, obj.getCost());
+        return statement;
     }
 
     @Override
-    protected String getDeleteStatement(Quartet<String,String,String,Boolean> id) {
-        return "delete from "+tableName+" where cart_id=\""+id.getValue0()+"\" AND food_name=\""+id.getValue1()+"\" AND restaurant_id=\""+id.getValue2()+"\" AND special="+((id.getValue3())?1:0)+";";
+    protected PreparedStatement getDeleteStatement(Connection connection, Quartet <String, String, String, Boolean> id) throws SQLException {
+        String query = "delete from " + tableName + " where cart_id = ? AND food_name = ? AND restaurant_id = ? AND special = ?;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id.getValue0());
+        statement.setString(2, id.getValue1());
+        statement.setString(3, id.getValue2());
+        statement.setInt(4, id.getValue3() ? 1 : 0);
+        return statement;
     }
 
     @Override
@@ -64,9 +78,11 @@ public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,St
     }
 
     public ArrayList<CartItemDAO> getAllItemsOfCart(String id) throws SQLException{
+        String query = "select * from " + tableName + " where cart_id = ?;";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery("select * from "+tableName+" where cart_id=\""+id+"\";");
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, id);
+        ResultSet rs = statement.executeQuery();
         ArrayList<CartItemDAO> items = new ArrayList<>();
         while (rs.next())
             items.add(getObject(rs));
@@ -77,21 +93,26 @@ public class CartItemMapper extends Mapper<CartItemDAO, Quartet<String,String,St
     }
 
     public void RemoveAllItemsOfCart(String cartId) throws SQLException{
+        String query = "delete from "+tableName+" where cart_id = ?;";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("delete from "+tableName+" where cart_id=\""+cartId+"\";");
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, cartId);
+        statement.executeUpdate();
         statement.close();
         connection.close();
     }
 
     public void updateItem(CartItemDAO item) throws SQLException{
+        String query = "update "+tableName+" set cost = ?, count = ? where cart_id = ? AND food_name = ? AND restaurant_id = ? AND special = ?;";
         Connection connection = ConnectionPool.getConnection();
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("update "+tableName+" set cost="+ item.getCost() +
-                ", count="+ item.getCount() +
-                " where cart_id=\""+item.getCartId()+
-                "\" AND food_name=\""+item.getFoodName()+"\" AND restaurant_id=\""+item.getRestaurantId()+
-                "\" AND special="+((item.isSpecial())?1:0)+";");
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setDouble(1, item.getCost());
+        statement.setInt(2, item.getCount());
+        statement.setString(3, item.getCartId());
+        statement.setString(4, item.getFoodName());
+        statement.setString(5, item.getRestaurantId());
+        statement.setInt(6, ((item.isSpecial())?1:0));
+        statement.executeUpdate();
         statement.close();
         connection.close();
     }
