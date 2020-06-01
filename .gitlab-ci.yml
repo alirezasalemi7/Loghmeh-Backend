@@ -4,6 +4,8 @@ stages:
     - build
 
 docker-build:
+    only:
+      - master
     image: docker:latest
     stage: build
     services:
