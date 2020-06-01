@@ -7,7 +7,7 @@ WORKDIR /myapp
 RUN mvn package
 RUN mv ./target/Loghmeh.war ./target/ROOT.war
 
-FROM tomcat:9.0
+FROM tomcat:9.0-alpine
 
 RUN rm -r /usr/local/tomcat/webapps/ROOT
 COPY --from=compile /myapp/target/ROOT.war /usr/local/tomcat/webapps/
