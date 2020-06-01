@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loghmeh-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: loghmeh-backend
+  template:
+    metadata:
+      labels:
+        app: loghmeh-backend
+    spec:
+      containers:
+      - name: loghmeh-backend
+        image: rezaqanbari/loghmeh
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
