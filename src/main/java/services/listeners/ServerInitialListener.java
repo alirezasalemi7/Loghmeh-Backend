@@ -27,7 +27,9 @@ public class ServerInitialListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
+            System.out.println("starting ...");
             fetchFromExternalServer();
+            System.out.println("started.");
         } catch (ServerInternalException e) {
             System.err.println("An internal server error happened. maybe the sql connection is lost.\nexiting...");
             e.printStackTrace();

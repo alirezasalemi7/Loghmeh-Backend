@@ -15,12 +15,12 @@ spec:
       containers:
       - name: loghmeh-backend
         image: rezaqanbari/loghmeh
+        env:
+        - name: JVM_OPTS
+          value: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms400M"
         resources:
-          requests:
-            memory: "128Mi"
-            cpu: "500m"
           limits:
-            memory: "256Mi"
-            cpu: "500m"
+            memory: "400Mi"
+            cpu: "300m"
         ports:
         - containerPort: 8080
