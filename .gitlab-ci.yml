@@ -10,8 +10,8 @@ variables:
 
 
 docker-build:
-    only:
-      - master
+ only:
+  - master
  image: docker:latest
  stage: build
  services:
