@@ -10,8 +10,8 @@ variables:
 
 
 docker-build:
-    # only:
-    #   - master
+    only:
+      - master
  image: docker:latest
  stage: build
  services:
@@ -24,8 +24,8 @@ docker-build:
   - docker push rezaqanbari/loghmeh:$CI_COMMIT_SHORT_SHA
 
 kube_deploy:
-#  only:
-#   - master      
+ only:
+  - master      
  stage: deploy
  image: ubuntu:latest
  before_script:
