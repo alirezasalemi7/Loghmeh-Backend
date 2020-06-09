@@ -17,7 +17,7 @@ public class ConnectionPool {
             String username = "root";
             String password = "12345";
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://10.109.122.111:3306/",username,password);
+            Connection connection = DriverManager.getConnection("jdbc:mysql://mysql-db-service:3306/",username,password);
             Statement statement = connection.createStatement();
             statement.execute("CREATE DATABASE IF NOT EXISTS "+dbName+";");
             connection.close();
